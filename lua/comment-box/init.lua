@@ -6,8 +6,8 @@ local top_right_symbol = "╮"
 local bottom_left_symbol = "╰"
 local bottom_right_symbol = "╯"
 local centered = true
-local outer_blank_lines = true
-local inner_blank_lines = true
+local outer_blank_lines = false
+local inner_blank_lines = false
 
 local function get_pad(line)
 	local pad = (width - string.len(line) - 2) / 2
@@ -39,6 +39,13 @@ local function get_text()
 	return vim.api.nvim_buf_get_lines(0, line_start_pos - 1, line_end_pos, false)
 end
 
+local function trim(line, comment_string)
+	line = line:gsub(vim.pesc(comment_string), "", 1)
+	line = line:match("^%s*(.-)%s*$")
+	line = line:gsub("\t*(.-)", "", 1)
+	return line
+end
+
 local function create_box()
 	local comment_string = vim.api.nvim_buf_get_option(0, "commentstring")
 	comment_string = comment_string:match("^(.*)%%s(.*)")
@@ -59,7 +66,7 @@ local function create_box()
 
 	print(vim.inspect(text))
 	if text == { "" } then
-		return
+		return nil
 	end
 
 	if outer_blank_lines then
@@ -69,11 +76,14 @@ local function create_box()
 	if inner_blank_lines then
 		table.insert(lines, inner_blank_line)
 	end
+
 	if centered then
 		for _, line in pairs(text) do
-			line = line:gsub(vim.pesc(comment_string), "", 1)
+			line = trim(line, comment_string)
+
 			local pad, odd = get_pad(line)
 			local parity_pad
+
 			if odd then
 				parity_pad = pad + 1
 			else
@@ -90,9 +100,12 @@ local function create_box()
 		end
 	else
 		for _, line in pairs(text) do
+			line = trim(line, comment_string)
+
 			local pad = width - string.len(line) - 3
-			line = line:gsub(vim.pesc(comment_string), "", 1)
-			int_row = comment_string .. " " .. vert_symbol .. line .. string.rep(" ", pad) .. vert_symbol
+
+			int_row = comment_string .. " " .. vert_symbol .. " " .. line .. string.rep(" ", pad) .. vert_symbol
+
 			table.insert(lines, int_row)
 		end
 	end
