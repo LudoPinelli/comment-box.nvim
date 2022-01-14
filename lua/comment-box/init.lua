@@ -1,5 +1,5 @@
 local settings = {
-	width = 80,
+	width = 70,
 	border = {
 		horizontal = "─",
 		vertical = "│",
@@ -11,6 +11,10 @@ local settings = {
 	outer_blank_lines = false,
 	inner_blank_lines = false,
 }
+
+-- ╭────────────────────────────────────────────────────────────────────╮
+-- │                                UTILS                               │
+-- ╰────────────────────────────────────────────────────────────────────╯
 
 -- compute padding
 local function get_pad(line)
@@ -24,14 +28,22 @@ local function get_pad(line)
 	return pad, odd
 end
 
--- return the range of the selected text
+-- Trim line
+local function trim(line, comment_string)
+	line = line:gsub(vim.pesc(comment_string), "", 1) -- skip comment string
+	line = line:match("^%s*(.-)%s*$") -- remove spaces
+	line = line:gsub("\t*(.-)", "", 1) -- remove tabs
+	return line
+end
+
+-- Return the range of the selected text
 local function get_range()
 	local line_start_pos, line_end_pos
 	local mode = vim.api.nvim_get_mode().mode
 	if mode:match("[vV]") then
 		line_start_pos = vim.fn.line("v")
 		line_end_pos = vim.fn.line(".")
-		if line_start_pos > line_end_pos then
+		if line_start_pos > line_end_pos then -- if backward selected
 			l = line_end_pos
 			line_end_pos = line_start_pos
 			line_start_pos = l
@@ -44,18 +56,14 @@ local function get_range()
 	return line_start_pos, line_end_pos
 end
 
--- return the selected text
+-- ╭────────────────────────────────────────────────────────────────────╮
+-- │                                CORE                                │
+-- ╰────────────────────────────────────────────────────────────────────╯
+
+-- Return the selected text
 local function get_text()
 	local line_start_pos, line_end_pos = get_range()
 	return vim.api.nvim_buf_get_lines(0, line_start_pos - 1, line_end_pos, false)
-end
-
--- return the line without the comment string, any leading whitespace and tab
-local function trim(line, comment_string)
-	line = line:gsub(vim.pesc(comment_string), "", 1)
-	line = line:match("^%s*(.-)%s*$")
-	line = line:gsub("\t*(.-)", "", 1)
-	return line
 end
 
 -- Build the box
@@ -138,18 +146,23 @@ local function create_box(centered)
 	return lines
 end
 
--- print the box with test left aligned
+-- ╭────────────────────────────────────────────────────────────────────╮
+-- │                          PUBLIC FUNCTIONS                          │
+-- ╰────────────────────────────────────────────────────────────────────╯
+
+-- Print the box with test left aligned
 function print_lbox()
 	local line_start_pos, line_end_pos = get_range()
 	vim.api.nvim_buf_set_lines(0, line_start_pos - 1, line_end_pos, false, create_box(false))
 end
 
--- print the box with text centered
+-- Print the box with text centered
 function print_cbox()
 	local line_start_pos, line_end_pos = get_range()
 	vim.api.nvim_buf_set_lines(0, line_start_pos - 1, line_end_pos, false, create_box(true))
 end
 
+-- Config
 function setup(update)
 	settings = vim.tbl_deep_extend("force", settings, update or {})
 end
