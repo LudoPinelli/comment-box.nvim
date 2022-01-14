@@ -1,16 +1,21 @@
-local width = 80
-local hor_symbol = "─"
-local vert_symbol = "│"
-local top_left_symbol = "╭"
-local top_right_symbol = "╮"
-local bottom_left_symbol = "╰"
-local bottom_right_symbol = "╯"
-local centered = true
-local outer_blank_lines = false
-local inner_blank_lines = false
+local settings = {
 
+	width = 80,
+	border = {
+		horizontal = "─",
+		vertical = "│",
+		top_left = "╭",
+		top_right = "╮",
+		bottom_left = "╰",
+		bottom_right = "╯",
+	},
+	outer_blank_lines = false,
+	inner_blank_lines = false,
+}
+
+-- compute padding
 local function get_pad(line)
-	local pad = (width - string.len(line) - 2) / 2
+	local pad = (settings.width - string.len(line) - 2) / 2
 	local odd
 	if string.len(line) % 2 == 0 then
 		odd = false
@@ -20,13 +25,14 @@ local function get_pad(line)
 	return pad, odd
 end
 
+-- return the range of the selected text
 local function get_range()
 	local line_start_pos, line_end_pos
 	local mode = vim.api.nvim_get_mode()["mode"]
 	if mode:match("[vV]") then
 		line_start_pos = vim.fn.line("v")
 		line_end_pos = vim.fn.line(".")
-	else
+	else -- if not in visual mode, return the current line
 		line_start_pos = vim.fn.line(".")
 		line_end_pos = line_start_pos
 	end
@@ -34,11 +40,13 @@ local function get_range()
 	return line_start_pos, line_end_pos
 end
 
+-- return the selected text
 local function get_text()
 	local line_start_pos, line_end_pos = get_range()
 	return vim.api.nvim_buf_get_lines(0, line_start_pos - 1, line_end_pos, false)
 end
 
+-- return the line without the comment string, any leading whitespace and tab
 local function trim(line, comment_string)
 	line = line:gsub(vim.pesc(comment_string), "", 1)
 	line = line:match("^%s*(.-)%s*$")
@@ -46,34 +54,34 @@ local function trim(line, comment_string)
 	return line
 end
 
-local function create_box()
+-- Build the box
+local function create_box(centered)
 	local comment_string = vim.api.nvim_buf_get_option(0, "commentstring")
 	comment_string = comment_string:match("^(.*)%%s(.*)")
 	local ext_top_row = comment_string
 		.. " "
-		.. top_left_symbol
-		.. string.rep(hor_symbol, width - 2)
-		.. top_right_symbol
+		.. settings.border.top_left
+		.. string.rep(settings.border.horizontal, settings.width - 2)
+		.. settings.border.top_right
 	local ext_bottom_row = comment_string
 		.. " "
-		.. bottom_left_symbol
-		.. string.rep(hor_symbol, width - 2)
-		.. bottom_right_symbol
-	local inner_blank_line = comment_string .. " " .. vert_symbol .. string.rep(" ", width - 2) .. vert_symbol
+		.. settings.border.bottom_left
+		.. string.rep(settings.border.horizontal, settings.width - 2)
+		.. settings.border.bottom_right
+	local inner_blank_line = comment_string
+		.. " "
+		.. settings.border.vertical
+		.. string.rep(" ", settings.width - 2)
+		.. settings.border.vertical
 	local int_row = ""
 	local lines = {}
 	local text = get_text()
 
-	print(vim.inspect(text))
-	if text == { "" } then
-		return nil
-	end
-
-	if outer_blank_lines then
+	if settings.outer_blank_lines then
 		table.insert(lines, "")
 	end
 	table.insert(lines, ext_top_row)
-	if inner_blank_lines then
+	if settings.inner_blank_lines then
 		table.insert(lines, inner_blank_line)
 	end
 
@@ -91,41 +99,54 @@ local function create_box()
 			end
 			int_row = comment_string
 				.. " "
-				.. vert_symbol
+				.. settings.border.vertical
 				.. string.rep(" ", parity_pad)
 				.. line
 				.. string.rep(" ", pad)
-				.. vert_symbol
+				.. settings.border.vertical
 			table.insert(lines, int_row)
 		end
 	else
 		for _, line in pairs(text) do
 			line = trim(line, comment_string)
 
-			local pad = width - string.len(line) - 3
+			local pad = settings.width - string.len(line) - 3
 
-			int_row = comment_string .. " " .. vert_symbol .. " " .. line .. string.rep(" ", pad) .. vert_symbol
-
+			int_row = comment_string
+				.. " "
+				.. settings.border.vertical
+				.. " "
+				.. line
+				.. string.rep(" ", pad)
+				.. settings.border.vertical
 			table.insert(lines, int_row)
 		end
 	end
 
-	if inner_blank_lines then
+	if settings.inner_blank_lines then
 		table.insert(lines, inner_blank_line)
 	end
 	table.insert(lines, ext_bottom_row)
-	if outer_blank_lines then
+	if settings.outer_blank_lines then
 		table.insert(lines, "")
 	end
 
 	return lines
 end
 
-function print_box()
+-- print the box with test left aligned
+function print_lbox()
 	local line_start_pos, line_end_pos = get_range()
-	vim.api.nvim_buf_set_lines(0, line_start_pos - 1, line_end_pos, false, create_box())
+	vim.api.nvim_buf_set_lines(0, line_start_pos - 1, line_end_pos, false, create_box(false))
+end
+
+-- print the box with text centered
+function print_cbox()
+	local line_start_pos, line_end_pos = get_range()
+	vim.api.nvim_buf_set_lines(0, line_start_pos - 1, line_end_pos, false, create_box(true))
 end
 
 return {
-	print_box = print_box,
+	lbox = print_box,
+	cbox = print_cbox,
 }
