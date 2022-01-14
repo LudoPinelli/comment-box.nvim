@@ -145,7 +145,12 @@ function print_cbox()
 	vim.api.nvim_buf_set_lines(0, line_start_pos - 1, line_end_pos, false, create_box(true))
 end
 
+function setup(update)
+	settings = vim.tbl_deep_extend("force", settings, update or {})
+end
+
 return {
 	lbox = print_lbox,
 	cbox = print_cbox,
+	setup = setup,
 }
