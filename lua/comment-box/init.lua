@@ -1,5 +1,4 @@
 local settings = {
-
 	width = 80,
 	border = {
 		horizontal = "─",
@@ -28,7 +27,7 @@ end
 -- return the range of the selected text
 local function get_range()
 	local line_start_pos, line_end_pos
-	local mode = vim.api.nvim_get_mode()["mode"]
+	local mode = vim.api.nvim_get_mode().mode
 	if mode:match("[vV]") then
 		line_start_pos = vim.fn.line("v")
 		line_end_pos = vim.fn.line(".")
@@ -147,6 +146,6 @@ function print_cbox()
 end
 
 return {
-	lbox = print_box,
+	lbox = print_lbox,
 	cbox = print_cbox,
 }
