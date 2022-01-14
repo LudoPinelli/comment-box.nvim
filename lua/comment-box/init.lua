@@ -31,6 +31,11 @@ local function get_range()
 	if mode:match("[vV]") then
 		line_start_pos = vim.fn.line("v")
 		line_end_pos = vim.fn.line(".")
+		if line_start_pos > line_end_pos then
+			l = line_end_pos
+			line_end_pos = line_start_pos
+			line_start_pos = l
+		end
 	else -- if not in visual mode, return the current line
 		line_start_pos = vim.fn.line(".")
 		line_end_pos = line_start_pos
