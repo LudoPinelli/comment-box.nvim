@@ -150,7 +150,7 @@ end
 local function create_line()
 	local comment_string = vim.api.nvim_buf_get_option(0, "commentstring")
 	comment_string = comment_string:match("^(.*)%%s(.*)")
-	return comment_string .. " " .. string.rep(settings.line_symbol, settings.width - 2)
+	return { comment_string .. " " .. string.rep(settings.line_symbol, settings.width - 2) }
 end
 
 -- ╭────────────────────────────────────────────────────────────────────╮
