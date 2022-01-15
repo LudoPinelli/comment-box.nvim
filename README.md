@@ -38,7 +38,7 @@ Put your cursor on the line you want in a box, or select multiple lines, then us
 
 ### To draw a line
 
-Put your cursor on an empty line (commented or not) and use:
+In _normal_ or _insert_ mode, use:
 
 ```lua
 :lua require("comment-box").line()
@@ -56,6 +56,7 @@ nnoremap <Leader>bc <Cmd>lua require('comment-box').cbox()<CR>
 vnoremap <Leader>bc <Cmd>lua require('comment-box').cbox()<CR>
 
 nnoremp <Leader>bl <Cmd>lua require('comment-box').line()<CR>
+inoremp <M-l> <Cmd>lua require('comment-box').line()<CR>
 ```
 
 #### Lua
@@ -70,6 +71,7 @@ keymap("n", "<Leader>bc", "<Cmd>lua require('comment-box').cbox()<CR>", {})
 keymap("v", "<Leader>bc", "<Cmd>lua require('comment-box').cbox()<CR>", {})
 
 keymap("n", "<Leader>bl", "<Cmd>lua require('comment-box').line()<CR>", {})
+keymap("i", "<M-l>", "<Cmd>lua require('comment-box').line()<CR>", {})
 ```
 
 Or if you use _Neovim-nightly_:
@@ -81,6 +83,7 @@ keymap({ "n", "v"}, "<Leader>bb", require('comment-box').lbox, {})
 keymap({ "n", "v"}, "<Leader>bc", require('comment-box').cbox, {})
 
 keymap("n", "<Leader>bl", require('comment-box').line, {})
+keymap("i", "<M-l>", require('comment-box').line, {})
 ```
 
 ## Configuration
