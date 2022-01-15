@@ -102,9 +102,9 @@ require('comment-box').setup({
 		bottom_right = "╯",
 	},
   line_symbol = "─", -- symbol used to draw a line
-	outer_blank_lines = false, -- insert a blank line above and below the box
-	inner_blank_lines = false, -- insert a blank line above and below the text
-  })
+  outer_blank_lines = false, -- insert a blank line above and below the box
+  inner_blank_lines = false, -- insert a blank line above and below the text
+})
 ```
 
 ### `width`
