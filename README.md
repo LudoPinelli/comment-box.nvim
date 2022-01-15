@@ -20,7 +20,7 @@ For example with packer:
 use("LudoPinelli/comment-box.nvim")
 ```
 
-Note: _comment-box_ does not come with any keybinding (see [below](#keybindings-examples) below to make your own)
+Note: _comment-box_ does not come with any keybinding (see [below](#keybindings-examples) to make your own)
 
 ## Usage
 
