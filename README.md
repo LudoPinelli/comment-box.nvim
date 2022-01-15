@@ -12,9 +12,9 @@ _Neovim_ 0.5+
 
 ## Installation
 
-Install the way you do with any other plugin, for example:
+Install like any other plugin with your favorite package manager.
 
-With packer:
+For example with packer:
 
 ```lua
 use("LudoPinelli/comment-box.nvim")
@@ -50,22 +50,21 @@ vnoremap <Leader>bc <Cmd>lua require('comment-box').cbox()<CR>
 
 ```lua
 local keymap = vim.api.nvim_set_keymap
-local opt = { noremap = true }
 
-keymap("n", "<Leader>bb", "<Cmd>lua require('comment-box').lbox()<CR>", opt)
-keymap("v", "<Leader>bb", "<Cmd>lua require('comment-box').lbox()<CR>", opt)
+keymap("n", "<Leader>bb", "<Cmd>lua require('comment-box').lbox()<CR>", {})
+keymap("v", "<Leader>bb", "<Cmd>lua require('comment-box').lbox()<CR>", {})
 
-keymap("n", "<Leader>bc", "<Cmd>lua require('comment-box').cbox()<CR>", opt)
-keymap("v", "<Leader>bc", "<Cmd>lua require('comment-box').cbox()<CR>", opt)
+keymap("n", "<Leader>bc", "<Cmd>lua require('comment-box').cbox()<CR>", {})
+keymap("v", "<Leader>bc", "<Cmd>lua require('comment-box').cbox()<CR>", {})
 ```
 
 Or if you use _Neovim-nightly_:
 
 ```lua
 local keymap = vim.keymap.set
-local opt = { noremap = true }
-keymap({ "n", "v"}, "<Leader>bb", require('comment-box').lbox, opt)
-keymap({ "n", "v"}, "<Leader>bc", require('comment-box').cbox, opt)
+
+keymap({ "n", "v"}, "<Leader>bb", require('comment-box').lbox, {})
+keymap({ "n", "v"}, "<Leader>bc", require('comment-box').cbox, {})
 ```
 
 ## Configuration
@@ -75,7 +74,7 @@ You can call the `setup` function in your _init.lua(.vim)_ to configure the way 
 ```lua
 require('comment-box').setup({
 	width = 70, -- width of the box/line
-	border = { -- how the box will be drawn
+	border = { -- symbols used to draw a box
 		horizontal = "─",
 		vertical = "│",
 		top_left = "╭",
@@ -84,7 +83,7 @@ require('comment-box').setup({
 		bottom_right = "╯",
 	},
 	outer_blank_lines = false, -- insert a blank line above and below the box
-	inner_blank_lines = false, -- insert a blank line aboce and below the text
+	inner_blank_lines = false, -- insert a blank line above and below the text
   })
 ```
 
@@ -104,4 +103,4 @@ To change the look of your boxes:
 
 ## Known issues
 
-_comment-box_ doesn't (yet) wrap lines longer than the width of the box.
+_comment-box_ doesn't (yet) wrap texts longer than the width of the box.
