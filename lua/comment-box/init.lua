@@ -1,6 +1,6 @@
 local settings = {
 	width = 70,
-	border = {
+	borders = {
 		horizontal = "─",
 		vertical = "│",
 		top_left = "╭",
@@ -8,6 +8,7 @@ local settings = {
 		bottom_left = "╰",
 		bottom_right = "╯",
 	},
+	line_symbol = "─",
 	outer_blank_lines = false,
 	inner_blank_lines = false,
 }
@@ -72,19 +73,19 @@ local function create_box(centered)
 	comment_string = comment_string:match("^(.*)%%s(.*)")
 	local ext_top_row = comment_string
 		.. " "
-		.. settings.border.top_left
-		.. string.rep(settings.border.horizontal, settings.width - 2)
-		.. settings.border.top_right
+		.. settings.borders.top_left
+		.. string.rep(settings.borders.horizontal, settings.width - 2)
+		.. settings.borders.top_right
 	local ext_bottom_row = comment_string
 		.. " "
-		.. settings.border.bottom_left
-		.. string.rep(settings.border.horizontal, settings.width - 2)
-		.. settings.border.bottom_right
+		.. settings.borders.bottom_left
+		.. string.rep(settings.borders.horizontal, settings.width - 2)
+		.. settings.borders.bottom_right
 	local inner_blank_line = comment_string
 		.. " "
-		.. settings.border.vertical
+		.. settings.borders.vertical
 		.. string.rep(" ", settings.width - 2)
-		.. settings.border.vertical
+		.. settings.borders.vertical
 	local int_row = ""
 	local lines = {}
 	local text = get_text()
@@ -111,11 +112,11 @@ local function create_box(centered)
 			end
 			int_row = comment_string
 				.. " "
-				.. settings.border.vertical
+				.. settings.borders.vertical
 				.. string.rep(" ", parity_pad)
 				.. line
 				.. string.rep(" ", pad)
-				.. settings.border.vertical
+				.. settings.borders.vertical
 			table.insert(lines, int_row)
 		end
 	else
@@ -126,11 +127,11 @@ local function create_box(centered)
 
 			int_row = comment_string
 				.. " "
-				.. settings.border.vertical
+				.. settings.borders.vertical
 				.. " "
 				.. line
 				.. string.rep(" ", pad)
-				.. settings.border.vertical
+				.. settings.borders.vertical
 			table.insert(lines, int_row)
 		end
 	end
@@ -146,29 +147,42 @@ local function create_box(centered)
 	return lines
 end
 
+local function create_line()
+	local comment_string = vim.api.nvim_buf_get_option(0, "commentstring")
+	comment_string = comment_string:match("^(.*)%%s(.*)")
+	return { comment_string .. " " .. string.rep(settings.line_symbol, settings.width - 2) }
+end
+
 -- ╭────────────────────────────────────────────────────────────────────╮
 -- │                          PUBLIC FUNCTIONS                          │
 -- ╰────────────────────────────────────────────────────────────────────╯
 
 -- Print the box with test left aligned
-function print_lbox()
+local function print_lbox()
 	local line_start_pos, line_end_pos = get_range()
 	vim.api.nvim_buf_set_lines(0, line_start_pos - 1, line_end_pos, false, create_box(false))
 end
 
 -- Print the box with text centered
-function print_cbox()
+local function print_cbox()
 	local line_start_pos, line_end_pos = get_range()
 	vim.api.nvim_buf_set_lines(0, line_start_pos - 1, line_end_pos, false, create_box(true))
 end
 
+-- Print a line
+local function print_line()
+	local line = vim.fn.line(".")
+	vim.api.nvim_buf_set_lines(0, line - 1, line, false, create_line())
+end
+
 -- Config
-function setup(update)
+local function setup(update)
 	settings = vim.tbl_deep_extend("force", settings, update or {})
 end
 
 return {
 	lbox = print_lbox,
 	cbox = print_cbox,
+	line = print_line,
 	setup = setup,
 }

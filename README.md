@@ -24,6 +24,8 @@ Note: _comment-box_ does not come with any keybinding (see [below](#keybindings-
 
 ## Usage
 
+### To put some text in a box
+
 Put your cursor on the line you want in a box, or select multiple lines, then use one of the two functions provided:
 
 ```lua
@@ -32,6 +34,14 @@ Put your cursor on the line you want in a box, or select multiple lines, then us
 
 -- To draw a box with the text centered:
 :lua require("comment-box").cbox()
+```
+
+### To draw a line
+
+In _normal_ or _insert_ mode, use:
+
+```lua
+:lua require("comment-box").line()
 ```
 
 ### Keybindings examples
@@ -44,6 +54,9 @@ vnoremap <Leader>bb <Cmd>lua require('comment-box').lbox()<CR>
 
 nnoremap <Leader>bc <Cmd>lua require('comment-box').cbox()<CR>
 vnoremap <Leader>bc <Cmd>lua require('comment-box').cbox()<CR>
+
+nnoremp <Leader>bl <Cmd>lua require('comment-box').line()<CR>
+inoremp <M-l> <Cmd>lua require('comment-box').line()<CR>
 ```
 
 #### Lua
@@ -56,6 +69,9 @@ keymap("v", "<Leader>bb", "<Cmd>lua require('comment-box').lbox()<CR>", {})
 
 keymap("n", "<Leader>bc", "<Cmd>lua require('comment-box').cbox()<CR>", {})
 keymap("v", "<Leader>bc", "<Cmd>lua require('comment-box').cbox()<CR>", {})
+
+keymap("n", "<Leader>bl", "<Cmd>lua require('comment-box').line()<CR>", {})
+keymap("i", "<M-l>", "<Cmd>lua require('comment-box').line()<CR>", {})
 ```
 
 Or if you use _Neovim-nightly_:
@@ -65,6 +81,9 @@ local keymap = vim.keymap.set
 
 keymap({ "n", "v"}, "<Leader>bb", require('comment-box').lbox, {})
 keymap({ "n", "v"}, "<Leader>bc", require('comment-box').cbox, {})
+
+keymap("n", "<Leader>bl", require('comment-box').line, {})
+keymap("i", "<M-l>", require('comment-box').line, {})
 ```
 
 ## Configuration
@@ -74,7 +93,7 @@ You can call the `setup` function in your _init.lua(.vim)_ to configure the way 
 ```lua
 require('comment-box').setup({
 	width = 70, -- width of the box/line
-	border = { -- symbols used to draw a box
+	borders = { -- symbols used to draw a box
 		horizontal = "─",
 		vertical = "│",
 		top_left = "╭",
@@ -82,9 +101,10 @@ require('comment-box').setup({
 		bottom_left = "╰",
 		bottom_right = "╯",
 	},
-	outer_blank_lines = false, -- insert a blank line above and below the box
-	inner_blank_lines = false, -- insert a blank line above and below the text
-  })
+  line_symbol = "─", -- symbol used to draw a line
+  outer_blank_lines = false, -- insert a blank line above and below the box
+  inner_blank_lines = false, -- insert a blank line above and below the text
+})
 ```
 
 ### `width`
@@ -97,6 +117,10 @@ To change the look of your boxes:
 
 ![ASCII box](./imgs/bc-options01.png?raw=true)
 
+### `line_symbol`
+
+To change the look of your lines
+
 ### `outer_blank_line` and `inner_blank_lines`
 
 ![blank lines](./imgs/bc-options02.png?raw=true)
@@ -104,3 +128,10 @@ To change the look of your boxes:
 ## Known issues
 
 _comment-box_ doesn't (yet) wrap texts longer than the width of the box.
+
+## Acknowledgement
+
+I learned and borrow from those plugins' code:
+
+- [better-escape](https://github.com/max397574/better-escape.nvim)
+- [nvim-comment](https://github.com/terrortylor/nvim-comment/blob/main/lua/nvim_comment.lua)
