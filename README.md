@@ -36,7 +36,7 @@ Put your cursor on the line you want in a box, or select multiple lines, then us
 :lua require("comment-box").cbox()
 ```
 
-## To draw a line
+### To draw a line
 
 Put your cursor on an empty line (commented or not) and use:
 
