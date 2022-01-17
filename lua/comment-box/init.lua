@@ -31,7 +31,10 @@ end
 
 -- Trim line
 local function trim(line, comment_string)
-	line = line:gsub(vim.pesc(comment_string), "", 1) -- skip comment string
+	-- skip comment string if there is one at the beginning of the line
+	if line:sub(1, 2) == comment_string then
+		line = line:gsub(vim.pesc(comment_string), "", 1)
+	end
 	line = line:match("^%s*(.-)%s*$") -- remove spaces
 	line = line:gsub("\t*(.-)", "", 1) -- remove tabs
 	return line
