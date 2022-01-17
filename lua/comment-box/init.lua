@@ -17,11 +17,11 @@ local settings = {
 -- │                                UTILS                               │
 -- ╰────────────────────────────────────────────────────────────────────╯
 
--- compute padding
+-- Compute padding
 local function get_pad(line)
-	local pad = (settings.width - vim.fn.strchars(line) - 2) / 2
+	local pad = (settings.width - vim.fn.strdisplaywidth(line) - 2) / 2
 	local odd
-	if vim.fn.strchars(line) % 2 == 0 then
+	if vim.fn.strdisplaywidth(line) % 2 == 0 then
 		odd = false
 	else
 		odd = true
@@ -30,13 +30,15 @@ local function get_pad(line)
 end
 
 -- Trim line
-local function trim(line, comment_string)
+local function trim(line, comment_string, centered)
 	-- skip comment string if there is one at the beginning of the line
 	if line:sub(1, 2) == comment_string then
 		line = line:gsub(vim.pesc(comment_string), "", 1)
 	end
-	line = line:match("^%s*(.-)%s*$") -- remove spaces
-	line = line:gsub("\t*(.-)", "") -- remove tabs
+	if centered then
+		line = line:match("^%s*(.-)%s*$") -- remove spaces
+		line = line:gsub("\t*(.-)", "") -- remove tabs
+	end
 	return line
 end
 
@@ -119,7 +121,7 @@ local function create_box(centered)
 
 	if centered then
 		for _, line in pairs(text) do
-			line = trim(line, comment_string)
+			line = trim(line, comment_string, true)
 
 			local pad, odd = get_pad(line)
 			local parity_pad
@@ -142,9 +144,15 @@ local function create_box(centered)
 		end
 	else
 		for _, line in pairs(text) do
-			line = trim(line, comment_string)
+			line = trim(line, comment_string, false)
 
-			local pad = settings.width - vim.fn.strchars(line) - 3
+			local offset
+			if line:find("^\t") then
+				offset = 2
+			else
+				offset = 3
+			end
+			local pad = settings.width - vim.fn.strdisplaywidth(line) - offset
 
 			int_row = string.format(
 				"%s %s %s%s%s",
@@ -169,6 +177,7 @@ local function create_box(centered)
 	return lines
 end
 
+-- Build a line
 local function create_line()
 	local comment_string = vim.bo.commentstring
 	comment_string = comment_string:match("^(.*)%%s(.*)")
