@@ -36,7 +36,7 @@ local function trim(line, comment_string)
 		line = line:gsub(vim.pesc(comment_string), "", 1)
 	end
 	line = line:match("^%s*(.-)%s*$") -- remove spaces
-	line = line:gsub("\t*(.-)", "", 1) -- remove tabs
+	line = line:gsub("\t*(.-)", "") -- remove tabs
 	return line
 end
 
@@ -56,6 +56,18 @@ local function get_range()
 	end
 
 	return line_start_pos, line_end_pos
+end
+
+-- Return the correct cursor position after a box has been created
+function set_cur_pos(end_pos)
+	local cur_pos = end_pos + 2
+	if settings.inner_blank_lines then
+		cur_pos = cur_pos + 2
+	end
+	if settings.outer_blank_lines then
+		cur_pos = cur_pos + 2
+	end
+	return cur_pos
 end
 
 -- ╭────────────────────────────────────────────────────────────────────╮
@@ -171,12 +183,14 @@ end
 local function print_lbox()
 	local line_start_pos, line_end_pos = get_range()
 	vim.api.nvim_buf_set_lines(0, line_start_pos - 1, line_end_pos, false, create_box(false))
+	vim.api.nvim_win_set_cursor(0, { set_cur_pos(line_end_pos), 1 })
 end
 
 -- Print the box with text centered
 local function print_cbox()
 	local line_start_pos, line_end_pos = get_range()
 	vim.api.nvim_buf_set_lines(0, line_start_pos - 1, line_end_pos, false, create_box(true))
+	vim.api.nvim_win_set_cursor(0, { set_cur_pos(line_end_pos), 1 })
 end
 
 -- Print a line
