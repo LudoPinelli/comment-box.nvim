@@ -19,9 +19,9 @@ local settings = {
 
 -- compute padding
 local function get_pad(line)
-	local pad = (settings.width - string.len(line) - 2) / 2
+	local pad = (settings.width - vim.fn.strchars(line) - 2) / 2
 	local odd
-	if string.len(line) % 2 == 0 then
+	if vim.fn.strchars(line) % 2 == 0 then
 		odd = false
 	else
 		odd = true
@@ -45,9 +45,7 @@ local function get_range()
 		line_start_pos = vim.fn.line("v")
 		line_end_pos = vim.fn.line(".")
 		if line_start_pos > line_end_pos then -- if backward selected
-			l = line_end_pos
-			line_end_pos = line_start_pos
-			line_start_pos = l
+			line_start_pos, line_end_pos = line_end_pos, line_start_pos
 		end
 	else -- if not in visual mode, return the current line
 		line_start_pos = vim.fn.line(".")
@@ -69,23 +67,29 @@ end
 
 -- Build the box
 local function create_box(centered)
-	local comment_string = vim.api.nvim_buf_get_option(0, "commentstring")
+	local comment_string = vim.bo.commentstring
 	comment_string = comment_string:match("^(.*)%%s(.*)")
-	local ext_top_row = comment_string
-		.. " "
-		.. settings.borders.top_left
-		.. string.rep(settings.borders.horizontal, settings.width - 2)
-		.. settings.borders.top_right
-	local ext_bottom_row = comment_string
-		.. " "
-		.. settings.borders.bottom_left
-		.. string.rep(settings.borders.horizontal, settings.width - 2)
-		.. settings.borders.bottom_right
-	local inner_blank_line = comment_string
-		.. " "
-		.. settings.borders.vertical
-		.. string.rep(" ", settings.width - 2)
-		.. settings.borders.vertical
+	local ext_top_row = string.format(
+		"%s %s%s%s",
+		comment_string,
+		settings.borders.top_left,
+		string.rep(settings.borders.horizontal, settings.width - 2),
+		settings.borders.top_right
+	)
+	local ext_bottom_row = string.format(
+		"%s %s%s%s",
+		comment_string,
+		settings.borders.bottom_left,
+		string.rep(settings.borders.horizontal, settings.width - 2),
+		settings.borders.bottom_right
+	)
+	local inner_blank_line = string.format(
+		"%s %s%s%s",
+		comment_string,
+		settings.borders.vertical,
+		string.rep(" ", settings.width - 2),
+		settings.borders.vertical
+	)
 	local int_row = ""
 	local lines = {}
 	local text = get_text()
@@ -110,28 +114,31 @@ local function create_box(centered)
 			else
 				parity_pad = pad
 			end
-			int_row = comment_string
-				.. " "
-				.. settings.borders.vertical
-				.. string.rep(" ", parity_pad)
-				.. line
-				.. string.rep(" ", pad)
-				.. settings.borders.vertical
+			int_row = string.format(
+				"%s %s%s%s%s%s",
+				comment_string,
+				settings.borders.vertical,
+				string.rep(" ", parity_pad),
+				line,
+				string.rep(" ", pad),
+				settings.borders.vertical
+			)
 			table.insert(lines, int_row)
 		end
 	else
 		for _, line in pairs(text) do
 			line = trim(line, comment_string)
 
-			local pad = settings.width - string.len(line) - 3
+			local pad = settings.width - vim.fn.strchars(line) - 3
 
-			int_row = comment_string
-				.. " "
-				.. settings.borders.vertical
-				.. " "
-				.. line
-				.. string.rep(" ", pad)
-				.. settings.borders.vertical
+			int_row = string.format(
+				"%s %s %s%s%s",
+				comment_string,
+				settings.borders.vertical,
+				line,
+				string.rep(" ", pad),
+				settings.borders.vertical
+			)
 			table.insert(lines, int_row)
 		end
 	end
@@ -148,7 +155,7 @@ local function create_box(centered)
 end
 
 local function create_line()
-	local comment_string = vim.api.nvim_buf_get_option(0, "commentstring")
+	local comment_string = vim.bo.commentstring
 	comment_string = comment_string:match("^(.*)%%s(.*)")
 	return { comment_string .. " " .. string.rep(settings.line_symbol, settings.width - 2) }
 end
