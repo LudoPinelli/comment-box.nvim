@@ -55,8 +55,8 @@ vnoremap <Leader>bb <Cmd>lua require('comment-box').lbox()<CR>
 nnoremap <Leader>bc <Cmd>lua require('comment-box').cbox()<CR>
 vnoremap <Leader>bc <Cmd>lua require('comment-box').cbox()<CR>
 
-nnoremp <Leader>bl <Cmd>lua require('comment-box').line()<CR>
-inoremp <M-l> <Cmd>lua require('comment-box').line()<CR>
+nnoremap <Leader>bl <Cmd>lua require('comment-box').line()<CR>
+inoremap <M-l> <Cmd>lua require('comment-box').line()<CR>
 ```
 
 #### Lua
