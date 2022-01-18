@@ -13,6 +13,8 @@ local settings = {
 	inner_blank_lines = false,
 }
 
+local width = settings.width - 4
+
 -- ╭────────────────────────────────────────────────────────────────────╮
 -- │                                UTILS                               │
 -- ╰────────────────────────────────────────────────────────────────────╯
@@ -27,19 +29,6 @@ local function get_pad(line)
 		odd = true
 	end
 	return pad, odd
-end
-
--- Trim line
-local function trim(line, comment_string, centered)
-	-- skip comment string if there is one at the beginning of the line
-	if line:sub(1, 2) == comment_string then
-		line = line:gsub(vim.pesc(comment_string), "", 1)
-	end
-	if centered then
-		line = line:match("^%s*(.-)%s*$") -- remove spaces
-		line = line:gsub("\t*(.-)", "") -- remove tabs
-	end
-	return line
 end
 
 -- Return the range of the selected text
@@ -72,14 +61,59 @@ function set_cur_pos(end_pos)
 	return cur_pos
 end
 
+-- Skip comment string if there is one at the beginning of the line trop longue
+local function skip_cs(line, comment_string, centered)
+	local trimmed_line = vim.trim(line)
+	local cs_len = vim.fn.strdisplaywidth(comment_string)
+	if trimmed_line:sub(1, cs_len) == comment_string then
+		line = line:gsub(vim.pesc(comment_string), "", 1)
+	end
+	if not centered then
+		return line
+	else -- if centered need to trim for correct padding
+		return vim.trim(line)
+	end
+end
+
+-- Wrap lines
+local function wrap(text)
+	local str_tab = {}
+	local str = text:sub(1, width)
+	local rstr = str:reverse()
+	local f = rstr:find(" ")
+	f = width - f
+	table.insert(str_tab, string.sub(text, 1, f))
+	table.insert(str_tab, string.sub(text, f + 1))
+	return str_tab
+end
+
+local function format_text(text, comment_string, centered)
+	for pos, str in ipairs(text) do
+		table.remove(text, pos)
+		str = skip_cs(str, comment_string, centered)
+		table.insert(text, pos, str)
+		if vim.fn.strdisplaywidth(str) > width then
+			to_insert = wrap(str)
+			for ipos, st in ipairs(to_insert) do
+				table.insert(text, pos + ipos, st)
+			end
+			table.remove(text, pos)
+		end
+	end
+	return text
+end
+
 -- ╭────────────────────────────────────────────────────────────────────╮
 -- │                                CORE                                │
 -- ╰────────────────────────────────────────────────────────────────────╯
 
--- Return the selected text
-local function get_text()
+-- ╭────────────────────────────────────────────────────────────────────╮
+-- │                     -- Return the selected text                    │
+-- ╰────────────────────────────────────────────────────────────────────╯
+local function get_text(comment_string, centered)
 	local line_start_pos, line_end_pos = get_range()
-	return vim.api.nvim_buf_get_lines(0, line_start_pos - 1, line_end_pos, false)
+	local text = vim.api.nvim_buf_get_lines(0, line_start_pos - 1, line_end_pos, false)
+	return format_text(text, comment_string, centered)
 end
 
 -- Build the box
@@ -109,7 +143,6 @@ local function create_box(centered)
 	)
 	local int_row = ""
 	local lines = {}
-	local text = get_text()
 
 	if settings.outer_blank_lines then
 		table.insert(lines, "")
@@ -120,9 +153,8 @@ local function create_box(centered)
 	end
 
 	if centered then
+		local text = get_text(comment_string, true)
 		for _, line in pairs(text) do
-			line = trim(line, comment_string, true)
-
 			local pad, odd = get_pad(line)
 			local parity_pad
 
@@ -143,9 +175,8 @@ local function create_box(centered)
 			table.insert(lines, int_row)
 		end
 	else
+		local text = get_text(comment_string, false)
 		for _, line in pairs(text) do
-			line = trim(line, comment_string, false)
-
 			local offset
 			if line:find("^\t") then
 				offset = 2
