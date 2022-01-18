@@ -6,6 +6,8 @@ You have this long config file and you want to clearly (and beautifully) separat
 
 This plugin tries to remedy this by giving you easy boxes and lines the way you want them to be.
 
+_comment-box_, as its name implies, is intended to be used for comments in code, but it can also be used in _.txt_ files.
+
 ## Prerequisite
 
 _Neovim_ 0.5+
@@ -35,6 +37,8 @@ Put your cursor on the line you want in a box, or select multiple lines, then us
 -- To draw a box with the text centered:
 :lua require("comment-box").cbox()
 ```
+
+**Note**: if a line is too long to fit in the box, _comment-box_ will automatically wrap it for you.
 
 ### To draw a line
 
@@ -78,12 +82,13 @@ Or if you use _Neovim-nightly_:
 
 ```lua
 local keymap = vim.keymap.set
+local cb = require("comment-box")
 
-keymap({ "n", "v"}, "<Leader>bb", require('comment-box').lbox, {})
-keymap({ "n", "v"}, "<Leader>bc", require('comment-box').cbox, {})
+keymap({ "n", "v"}, "<Leader>bb", cb.lbox, {})
+keymap({ "n", "v"}, "<Leader>bc", cb.cbox, {})
 
-keymap("n", "<Leader>bl", require('comment-box').line, {})
-keymap("i", "<M-l>", require('comment-box').line, {})
+keymap("n", "<Leader>bl", cb.line, {})
+keymap("i", "<M-l>", cb.line, {})
 ```
 
 ## Configuration
@@ -125,13 +130,11 @@ To change the look of your lines
 
 ![blank lines](./imgs/bc-options02.png?raw=true)
 
-## Known issues
-
-_comment-box_ doesn't (yet) wrap texts longer than the width of the box.
-
 ## Acknowledgement
 
 I learned and borrow from those plugins' code:
 
 - [better-escape](https://github.com/max397574/better-escape.nvim)
 - [nvim-comment](https://github.com/terrortylor/nvim-comment/blob/main/lua/nvim_comment.lua)
+
+@HiPhish for his excellent advice to make the code a bit better (I'm still working on it...).

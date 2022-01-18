@@ -87,7 +87,8 @@ local function wrap(text)
 	return str_tab
 end
 
-local function format_text(text, comment_string, centered)
+-- Prepare each line and rewrote the table in case of wraping lines
+local function format_lines(text, comment_string, centered)
 	for pos, str in ipairs(text) do
 		table.remove(text, pos)
 		str = skip_cs(str, comment_string, centered)
@@ -113,7 +114,7 @@ end
 local function get_text(comment_string, centered)
 	local line_start_pos, line_end_pos = get_range()
 	local text = vim.api.nvim_buf_get_lines(0, line_start_pos - 1, line_end_pos, false)
-	return format_text(text, comment_string, centered)
+	return format_lines(text, comment_string, centered)
 end
 
 -- Build the box
