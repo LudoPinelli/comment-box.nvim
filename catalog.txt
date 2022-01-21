@@ -1,0 +1,263 @@
+ ╔════════════════════════════════════════════════════════════════════╗
+ ║                            BOXES & LINES                           ║
+ ╚════════════════════════════════════════════════════════════════════╝
+
+
+
+ ┌                                                                    ┐
+ │                                BOXES                               │
+ └                                                                    ┘
+
+
+ 0 - Rounded (Default)
+ ╭────────────────────────────────────────────────────────────────────╮
+ │ Lorem ipsumdolor sit amet, consectetur adipiscing elit, sed do     │
+ │  eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut    │
+ │  enim ad minim veniam, quis nostrud exercitation ullamco laboris   │
+ │  nisi ut aliquip ex ea commodo consequat.                          │
+ ╰────────────────────────────────────────────────────────────────────╯
+
+
+ 1 - Classic
+ ┌────────────────────────────────────────────────────────────────────┐
+ │ Lorem ipsumdolor sit amet, consectetur adipiscing elit, sed do     │
+ │  eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut    │
+ │  enim ad minim veniam, quis nostrud exercitation ullamco laboris   │
+ │  nisi ut aliquip ex ea commodo consequat.                          │
+ └────────────────────────────────────────────────────────────────────┘
+
+
+ 2 - Classic Heavy
+ ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+ ┃ Lorem ipsumdolor sit amet, consectetur adipiscing elit, sed do     ┃
+ ┃  eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut    ┃
+ ┃  enim ad minim veniam, quis nostrud exercitation ullamco laboris   ┃
+ ┃  nisi ut aliquip ex ea commodo consequat.                          ┃
+ ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+
+
+ 3 - Dashed
+ ┌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌┐
+ ╎ Lorem ipsumdolor sit amet, consectetur adipiscing elit, sed do     ╎
+ ╎  eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut    ╎
+ ╎  enim ad minim veniam, quis nostrud exercitation ullamco laboris   ╎
+ ╎  nisi ut aliquip ex ea commodo consequat.                          ╎
+ └╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌┘
+
+
+ 4 - Dashed Heavy
+ ┏╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍┓
+ ╏ Lorem ipsumdolor sit amet, consectetur adipiscing elit, sed do     ╏
+ ╏  eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut    ╏
+ ╏  enim ad minim veniam, quis nostrud exercitation ullamco laboris   ╏
+ ╏  nisi ut aliquip ex ea commodo consequat.                          ╏
+ ┗╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍┛
+
+
+ 5 - Mix Heavy/Light
+ ┍━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┑
+ │ Lorem ipsumdolor sit amet, consectetur adipiscing elit, sed do     │
+ │  eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut    │
+ │  enim ad minim veniam, quis nostrud exercitation ullamco laboris   │
+ │  nisi ut aliquip ex ea commodo consequat.                          │
+ ┕━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┙
+
+
+ 6 - Double
+ ╔════════════════════════════════════════════════════════════════════╗
+ ║ Lorem ipsumdolor sit amet, consectetur adipiscing elit, sed do     ║
+ ║  eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut    ║
+ ║  enim ad minim veniam, quis nostrud exercitation ullamco laboris   ║
+ ║  nisi ut aliquip ex ea commodo consequat.                          ║
+ ╚════════════════════════════════════════════════════════════════════╝
+
+
+ 7 - Mix Double/Single A
+ ╒════════════════════════════════════════════════════════════════════╕
+ │ Lorem ipsumdolor sit amet, consectetur adipiscing elit, sed do     │
+ │  eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut    │
+ │  enim ad minim veniam, quis nostrud exercitation ullamco laboris   │
+ │  nisi ut aliquip ex ea commodo consequat.                          │
+ ╘════════════════════════════════════════════════════════════════════╛
+
+
+ 8 - Mix Double/Single B
+ ╓────────────────────────────────────────────────────────────────────╖
+ ║ Lorem ipsumdolor sit amet, consectetur adipiscing elit, sed do     ║
+ ║  eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut    ║
+ ║  enim ad minim veniam, quis nostrud exercitation ullamco laboris   ║
+ ║  nisi ut aliquip ex ea commodo consequat.                          ║
+ ╙────────────────────────────────────────────────────────────────────╜
+
+
+ 9 - ASCII
+ +--------------------------------------------------------------------+
+ | Lorem ipsumdolor sit amet, consectetur adipiscing elit, sed do     |
+ |  eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut    |
+ |  enim ad minim veniam, quis nostrud exercitation ullamco laboris   |
+ |  nisi ut aliquip ex ea commodo consequat.                          |
+ +--------------------------------------------------------------------+
+
+
+ 10 - Quote A
+ ▲
+ █ Lorem ipsumdolor sit amet, consectetur adipiscing elit, sed do
+ █  eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
+ █  enim ad minim veniam, quis nostrud exercitation ullamco laboris
+ █  nisi ut aliquip ex ea commodo consequat.
+ ▼
+
+
+ 11 - Quote B
+ ┌
+ │ Lorem ipsumdolor sit amet, consectetur adipiscing elit, sed do
+ │  eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
+ │  enim ad minim veniam, quis nostrud exercitation ullamco laboris
+ │  nisi ut aliquip ex ea commodo consequat.
+ └
+
+
+ 12 - Quote C
+ ╓
+ ║ Lorem ipsumdolor sit amet, consectetur adipiscing elit, sed do
+ ║  eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
+ ║  enim ad minim veniam, quis nostrud exercitation ullamco laboris
+ ║  nisi ut aliquip ex ea commodo consequat.
+ ╙
+
+
+ 13 - Marked A
+                                                                      ▲
+   Lorem ipsumdolor sit amet, consectetur adipiscing elit, sed do     █
+    eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut    █
+    enim ad minim veniam, quis nostrud exercitation ullamco laboris   █
+    nisi ut aliquip ex ea commodo consequat.                          █
+                                                                      ▼
+
+
+ 14 - Marked B
+                                                                      ┐
+   Lorem ipsumdolor sit amet, consectetur adipiscing elit, sed do     │
+    eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut    │
+    enim ad minim veniam, quis nostrud exercitation ullamco laboris   │
+    nisi ut aliquip ex ea commodo consequat.                          │
+                                                                      ┘
+
+ 15 - Marked C
+                                                                      ╖
+   Lorem ipsumdolor sit amet, consectetur adipiscing elit, sed do     ║
+    eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut    ║
+    enim ad minim veniam, quis nostrud exercitation ullamco laboris   ║
+    nisi ut aliquip ex ea commodo consequat.                          ║
+                                                                      ╜
+
+ 16 - Vertically Enclosed A
+
+ ▲                                                                    ▲
+ █ Lorem ipsumdolor sit amet, consectetur adipiscing elit, sed do     █
+ █  eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut    █
+ █  enim ad minim veniam, quis nostrud exercitation ullamco laboris   █
+ █  nisi ut aliquip ex ea commodo consequat.                          █
+ ▼                                                                    ▼
+
+
+ 17 - Vertically Enclosed B
+ ┌                                                                    ┐
+ │ Lorem ipsumdolor sit amet, consectetur adipiscing elit, sed do     │
+ │  eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut    │
+ │  enim ad minim veniam, quis nostrud exercitation ullamco laboris   │
+ │  nisi ut aliquip ex ea commodo consequat.                          │
+ └                                                                    ┘
+
+
+ 18 - Vertically Enclosed C
+ ╓                                                                    ╖
+ ║ Lorem ipsumdolor sit amet, consectetur adipiscing elit, sed do     ║
+ ║  eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut    ║
+ ║  enim ad minim veniam, quis nostrud exercitation ullamco laboris   ║
+ ║  nisi ut aliquip ex ea commodo consequat.                          ║
+ ╙                                                                    ╜
+
+
+ 19 - Horizontally Enclosed A
+ ┌────────────────────────────────────────────────────────────────────┐
+   Lorem ipsumdolor sit amet, consectetur adipiscing elit, sed do
+    eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
+    enim ad minim veniam, quis nostrud exercitation ullamco laboris
+    nisi ut aliquip ex ea commodo consequat.
+ └────────────────────────────────────────────────────────────────────┘
+
+
+ 20 - Horizontally Enclosed B
+
+ ╒════════════════════════════════════════════════════════════════════╕
+   Lorem ipsumdolor sit amet, consectetur adipiscing elit, sed do
+    eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
+    enim ad minim veniam, quis nostrud exercitation ullamco laboris
+    nisi ut aliquip ex ea commodo consequat.
+ ╘════════════════════════════════════════════════════════════════════╛
+
+
+ 21 - Horizontally Enclosed C
+ ╒════════════════════════════════════════════════════════════════════╕
+   Lorem ipsumdolor sit amet, consectetur adipiscing elit, sed do
+    eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
+    enim ad minim veniam, quis nostrud exercitation ullamco laboris
+    nisi ut aliquip ex ea commodo consequat.
+ └────────────────────────────────────────────────────────────────────┘
+
+
+ ┌                                                                    ┐
+ │                                LINES                               │
+ └                                                                    ┘
+
+ 0 - Simple (Default)
+
+ ──────────────────────────────────────────────────────────────────────
+
+
+ 1 - Simple Heavy
+
+ ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+
+ 2 - Confined
+
+ ├────────────────────────────────────────────────────────────────────┤
+
+ 
+ 3 - Confined Heavy
+
+ ┣━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫
+
+
+ 4 - Simple Weigted
+
+ ╾────────────────────────────────────────────────────────────────────╼
+
+
+ 5 - Double
+
+ ══════════════════════════════════════════════════════════════════════
+
+
+ 6 - Double Confined
+
+ ╞════════════════════════════════════════════════════════════════════╡
+
+
+ 7 - ASCII A
+
+ ----------------------------------------------------------------------
+
+
+ 8 - ASCII B
+
+ ______________________________________________________________________
+
+
+ 9 - ASCII C
+
+ +--------------------------------------------------------------------+
+
+
