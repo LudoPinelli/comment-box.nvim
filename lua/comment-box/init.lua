@@ -1,15 +1,16 @@
 local settings = {
-	width = 70,
+	box_width = 70,
 	borders = {
-		horizontal = "─",
-		vertical = "│",
+		top = "─",
+		bottom = "─",
+		left = "│",
+		right = "│",
 		top_left = "╭",
 		top_right = "╮",
 		bottom_left = "╰",
 		bottom_right = "╯",
-		horizontal_bottom = "─",
-		vertical_right = "│",
 	},
+	line_width = 70,
 	line = {
 		line = "─",
 		line_start = "─",
@@ -17,9 +18,11 @@ local settings = {
 	},
 	outer_blank_lines = false,
 	inner_blank_lines = false,
+	line_blank_line_above = false,
+	line_blank_line_below = false,
 }
 
-local width = settings.width - 4
+local box_width = settings.box_width - 4
 
 -- ╭────────────────────────────────────────────────────────────────────╮
 -- │                                UTILS                               │
@@ -27,7 +30,7 @@ local width = settings.width - 4
 
 -- Compute padding
 local function get_pad(line)
-	local pad = (settings.width - vim.fn.strdisplaywidth(line) - 2) / 2
+	local pad = (settings.box_width - vim.fn.strdisplaywidth(line) - 2) / 2
 	local odd
 
 	if vim.fn.strdisplaywidth(line) % 2 == 0 then
@@ -88,11 +91,11 @@ end
 -- Wrap lines
 local function wrap(text)
 	local str_tab = {}
-	local str = text:sub(1, width)
+	local str = text:sub(1, box_width)
 	local rstr = str:reverse()
 	local f = rstr:find(" ")
 
-	f = width - f
+	f = box_width - f
 	table.insert(str_tab, string.sub(text, 1, f))
 	table.insert(str_tab, string.sub(text, f + 1))
 	return str_tab
@@ -104,7 +107,7 @@ local function format_lines(text, comment_string, centered)
 		table.remove(text, pos)
 		str = skip_cs(str, comment_string, centered)
 		table.insert(text, pos, str)
-		if vim.fn.strdisplaywidth(str) > width then
+		if vim.fn.strdisplaywidth(str) > box_width then
 			to_insert = wrap(str)
 			for ipos, st in ipairs(to_insert) do
 				table.insert(text, pos + ipos, st)
@@ -115,6 +118,7 @@ local function format_lines(text, comment_string, centered)
 	return text
 end
 
+-- Set the symbols used to draw the box
 local function set_borders(choice)
 	choice = choice or 0
 	local borders
@@ -127,6 +131,7 @@ local function set_borders(choice)
 	return borders
 end
 
+-- Set the symbols used to draw the line
 local function set_line(choice)
 	choice = choice or 0
 	local symbols
@@ -155,18 +160,18 @@ end
 local function create_box(centered, choice)
 	local borders = set_borders(choice)
 
-	if borders.horizontal == " " and borders.top_right == " " then
-		borders.horizontal = ""
+	if borders.top == " " and borders.top_right == " " then
+		borders.top = ""
 		borders.top_right = ""
 	end
-	if borders.horizontal_bottom == " " and borders.bottom_right == " " then
-		borders.horizontal_bottom = ""
+	if borders.bottom == " " and borders.bottom_right == " " then
+		borders.bottom = ""
 		borders.bottom_right = ""
 	end
 
 	local trail = " "
-	if borders.vertical_right == " " or borders.vertical_right == "" then
-		borders.vertical_right = ""
+	if borders.right == " " or borders.right == "" then
+		borders.right = ""
 		trail = ""
 	end
 
@@ -180,7 +185,7 @@ local function create_box(centered, choice)
 		"%s %s%s%s",
 		comment_string,
 		borders.top_left,
-		string.rep(borders.horizontal, settings.width - 2),
+		string.rep(borders.top, settings.box_width - 2),
 		borders.top_right
 	)
 
@@ -188,16 +193,16 @@ local function create_box(centered, choice)
 		"%s %s%s%s",
 		comment_string,
 		borders.bottom_left,
-		string.rep(borders.horizontal_bottom, settings.width - 2),
+		string.rep(borders.bottom, settings.box_width - 2),
 		borders.bottom_right
 	)
 
 	local inner_blank_line = string.format(
 		"%s %s%s%s",
 		comment_string,
-		borders.vertical,
-		string.rep(trail, settings.width - 2),
-		borders.vertical_right
+		borders.left,
+		string.rep(trail, settings.box_width - 2),
+		borders.right
 	)
 
 	local int_row = ""
@@ -227,18 +232,18 @@ local function create_box(centered, choice)
 			end
 
 			local lead_space = " "
-			if borders.vertical_right == "" and line == "" then
+			if borders.right == "" and line == "" then
 				lead_space = ""
 			end
 
 			int_row = string.format(
 				"%s %s%s%s%s%s",
 				comment_string,
-				borders.vertical,
+				borders.left,
 				string.rep(lead_space, parity_pad),
 				line,
 				string.rep(trail, pad),
-				borders.vertical_right
+				borders.right
 			)
 
 			table.insert(lines, int_row)
@@ -255,21 +260,21 @@ local function create_box(centered, choice)
 				offset = 3
 			end
 
-			local pad = settings.width - vim.fn.strdisplaywidth(line) - offset
+			local pad = settings.box_width - vim.fn.strdisplaywidth(line) - offset
 
 			local lead_space = " "
-			if borders.vertical_right == "" and line == "" then
+			if borders.right == "" and line == "" then
 				lead_space = ""
 			end
 
 			int_row = string.format(
 				"%s %s%s%s%s%s",
 				comment_string,
-				borders.vertical,
+				borders.left,
 				lead_space,
 				line,
 				string.rep(trail, pad),
-				borders.vertical_right
+				borders.right
 			)
 
 			table.insert(lines, int_row)
@@ -292,21 +297,30 @@ end
 -- Build a line
 local function create_line(choice)
 	local symbols = set_line(choice)
-
 	local comment_string = vim.bo.commentstring
+	local line = {}
 
 	comment_string = comment_string:match("^(.*)%%s(.*)")
 	if not comment_string then
 		comment_string = ""
 	end
-	line = string.format(
-		"%s %s%s%s",
-		comment_string,
-		symbols.line_start,
-		string.rep(symbols.line, settings.width - 2),
-		symbols.line_end
+	if settings.line_blank_line_above then
+		table.insert(line, "")
+	end
+	table.insert(
+		line,
+		string.format(
+			"%s %s%s%s",
+			comment_string,
+			symbols.line_start,
+			string.rep(symbols.line, settings.line_width - 2),
+			symbols.line_end
+		)
 	)
-	return { line }
+	if settings.line_blank_line_below then
+		table.insert(line, "")
+	end
+	return line
 end
 
 -- ╭────────────────────────────────────────────────────────────────────╮
@@ -317,6 +331,7 @@ end
 local function print_lbox(choice)
 	local line_start_pos, line_end_pos = get_range()
 	vim.api.nvim_buf_set_lines(0, line_start_pos - 1, line_end_pos, false, create_box(false, choice))
+	-- Move the cursor to match the result
 	vim.api.nvim_win_set_cursor(0, { set_cur_pos(line_end_pos), 1 })
 end
 
@@ -324,6 +339,7 @@ end
 local function print_cbox(choice)
 	local line_start_pos, line_end_pos = get_range()
 	vim.api.nvim_buf_set_lines(0, line_start_pos - 1, line_end_pos, false, create_box(true, choice))
+
 	vim.api.nvim_win_set_cursor(0, { set_cur_pos(line_end_pos), 1 })
 end
 
@@ -331,6 +347,20 @@ end
 local function print_line(choice)
 	local line = vim.fn.line(".")
 	vim.api.nvim_buf_set_lines(0, line - 1, line, false, create_line(choice))
+
+	local cur = vim.api.nvim_win_get_cursor(0)
+	if settings.line_blank_line_below then
+		cur[1] = cur[1] + 1
+	end
+	if settings.line_blank_line_above then
+		cur[1] = cur[1] + 1
+	end
+	vim.api.nvim_win_set_cursor(0, cur)
+end
+
+local function open_catalog()
+	local cat = require("comment-box.catalog_view")
+	cat.view_cat()
 end
 
 -- Config
@@ -342,5 +372,6 @@ return {
 	lbox = print_lbox,
 	cbox = print_cbox,
 	line = print_line,
+	catalog = open_catalog,
 	setup = setup,
 }
