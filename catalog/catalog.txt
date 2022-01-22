@@ -1,0 +1,217 @@
+   ╔══════════════════════════════════════╗
+   ║             BOXES & LINES            ║
+   ╚══════════════════════════════════════╝
+
+   ┌                                      ┐
+   │                 BOXES                │
+   └                                      ┘
+
+   1 - Rounded (Default)
+   ╭──────────────────────────────────────╮
+   │ Lorem ipsumdolor sit amet,           │
+   │  consectetur adipiscing elit, sed    │
+   │  do eiusmod tempor incididunt...     │
+   ╰──────────────────────────────────────╯
+
+   2 - Classic
+   ┌──────────────────────────────────────┐
+   │ Lorem ipsumdolor sit amet,           │
+   │  consectetur adipiscing elit, sed    │
+   │  do eiusmod tempor incididunt...     │
+   └──────────────────────────────────────┘
+
+   3 - Classic Heavy
+   ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+   ┃ Lorem ipsumdolor sit amet,           ┃
+   ┃  consectetur adipiscing elit, sed    ┃
+   ┃  do eiusmod tempor incididunt...     ┃
+   ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+
+   4 - Dashed
+   ┌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌┐
+   ╎ Lorem ipsumdolor sit amet,           ╎
+   ╎  consectetur adipiscing elit, sed    ╎
+   ╎  do eiusmod tempor incididunt...     ╎
+   └╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌┘
+
+   5 - Dashed Heavy
+   ┏╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍┓
+   ╏ Lorem ipsumdolor sit amet,           ╏
+   ╏  consectetur adipiscing elit, sed    ╏
+   ╏  do eiusmod tempor incididunt...     ╏
+   ┗╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍┛
+
+   6 - Mix Heavy/Light
+   ┍━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┑
+   │ Lorem ipsumdolor sit amet,           │
+   │  consectetur adipiscing elit, sed    │
+   │  do eiusmod tempor incididunt...     │
+   ┕━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┙
+
+   7 - Double
+   ╔══════════════════════════════════════╗
+   ║ Lorem ipsumdolor sit amet,           ║
+   ║  consectetur adipiscing elit, sed    ║
+   ║  do eiusmod tempor incididunt...     ║
+   ╚══════════════════════════════════════╝
+
+   8 - Mix Double/Single A
+   ╒══════════════════════════════════════╕
+   │ Lorem ipsumdolor sit amet,           │
+   │  consectetur adipiscing elit, sed    │
+   │  do eiusmod tempor incididunt...     │
+   ╘══════════════════════════════════════╛
+
+   9 - Mix Double/Single B
+   ╓──────────────────────────────────────╖
+   ║ Lorem ipsumdolor sit amet,           ║
+   ║  consectetur adipiscing elit, sed    ║
+   ║  do eiusmod tempor incididunt...     ║
+   ╙──────────────────────────────────────╜
+
+   10 - ASCII
+   +--------------------------------------+
+   | Lorem ipsumdolor sit amet,           |
+   |  consectetur adipiscing elit, sed    |
+   |  do eiusmod tempor incididunt...     |
+   +--------------------------------------+
+
+   11 - Quote A
+   ▲
+   █ Lorem ipsumdolor sit amet,
+   █  consectetur adipiscing elit, sed
+   █  do eiusmod tempor incididunt...
+   ▼
+  
+   12 - Quote B
+   ┌
+   │ Lorem ipsumdolor sit amet,
+   │  consectetur adipiscing elit, sed
+   │  do eiusmod tempor incididunt...
+   └
+  
+   13 - Quote C
+   ╓
+   ║ Lorem ipsumdolor sit amet,
+   ║  consectetur adipiscing elit, sed
+   ║  do eiusmod tempor incididunt...
+   ╙
+  
+   14 - Marked A
+                                          ▲
+     Lorem ipsumdolor sit amet,           █
+      consectetur adipiscing elit, sed    █
+      do eiusmod tempor incididunt...     █
+                                          ▼
+  
+   15 - Marked B
+                                          ┐
+     Lorem ipsumdolor sit amet,           │
+      consectetur adipiscing elit, sed    │
+      do eiusmod tempor incididunt...     │
+                                          ┘
+  
+   16 - Marked C
+                                          ╖
+     Lorem ipsumdolor sit amet,           ║
+      consectetur adipiscing elit, sed    ║
+      do eiusmod tempor incididunt...     ║
+                                          ╜
+  
+   17 - Vertically Enclosed A
+   ▲                                      ▲
+   █ Lorem ipsumdolor sit amet,           █
+   █  consectetur adipiscing elit, sed    █
+   █  do eiusmod tempor incididunt...     █
+   ▼                                      ▼
+  
+   18 - Vertically Enclosed B
+   ┌                                      ┐
+   │ Lorem ipsumdolor sit amet,           │
+   │  consectetur adipiscing elit, sed    │
+   │  do eiusmod tempor incididunt...     │
+   └                                      ┘
+  
+   19 - Vertically Enclosed C
+   ╓                                      ╖
+   ║ Lorem ipsumdolor sit amet,           ║
+   ║  consectetur adipiscing elit, sed    ║
+   ║  do eiusmod tempor incididunt...     ║
+   ╙                                      ╜
+  
+   20 - Horizontally Enclosed A
+   ┌──────────────────────────────────────┐
+     Lorem ipsumdolor sit amet,
+      consectetur adipiscing elit, sed
+      do eiusmod tempor incididunt...
+   └──────────────────────────────────────┘
+  
+   21 - Horizontally Enclosed B
+   ╒══════════════════════════════════════╕
+     Lorem ipsumdolor sit amet,
+      consectetur adipiscing elit, sed
+      do eiusmod tempor incididunt...
+   ╘══════════════════════════════════════╛
+  
+   22 - Horizontally Enclosed C
+   ╒══════════════════════════════════════╕
+     Lorem ipsumdolor sit amet,
+      consectetur adipiscing elit, sed
+      do eiusmod tempor incididunt...
+   └──────────────────────────────────────┘
+  
+  
+   ┌                                      ┐
+   │                 LINES                │
+   └                                      ┘
+  
+   1 - Simple (Default)
+  
+   ────────────────────────────────────────
+  
+  
+   2 - Simple Heavy
+  
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  
+  
+   3 - Confined
+  
+   ├──────────────────────────────────────┤
+  
+   
+   4 - Confined Heavy
+  
+   ┣━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫
+  
+  
+   5 - Simple Weigted
+  
+   ╾──────────────────────────────────────╼
+  
+  
+   6 - Double
+  
+   ════════════════════════════════════════
+  
+  
+   7 - Double Confined
+  
+   ╞══════════════════════════════════════╡
+  
+  
+   8 - ASCII A
+  
+   ----------------------------------------
+  
+  
+   9 - ASCII B
+  
+   ________________________________________
+  
+  
+   10 - ASCII C
+  
+   +--------------------------------------+
+  
+  

@@ -94,7 +94,7 @@ Its syntactic sugar equivalent:
 :CBline
 ```
 
-Optionally, you can pass an argument to use one of the predefined lines of the catalog (see Catalog), for example:
+Optionally, you can pass an argument to use one of the predefined lines of the catalog (see [Catalog](#the-catalog)), for example:
 
 ```lua
 -- Use the line 6 of the catalog:
@@ -173,7 +173,7 @@ or
 
 Or if you found one (or more) you will frequently use, you may want to include it in you keybindings.
 
-The type n°1 for the box and line is the default one, so, if you didn't change the default settings via the `setup()` function (see [configuration](#configuration-and-creating-your-own-type-of-box)), passing nothing or 1 (or even 0) is the same thing.
+The type n°1 for the box and line is the default one, so, if you didn't change the default settings via the `setup()` function (see [Configuration](#configuration-and-creating-your-own-type-of-box)), passing nothing or _1_ (or even _0_) is the same thing.
 
 ## Configuration and creating your own type of box
 
