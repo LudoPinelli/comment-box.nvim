@@ -25,7 +25,7 @@ _comment-box_ allows you to:
 - create your own type of box by choosing its width and the characters used to draw the top, bottom, left, right and corners of it
 - draw a line with a simple keyboard shortcut,
 - create your own type of line by choosing its width and the characters used to draw its start, end and body,
-- choose from a catalog of 21 predefined boxes and 9 predefined lines and use it by simply pass its number to the function call.
+- choose from a catalog of 22 predefined boxes and 10 predefined lines and use it by simply pass its number to the function call.
 
 Mainly designed for code comments, _comment-box_ can also be used to brighten up the dull _.txt_ files!
 
@@ -227,15 +227,13 @@ Width of the lines.
 
 The symbols used to draw the lines. Let your creativity go wild! Or just use the default or choose from the predefined ones (see [Catalog](#the-catalog)):
 
-TODO
-
 ### `outer_blank_lines` and `inner_blank_lines`
 
 ![blank lines](./imgs/bc-blanklines.jpg?raw=true)
 
 ### `line_blank_line_above` and `line_blank_line_below`
 
-TODO
+Self explanatory!
 
 ## Acknowledgement
 
