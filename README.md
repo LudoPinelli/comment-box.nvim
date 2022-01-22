@@ -235,6 +235,10 @@ The symbols used to draw the lines. Let your creativity go wild! Or just use the
 
 Self explanatory!
 
+## Known issue
+
+Actually, the only way to draw a box around several lines of text is by keybinding because the function doesn't know how to deal with :'`<,'>` (and for a good reason: I have no idea how to deal with that!)
+
 ## Acknowledgement
 
 I learned and borrow from those plugins' code:
