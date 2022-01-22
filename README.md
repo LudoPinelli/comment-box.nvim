@@ -1,6 +1,6 @@
 <h1 align="center">comment-box.nvim</h1>
 
-![comment-box](./imgs/bc-title.png?raw=true)
+![comment-box](./imgs/bc-title.jpg?raw=true)
 
 You have this long config file and you want to clearly (and beautifully) separate each part. So you put lines of symbols as separators. Boxes would have been better but too tedious to make, not to mention if you want to center your text in it.
 
@@ -148,7 +148,9 @@ keymap("i", "<M-l>", cb.line, {})
 
 ## The catalog
 
-The catalog is a collection of 21 predefined types of boxes and 9 types of lines.
+![The catalog](./imgs/bc-catalog.jpg?raw=true)
+
+The catalog is a collection of 22 predefined types of boxes and 10 types of lines.
 You can easily access the catalog in _Neovim_ (it will appear in a popup window so it won't mess with what you're doing) using:
 
 ```lua
@@ -213,7 +215,9 @@ Width of the boxes.
 
 The symbols used to draw the boxes. Let your creativity go wild! Or just use the default or choose from the predefined ones (see [Catalog](#the-catalog)):
 
-![ASCII box](./imgs/bc-options01.png?raw=true)
+You can even create very ugly ones, no judgement!
+
+![ASCII box](./imgs/ugly.jpg?raw=true)
 
 ### `line_width`
 
@@ -225,9 +229,9 @@ The symbols used to draw the lines. Let your creativity go wild! Or just use the
 
 TODO
 
-### `outer_blank_line` and `inner_blank_lines`
+### `outer_blank_lines` and `inner_blank_lines`
 
-![blank lines](./imgs/bc-options02.png?raw=true)
+![blank lines](./imgs/bc-blanklines.jpg?raw=true)
 
 ### `line_blank_line_above` and `line_blank_line_below`
 
