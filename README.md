@@ -213,7 +213,7 @@ require('comment-box').setup({
 
 Width of the boxes.
 
-### `border`
+### `borders`
 
 The symbols used to draw the boxes. Let your creativity go wild! Or just use the default or choose from the predefined ones (see [Catalog](#the-catalog)):
 
