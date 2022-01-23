@@ -164,12 +164,12 @@ Just take note of the number of the type of box or line you want to use, close t
 ```lua
 -- A box with the text centered and the predefined type of box n°10:
 :CBcbox10
-or
+-- or
 :lua require("comment-box").cbox(10)
 
 -- A line with the predefined type of line n°4:
 :CBline4
-or
+-- or
 :lua require("comment-box").line(4)
 ```
 
