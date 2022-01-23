@@ -8,7 +8,7 @@ This plugin tries to remedy this by giving you easy boxes and lines the way you 
 
 ### :fire: Breaking changes
 
-If you installed this plugin before the 01/21/22 and customized the box and/or line, you will experience somme errors.
+If you installed this plugin before the 01/21/22 and customized the box and/or line, you will experience some errors.
 
 - The `horizontal` parameter for the box is now now divided in `top` and `bottom`,
 - the `vertical` parameter for the box is now divided in `left` and `right`,
@@ -21,7 +21,7 @@ Just make the appropriate changes in your `setup({})` function and everything wi
 
 _comment-box_ allows you to:
 
-- draw a box around the selected text or actual line with a simple keyboard shortcut, the text is automatically wrap to fit the width of the box and can be centered or not,
+- draw a box around the selected text or actual line with a simple keyboard shortcut, the text is automatically wrap to fit the width of the box and can be centered,
 - create your own type of box by choosing its width and the characters used to draw the top, bottom, left, right and corners of it
 - draw a line with a simple keyboard shortcut,
 - create your own type of line by choosing its width and the characters used to draw its start, end and body,
@@ -69,7 +69,7 @@ But you will probably want to use their syntactic sugar equivalent:
 :CBcbox
 ```
 
-Optionally, you can pass an argument to use one of the predefined boxes of the catalog (see [Catalog](#the-catalog)), for example:
+Optionally, you can pass an argument to use one of the predefined type of boxes of the catalog (see [Catalog](#the-catalog)), for example:
 
 ```lua
 -- Use the box 17 of the catalog with the text left justified:
@@ -94,7 +94,7 @@ Its syntactic sugar equivalent:
 :CBline
 ```
 
-Optionally, you can pass an argument to use one of the predefined lines of the catalog (see [Catalog](#the-catalog)), for example:
+Optionally, you can pass an argument to use one of the predefined type of lines of the catalog (see [Catalog](#the-catalog)), for example:
 
 ```lua
 -- Use the line 6 of the catalog:
@@ -225,7 +225,7 @@ Width of the lines.
 
 ### `line`
 
-The symbols used to draw the lines. Let your creativity go wild! Or just use the default or choose from the predefined ones (see [Catalog](#the-catalog)):
+The symbols used to draw the lines. Let your creativity go wild! Or just use the default or choose from the predefined ones (see [Catalog](#the-catalog)).
 
 ### `outer_blank_lines` and `inner_blank_lines`
 
