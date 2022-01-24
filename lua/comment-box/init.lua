@@ -23,6 +23,8 @@ local settings = {
 }
 
 local box_width = settings.box_width - 4
+local line_start_pos, line_end_pos
+local cat = require("comment-box.catalog")
 
 -- ╭────────────────────────────────────────────────────────────────────╮
 -- │                                UTILS                               │
@@ -42,22 +44,24 @@ local function get_pad(line)
 end
 
 -- Return the range of the selected text
-local function get_range()
-	local line_start_pos, line_end_pos
+local function get_range(lstart, lend)
 	local mode = vim.api.nvim_get_mode().mode
 
-	if mode:match("[vV]") then
-		line_start_pos = vim.fn.line("v")
-		line_end_pos = vim.fn.line(".")
-		if line_start_pos > line_end_pos then -- if backward selected
-			line_start_pos, line_end_pos = line_end_pos, line_start_pos
+	if lend ~= lstart then
+		line_start_pos = lstart
+		line_end_pos = lend
+	else
+		if mode:match("[vV]") then
+			line_start_pos = vim.fn.line("v")
+			line_end_pos = vim.fn.line(".")
+			if line_start_pos > line_end_pos then -- if backward selected
+				line_start_pos, line_end_pos = line_end_pos, line_start_pos
+			end
+		else -- if not in visual mode, return the current line
+			line_start_pos = vim.fn.line(".")
+			line_end_pos = line_start_pos
 		end
-	else -- if not in visual mode, return the current line
-		line_start_pos = vim.fn.line(".")
-		line_end_pos = line_start_pos
 	end
-
-	return line_start_pos, line_end_pos
 end
 
 -- Return the correct cursor position after a box has been created
@@ -125,7 +129,6 @@ local function set_borders(choice)
 	if choice == 0 then
 		borders = settings.borders
 	else
-		local cat = require("comment-box.catalog")
 		borders = cat.boxes[choice] or settings.borders
 	end
 	return borders
@@ -138,7 +141,6 @@ local function set_line(choice)
 	if choice == 0 then
 		symbols = settings.line
 	else
-		local cat = require("comment-box.catalog")
 		symbols = cat.lines[choice] or settings.lines
 	end
 	return symbols
@@ -150,7 +152,6 @@ end
 
 -- Return the selected text
 local function get_text(comment_string, centered)
-	local line_start_pos, line_end_pos = get_range()
 	local text = vim.api.nvim_buf_get_lines(0, line_start_pos - 1, line_end_pos, false)
 
 	return format_lines(text, comment_string, centered)
@@ -328,16 +329,22 @@ end
 -- ╰────────────────────────────────────────────────────────────────────╯
 
 -- Print the box with text left aligned
-local function print_lbox(choice)
-	local line_start_pos, line_end_pos = get_range()
+local function print_lbox(choice, lstart, lend)
+	choice = tonumber(choice)
+	lstart = tonumber(lstart)
+	lend = tonumber(lend)
+	get_range(lstart, lend)
 	vim.api.nvim_buf_set_lines(0, line_start_pos - 1, line_end_pos, false, create_box(false, choice))
 	-- Move the cursor to match the result
 	vim.api.nvim_win_set_cursor(0, { set_cur_pos(line_end_pos), 1 })
 end
 
 -- Print the box with text centered
-local function print_cbox(choice)
-	local line_start_pos, line_end_pos = get_range()
+local function print_cbox(choice, lstart, lend)
+	choice = tonumber(choice)
+	lstart = tonumber(lstart)
+	lend = tonumber(lend)
+	get_range(lstart, lend)
 	vim.api.nvim_buf_set_lines(0, line_start_pos - 1, line_end_pos, false, create_box(true, choice))
 
 	vim.api.nvim_win_set_cursor(0, { set_cur_pos(line_end_pos), 1 })
@@ -345,6 +352,7 @@ end
 
 -- Print a line
 local function print_line(choice)
+	choice = tonumber(choice)
 	local line = vim.fn.line(".")
 	vim.api.nvim_buf_set_lines(0, line - 1, line, false, create_line(choice))
 

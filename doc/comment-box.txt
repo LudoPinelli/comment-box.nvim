@@ -32,10 +32,9 @@ CONTENTS                                                    *comment-box-content
         6.6. 'inner_blank_lines'...................|comment-box-inner_blank_lines|
         6.7. 'line_blank_line_above'...........|comment-box-line_blank_line_above|
         6.8  'line_blank_line_below'...........|comment-box-line_blank_line_below|
-    7. Known issue.......................................|comment-box-known_issue|
-    8. Acknowledgement...............................|comment-box-acknowledgement|
-    9. About...................................................|comment-box-about|
-    10. License..............................................|comment-box-license|
+    7. Acknowledgement...............................|comment-box-acknowledgement|
+    8. About...................................................|comment-box-about|
+    9. License...............................................|comment-box-license|
 
 
 --------------------------------------------------------------------------------
@@ -251,16 +250,6 @@ Insert a blank line below the drawn line.
 KNOWN ISSUE                                              *comment-box-known_issue*
 
 Actually, the only way to draw a box around several lines of text is by keybinding because the function doesn't know how to deal with :'`<,'>` (and for a good reason: I have no idea how to deal with that!... Yet.)
-
---------------------------------------------------------------------------------
-ACKNOWLEDGEMENT                                      *comment-box-acknowledgement*
-
-I learned and borrow from those plugins' code:
-
-*   better-escape (https://github.com/max397574/better-escape.nvim)
-*   nvim-comment (https://github.com/terrortylor/nvim-comment/blob/main/lua/nvim_comment.lua)
-
-@HiPhish for his excellent advice to make the code a bit better (I'm still working on it...).
 
 --------------------------------------------------------------------------------
 ABOUT                                                         *comment-box-about*

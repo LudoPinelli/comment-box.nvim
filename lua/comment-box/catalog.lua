@@ -1,6 +1,4 @@
-local M = {}
-
-M.boxes = {
+local boxes = {
 	{
 		top = "─",
 		bottom = "─",
@@ -223,7 +221,7 @@ M.boxes = {
 	},
 }
 
-M.lines = {
+local lines = {
 	{
 		line = "─",
 		line_start = "─",
@@ -275,4 +273,7 @@ M.lines = {
 		line_end = "+",
 	},
 }
-return M
+return {
+	boxes = boxes,
+	lines = lines,
+}
