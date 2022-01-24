@@ -215,7 +215,9 @@ Width of the boxes.
 
 ### `borders`
 
-The symbols used to draw the boxes. Let your creativity go wild! Or just use the default or choose from the predefined ones (see [Catalog](#the-catalog)):
+The symbols used to draw the boxes. Let your creativity go wild! Or just use the default or choose from the predefined ones (see [Catalog](#the-catalog)).
+
+If you want an element of the box to be invisible, you can use either `" "`(space) or `""`(empty string).
 
 You can even create very ugly ones, no judgement!
 

@@ -172,26 +172,66 @@ end
 -- Build the box
 local function create_box(centered, choice)
 	local borders = set_borders(choice)
+	local trail = " "
 
-	if borders.top == " " and borders.top_right == " " then
-		borders.top = ""
+	-- ┌                                                                    ┐
+	-- │    Deal with the two ways to declare transparent borders           │
+	-- └                                                                    ┘
+
+	if borders.top_left == "" then
+		borders.top_left = " "
+	end
+	if borders.bottom_left == "" then
+		borders.bottom_left = " "
+	end
+	if borders.top_right == " " then
 		borders.top_right = ""
 	end
-	if borders.bottom == " " and borders.bottom_right == " " then
-		borders.bottom = ""
-		borders.bottom_right = ""
+	if borders.bottom_right == " " then
+		borders.top_right = ""
 	end
-
-	local trail = " "
+	if borders.top == "" then
+		borders.top = " "
+	end
+	if borders.bottom == "" then
+		borders.bottom = " "
+	end
 	if borders.right == " " or borders.right == "" then
 		borders.right = ""
 		trail = ""
+	end
+	if borders.left == "" then
+		borders.left = " "
+	end
+	if borders.top == " " and borders.top_right == "" then
+		borders.top = ""
+	end
+	if borders.bottom == " " and borders.bottom_right == "" then
+		borders.bottom = ""
 	end
 
 	comment_string = vim.bo.commentstring
 	comment_string = comment_string:match("^(.*)%%s(.*)")
 	if not comment_string then
 		comment_string = ""
+	end
+
+	local lead_space_bb = " " -- space before border
+	local lead_space_ab = " " -- space after border
+
+	if borders.top_right == "" and borders.top == "" then
+		lead_space_ab = ""
+		if borders.top_left == " " then
+			borders.top_left = ""
+			lead_space_bb = ""
+		end
+	end
+	if borders.bottom_right == "" and borders.bottom == "" then
+		lead_space_ab = ""
+		if borders.bottom_left == " " then
+			borders.bottom_left = ""
+			lead_space_bb = ""
+		end
 	end
 
 	local ext_top_row = string.format(
@@ -232,15 +272,19 @@ local function create_box(centered, choice)
 	end
 
 	if centered then
+		-- ┌                                                                    ┐
+		-- │ If text centered                                                   │
+		-- └                                                                    ┘
+
 		local text = get_text(true)
 
 		for _, line in pairs(text) do
 			local pad, odd = get_pad(line)
 
-			local lead_space_bb = " " -- space before border
-			local lead_space_ab = " " -- space after border
 			local parity_pad
 
+			lead_space_ab = " "
+			lead_space_bb = " "
 			if borders.right == "" and line == "" then
 				lead_space_ab = ""
 				parity_pad = 1
@@ -249,7 +293,6 @@ local function create_box(centered, choice)
 					borders.left = ""
 				end
 			else
-				lead_space_ab = " "
 				if odd then
 					parity_pad = pad + 1
 				else
@@ -271,6 +314,10 @@ local function create_box(centered, choice)
 			table.insert(lines, int_row)
 		end
 	else
+		-- ┌                                                                    ┐
+		-- │ If text left justified                                             │
+		-- └                                                                    ┘
+
 		local text = get_text(false)
 
 		for _, line in pairs(text) do
@@ -284,9 +331,8 @@ local function create_box(centered, choice)
 
 			local pad = settings.box_width - vim.fn.strdisplaywidth(line) - offset
 
-			local lead_space_bb = " " -- space before border
-			local lead_space_ab = " " -- space after border
-
+			lead_space_ab = " "
+			lead_space_bb = " "
 			if borders.right == "" and line == "" then
 				lead_space_ab = ""
 				trail = ""
