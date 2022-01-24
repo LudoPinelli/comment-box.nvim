@@ -1,6 +1,8 @@
 comment-box.txt        Clarify and beautify your comments using boxes and lines.
 
+
 --------------------------------------------------------------------------------
+                                                                     *comment-box*
 
    COMMENT-BOX
 
