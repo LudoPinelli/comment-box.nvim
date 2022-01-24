@@ -330,9 +330,6 @@ end
 
 -- Print the box with text left aligned
 local function print_lbox(choice, lstart, lend)
-	choice = tonumber(choice)
-	lstart = tonumber(lstart)
-	lend = tonumber(lend)
 	get_range(lstart, lend)
 	vim.api.nvim_buf_set_lines(0, line_start_pos - 1, line_end_pos, false, create_box(false, choice))
 	-- Move the cursor to match the result
@@ -341,9 +338,6 @@ end
 
 -- Print the box with text centered
 local function print_cbox(choice, lstart, lend)
-	choice = tonumber(choice)
-	lstart = tonumber(lstart)
-	lend = tonumber(lend)
 	get_range(lstart, lend)
 	vim.api.nvim_buf_set_lines(0, line_start_pos - 1, line_end_pos, false, create_box(true, choice))
 
@@ -352,7 +346,6 @@ end
 
 -- Print a line
 local function print_line(choice)
-	choice = tonumber(choice)
 	local line = vim.fn.line(".")
 	vim.api.nvim_buf_set_lines(0, line - 1, line, false, create_line(choice))
 
