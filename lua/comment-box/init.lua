@@ -1,3 +1,7 @@
+-- ╭────────────────────────────────────────────────────────────────────╮
+-- │                              SETTINGS                              │
+-- ╰────────────────────────────────────────────────────────────────────╯
+
 local settings = {
 	box_width = 70,
 	borders = {
@@ -22,9 +26,17 @@ local settings = {
 	line_blank_line_below = false,
 }
 
-local box_width = settings.box_width - 4
-local line_start_pos, line_end_pos
+-- ╭────────────────────────────────────────────────────────────────────╮
+-- │                           LOCAL VARIABLES                          │
+-- ╰────────────────────────────────────────────────────────────────────╯
+
 local cat = require("comment-box.catalog")
+local catalog = require("comment-box.catalog_view")
+
+local comment_string
+local line_start_pos, line_end_pos
+
+local box_width = settings.box_width - 4
 
 -- ╭────────────────────────────────────────────────────────────────────╮
 -- │                                UTILS                               │
@@ -43,7 +55,7 @@ local function get_pad(line)
 	return pad, odd
 end
 
--- Return the range of the selected text
+-- Store the range of the selected text in 'line_start_pos'/'line_end_pos'
 local function get_range(lstart, lend)
 	local mode = vim.api.nvim_get_mode().mode
 
@@ -78,7 +90,7 @@ function set_cur_pos(end_pos)
 end
 
 -- Skip comment string if there is one at the beginning of the line trop longue
-local function skip_cs(line, comment_string, centered)
+local function skip_cs(line, centered)
 	local trimmed_line = vim.trim(line)
 	local cs_len = vim.fn.strdisplaywidth(comment_string)
 
@@ -92,7 +104,7 @@ local function skip_cs(line, comment_string, centered)
 	end
 end
 
--- Wrap lines
+-- Wrap lines too long to fit in box
 local function wrap(text)
 	local str_tab = {}
 	local str = text:sub(1, box_width)
@@ -106,10 +118,10 @@ local function wrap(text)
 end
 
 -- Prepare each line and rewrote the table in case of wraping lines
-local function format_lines(text, comment_string, centered)
+local function format_lines(text, centered)
 	for pos, str in ipairs(text) do
 		table.remove(text, pos)
-		str = skip_cs(str, comment_string, centered)
+		str = skip_cs(str, centered)
 		table.insert(text, pos, str)
 		if vim.fn.strdisplaywidth(str) > box_width then
 			to_insert = wrap(str)
@@ -151,10 +163,10 @@ end
 -- ╰────────────────────────────────────────────────────────────────────╯
 
 -- Return the selected text
-local function get_text(comment_string, centered)
+local function get_text(centered)
 	local text = vim.api.nvim_buf_get_lines(0, line_start_pos - 1, line_end_pos, false)
 
-	return format_lines(text, comment_string, centered)
+	return format_lines(text, centered)
 end
 
 -- Build the box
@@ -176,7 +188,7 @@ local function create_box(centered, choice)
 		trail = ""
 	end
 
-	local comment_string = vim.bo.commentstring
+	comment_string = vim.bo.commentstring
 	comment_string = comment_string:match("^(.*)%%s(.*)")
 	if not comment_string then
 		comment_string = ""
@@ -220,28 +232,37 @@ local function create_box(centered, choice)
 	end
 
 	if centered then
-		local text = get_text(comment_string, true)
+		local text = get_text(true)
 
 		for _, line in pairs(text) do
 			local pad, odd = get_pad(line)
+
+			local lead_space_bb = " " -- space before border
+			local lead_space_ab = " " -- space after border
 			local parity_pad
 
-			if odd then
-				parity_pad = pad + 1
-			else
-				parity_pad = pad
-			end
-
-			local lead_space = " "
 			if borders.right == "" and line == "" then
-				lead_space = ""
+				lead_space_ab = ""
+				parity_pad = 1
+				if borders.left == " " then
+					lead_space_bb = ""
+					borders.left = ""
+				end
+			else
+				lead_space_ab = " "
+				if odd then
+					parity_pad = pad + 1
+				else
+					parity_pad = pad
+				end
 			end
 
 			int_row = string.format(
-				"%s %s%s%s%s%s",
+				"%s%s%s%s%s%s%s",
 				comment_string,
+				lead_space_bb,
 				borders.left,
-				string.rep(lead_space, parity_pad),
+				string.rep(lead_space_ab, parity_pad),
 				line,
 				string.rep(trail, pad),
 				borders.right
@@ -250,7 +271,7 @@ local function create_box(centered, choice)
 			table.insert(lines, int_row)
 		end
 	else
-		local text = get_text(comment_string, false)
+		local text = get_text(false)
 
 		for _, line in pairs(text) do
 			local offset
@@ -263,16 +284,25 @@ local function create_box(centered, choice)
 
 			local pad = settings.box_width - vim.fn.strdisplaywidth(line) - offset
 
-			local lead_space = " "
+			local lead_space_bb = " " -- space before border
+			local lead_space_ab = " " -- space after border
+
 			if borders.right == "" and line == "" then
-				lead_space = ""
+				lead_space_ab = ""
+				trail = ""
+				pad = 1
+				if borders.left == " " then
+					lead_space_bb = ""
+					borders.left = ""
+				end
 			end
 
 			int_row = string.format(
-				"%s %s%s%s%s%s",
+				"%s%s%s%s%s%s%s",
 				comment_string,
+				lead_space_bb,
 				borders.left,
-				lead_space,
+				lead_space_ab,
 				line,
 				string.rep(trail, pad),
 				borders.right
@@ -298,7 +328,7 @@ end
 -- Build a line
 local function create_line(choice)
 	local symbols = set_line(choice)
-	local comment_string = vim.bo.commentstring
+	comment_string = vim.bo.commentstring
 	local line = {}
 
 	comment_string = comment_string:match("^(.*)%%s(.*)")
@@ -360,8 +390,7 @@ local function print_line(choice)
 end
 
 local function open_catalog()
-	local cat = require("comment-box.catalog_view")
-	cat.view_cat()
+	catalog.view_cat()
 end
 
 -- Config
