@@ -212,7 +212,7 @@ local function create_box(centered, choice)
 
 	comment_string = vim.bo.commentstring
 	comment_string = comment_string:match("^(.*)%%s(.*)")
-	if not comment_string then
+	if not comment_string or vim.bo.filetype == "markdown" or vim.bo.filetype == "org" then
 		comment_string = ""
 	end
 
@@ -378,7 +378,7 @@ local function create_line(choice)
 	local line = {}
 
 	comment_string = comment_string:match("^(.*)%%s(.*)")
-	if not comment_string then
+	if not comment_string or vim.bo.filetype == "markdown" or vim.bo.filetype == "org" then
 		comment_string = ""
 	end
 	if settings.line_blank_line_above then
