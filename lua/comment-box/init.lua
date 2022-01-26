@@ -111,11 +111,11 @@ end
 -- Wrap lines too long to fit in box
 local function wrap(text)
 	local str_tab = {}
-	local str = text:sub(1, box_width)
+	local str = text:sub(1, box_width - 2)
 	local rstr = str:reverse()
 	local f = rstr:find(" ")
 
-	f = box_width - f
+	f = box_width - 2 - f
 	table.insert(str_tab, string.sub(text, 1, f))
 	table.insert(str_tab, string.sub(text, f + 1))
 	return str_tab
@@ -131,7 +131,7 @@ local function format_lines(text)
 		if vim.fn.strdisplaywidth(str) > max_line_length then
 			max_line_length = vim.fn.strdisplaywidth(str)
 		end
-		if vim.fn.strdisplaywidth(str) > box_width then
+		if vim.fn.strdisplaywidth(str) > box_width - 2 then
 			to_insert = wrap(str)
 			for ipos, st in ipairs(to_insert) do
 				table.insert(text, pos + ipos, st)
@@ -164,6 +164,19 @@ local function set_line(choice)
 		symbols = cat.lines[choice] or settings.lines
 	end
 	return symbols
+end
+
+function set_lead_space()
+	lead_space_ab = " "
+	lead_space_bb = " "
+	if centered_box then
+		lead_space_bb = string.rep(
+			" ",
+			math.floor((settings.doc_width - settings.box_width) / 2 - vim.fn.strdisplaywidth(comment_string))
+		)
+	end
+
+	return lead_space_ab, lead_space_bb
 end
 
 -- ╭────────────────────────────────────────────────────────────────────╮
@@ -223,12 +236,7 @@ local function create_box(choice)
 		comment_string = ""
 	end
 
-	local lead_space_bb = " " -- space before border
-	local lead_space_ab = " " -- space after border
-	if centered_box then
-		lead_space_bb = string.rep(" ", math.floor((settings.doc_width - settings.box_width) / 2))
-	end
-
+	lead_space_ab, lead_space_bb = set_lead_space()
 	if borders.top_right == "" and borders.top == "" then
 		lead_space_ab = ""
 		if borders.top_left == " " then
@@ -293,18 +301,12 @@ local function create_box(choice)
 
 		for _, line in pairs(text) do
 			local pad, odd = get_pad(line)
-
 			local parity_pad
 
-			lead_space_ab = " "
-			lead_space_bb = " "
-			if centered_box then
-				lead_space_bb = string.rep(" ", math.floor((settings.doc_width - settings.box_width) / 2))
-			end
-
+			lead_space_ab, lead_space_bb = set_lead_space()
 			if borders.right == "" and line == "" then
 				lead_space_ab = ""
-				parity_pad = 1
+				parity_pad = 0
 				if borders.left == " " or borders.left == "" then
 					lead_space_bb = ""
 					borders.left = ""
@@ -346,17 +348,12 @@ local function create_box(choice)
 
 			local pad = settings.box_width - vim.fn.strdisplaywidth(line) - offset
 
-			lead_space_ab = " "
-			lead_space_bb = " "
-			if centered_box then
-				lead_space_bb = string.rep(" ", math.floor((settings.doc_width - settings.box_width) / 2))
-			end
-
+			lead_space_ab, lead_space_bb = set_lead_space()
 			if borders.right == "" and line == "" then
 				lead_space_ab = ""
 				trail = ""
-				pad = 1
-				if borders.left == " " then
+				pad = 0
+				if borders.left == " " or borders.left == "" then
 					lead_space_bb = ""
 					borders.left = ""
 				end
@@ -397,7 +394,10 @@ local function create_line(choice, centered_line)
 	local line = {}
 	local lead_space = " "
 	if centered_line then
-		lead_space = string.rep(" ", math.floor((settings.doc_width - settings.box_width) / 2))
+		lead_space = string.rep(
+			" ",
+			math.floor((settings.doc_width - settings.box_width) / 2 - vim.fn.strdisplaywidth(comment_string))
+		)
 	end
 
 	comment_string = comment_string:match("^(.*)%%s(.*)")
