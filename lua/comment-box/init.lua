@@ -3,7 +3,8 @@
 -- ╰────────────────────────────────────────────────────────────────────╯
 
 local settings = {
-	box_width = 70,
+	doc_width = 80,
+	box_width = 60,
 	borders = {
 		top = "─",
 		bottom = "─",
@@ -14,7 +15,7 @@ local settings = {
 		bottom_left = "╰",
 		bottom_right = "╯",
 	},
-	line_width = 70,
+	line_width = 60,
 	line = {
 		line = "─",
 		line_start = "─",
@@ -37,6 +38,9 @@ local comment_string
 local line_start_pos, line_end_pos
 
 local box_width = settings.box_width - 4
+local centered_text
+local centered_box
+local max_line_length
 
 -- ╭────────────────────────────────────────────────────────────────────╮
 -- │                                UTILS                               │
@@ -90,14 +94,14 @@ function set_cur_pos(end_pos)
 end
 
 -- Skip comment string if there is one at the beginning of the line trop longue
-local function skip_cs(line, centered)
+local function skip_cs(line)
 	local trimmed_line = vim.trim(line)
 	local cs_len = vim.fn.strdisplaywidth(comment_string)
 
 	if trimmed_line:sub(1, cs_len) == comment_string then
 		line = line:gsub(vim.pesc(comment_string), "", 1)
 	end
-	if not centered then
+	if not centered_text then
 		return line
 	else -- if centered need to trim for correct padding
 		return vim.trim(line)
@@ -118,11 +122,15 @@ local function wrap(text)
 end
 
 -- Prepare each line and rewrote the table in case of wraping lines
-local function format_lines(text, centered)
+local function format_lines(text)
+	max_line_length = 0
 	for pos, str in ipairs(text) do
 		table.remove(text, pos)
-		str = skip_cs(str, centered)
+		str = skip_cs(str)
 		table.insert(text, pos, str)
+		if vim.fn.strdisplaywidth(str) > max_line_length then
+			max_line_length = vim.fn.strdisplaywidth(str)
+		end
 		if vim.fn.strdisplaywidth(str) > box_width then
 			to_insert = wrap(str)
 			for ipos, st in ipairs(to_insert) do
@@ -163,14 +171,13 @@ end
 -- ╰────────────────────────────────────────────────────────────────────╯
 
 -- Return the selected text
-local function get_text(centered)
+local function get_text()
 	local text = vim.api.nvim_buf_get_lines(0, line_start_pos - 1, line_end_pos, false)
-
-	return format_lines(text, centered)
+	return format_lines(text)
 end
 
 -- Build the box
-local function create_box(centered, choice)
+local function create_box(choice)
 	local borders = set_borders(choice)
 	local trail = " "
 
@@ -218,6 +225,9 @@ local function create_box(centered, choice)
 
 	local lead_space_bb = " " -- space before border
 	local lead_space_ab = " " -- space after border
+	if centered_box then
+		lead_space_bb = string.rep(" ", math.floor((settings.doc_width - settings.box_width) / 2))
+	end
 
 	if borders.top_right == "" and borders.top == "" then
 		lead_space_ab = ""
@@ -235,24 +245,27 @@ local function create_box(centered, choice)
 	end
 
 	local ext_top_row = string.format(
-		"%s %s%s%s",
+		"%s%s%s%s%s",
 		comment_string,
+		lead_space_bb,
 		borders.top_left,
 		string.rep(borders.top, settings.box_width - 2),
 		borders.top_right
 	)
 
 	local ext_bottom_row = string.format(
-		"%s %s%s%s",
+		"%s%s%s%s%s",
 		comment_string,
+		lead_space_bb,
 		borders.bottom_left,
 		string.rep(borders.bottom, settings.box_width - 2),
 		borders.bottom_right
 	)
 
 	local inner_blank_line = string.format(
-		"%s %s%s%s",
+		"%s%s%s%s%s",
 		comment_string,
+		lead_space_bb,
 		borders.left,
 		string.rep(trail, settings.box_width - 2),
 		borders.right
@@ -271,12 +284,12 @@ local function create_box(centered, choice)
 		table.insert(lines, inner_blank_line)
 	end
 
-	if centered then
+	if centered_text then
 		-- ┌                                                                    ┐
 		-- │ If text centered                                                   │
 		-- └                                                                    ┘
 
-		local text = get_text(true)
+		local text = get_text()
 
 		for _, line in pairs(text) do
 			local pad, odd = get_pad(line)
@@ -285,10 +298,14 @@ local function create_box(centered, choice)
 
 			lead_space_ab = " "
 			lead_space_bb = " "
+			if centered_box then
+				lead_space_bb = string.rep(" ", math.floor((settings.doc_width - settings.box_width) / 2))
+			end
+
 			if borders.right == "" and line == "" then
 				lead_space_ab = ""
 				parity_pad = 1
-				if borders.left == " " then
+				if borders.left == " " or borders.left == "" then
 					lead_space_bb = ""
 					borders.left = ""
 				end
@@ -318,21 +335,23 @@ local function create_box(centered, choice)
 		-- │ If text left justified                                             │
 		-- └                                                                    ┘
 
-		local text = get_text(false)
+		local text = get_text()
 
 		for _, line in pairs(text) do
-			local offset
+			local offset = 3
 
-			if line:find("^\t") then
+			if not centered_box and line:find("^\t") then
 				offset = 2
-			else
-				offset = 3
 			end
 
 			local pad = settings.box_width - vim.fn.strdisplaywidth(line) - offset
 
 			lead_space_ab = " "
 			lead_space_bb = " "
+			if centered_box then
+				lead_space_bb = string.rep(" ", math.floor((settings.doc_width - settings.box_width) / 2))
+			end
+
 			if borders.right == "" and line == "" then
 				lead_space_ab = ""
 				trail = ""
@@ -372,10 +391,14 @@ local function create_box(centered, choice)
 end
 
 -- Build a line
-local function create_line(choice)
+local function create_line(choice, centered_line)
 	local symbols = set_line(choice)
 	comment_string = vim.bo.commentstring
 	local line = {}
+	local lead_space = " "
+	if centered_line then
+		lead_space = string.rep(" ", math.floor((settings.doc_width - settings.box_width) / 2))
+	end
 
 	comment_string = comment_string:match("^(.*)%%s(.*)")
 	if not comment_string or vim.bo.filetype == "markdown" or vim.bo.filetype == "org" then
@@ -387,8 +410,9 @@ local function create_line(choice)
 	table.insert(
 		line,
 		string.format(
-			"%s %s%s%s",
+			"%s%s%s%s%s",
 			comment_string,
+			lead_space,
 			symbols.line_start,
 			string.rep(symbols.line, settings.line_width - 2),
 			symbols.line_end
@@ -400,30 +424,16 @@ local function create_line(choice)
 	return line
 end
 
--- ╭────────────────────────────────────────────────────────────────────╮
--- │                          PUBLIC FUNCTIONS                          │
--- ╰────────────────────────────────────────────────────────────────────╯
-
--- Print the box with text left aligned
-local function print_lbox(choice, lstart, lend)
+function display_box(choice, lstart, lend)
 	get_range(lstart, lend)
-	vim.api.nvim_buf_set_lines(0, line_start_pos - 1, line_end_pos, false, create_box(false, choice))
+	vim.api.nvim_buf_set_lines(0, line_start_pos - 1, line_end_pos, false, create_box(choice))
 	-- Move the cursor to match the result
 	vim.api.nvim_win_set_cursor(0, { set_cur_pos(line_end_pos), 1 })
 end
 
--- Print the box with text centered
-local function print_cbox(choice, lstart, lend)
-	get_range(lstart, lend)
-	vim.api.nvim_buf_set_lines(0, line_start_pos - 1, line_end_pos, false, create_box(true, choice))
-
-	vim.api.nvim_win_set_cursor(0, { set_cur_pos(line_end_pos), 1 })
-end
-
--- Print a line
-local function print_line(choice)
+function display_line(choice, centered_line)
 	local line = vim.fn.line(".")
-	vim.api.nvim_buf_set_lines(0, line - 1, line, false, create_line(choice))
+	vim.api.nvim_buf_set_lines(0, line - 1, line, false, create_line(choice, centered_line))
 
 	local cur = vim.api.nvim_win_get_cursor(0)
 	if settings.line_blank_line_below then
@@ -433,6 +443,64 @@ local function print_line(choice)
 		cur[1] = cur[1] + 1
 	end
 	vim.api.nvim_win_set_cursor(0, cur)
+end
+
+-- ╭────────────────────────────────────────────────────────────────────╮
+-- │                          PUBLIC FUNCTIONS                          │
+-- ╰────────────────────────────────────────────────────────────────────╯
+
+-- Print a left aligned box with text left aligned
+local function print_lbox(choice, lstart, lend)
+	choice = tonumber(choice)
+	lstart = tonumber(lstart)
+	lend = tonumber(lend)
+	centered_text = false
+	centered_box = false
+	display_box(choice, lstart, lend)
+end
+
+-- Print a left aligned box with text centered
+local function print_cbox(choice, lstart, lend)
+	choice = tonumber(choice)
+	lstart = tonumber(lstart)
+	lend = tonumber(lend)
+	centered_text = true
+	centered_box = false
+	display_box(choice, lstart, lend)
+end
+
+-- Print a centered box with text left aligned
+local function print_clbox(choice, lstart, lend)
+	choice = tonumber(choice)
+	lstart = tonumber(lstart)
+	lend = tonumber(lend)
+	centered_text = false
+	centered_box = true
+	display_box(choice, lstart, lend)
+end
+
+-- Print a centered box with text centered
+local function print_ccbox(choice, lstart, lend)
+	choice = tonumber(choice)
+	lstart = tonumber(lstart)
+	lend = tonumber(lend)
+	centered_text = true
+	centered_box = true
+	display_box(choice, lstart, lend)
+end
+
+-- Print a left aligned line
+local function print_line(choice)
+	choice = tonumber(choice)
+	local centered_line = false
+	display_line(choice, centered_line)
+end
+
+-- Print a centered line
+local function print_cline(choice)
+	choice = tonumber(choice)
+	local centered_line = true
+	display_line(choice, centered_line)
 end
 
 local function open_catalog()
@@ -447,7 +515,10 @@ end
 return {
 	lbox = print_lbox,
 	cbox = print_cbox,
+	clbox = print_clbox,
+	ccbox = print_ccbox,
 	line = print_line,
+	cline = print_cline,
 	catalog = open_catalog,
 	setup = setup,
 }
