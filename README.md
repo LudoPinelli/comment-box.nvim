@@ -27,7 +27,7 @@ _comment-box_ allows you to:
 - create your own type of line by choosing its width and the characters used to draw its start, end and body,
 - choose from a catalog of 22 predefined boxes and 10 predefined lines and use it by simply pass its number to the function call.
 
-Mainly designed for code comments, _comment-box_ can also be used to brighten up the dull _.txt_ files!
+Mainly designed for code comments, _comment-box_ can also be used to brighten up the dull _.txt_ files! You can also use it in _markdown_ and _orgmode_ files, however, if it makes sense if you use those formats "as is" (for note taking for example), it's not a good idea if you plan to convert them to other formats.
 
 ## Prerequisite
 
