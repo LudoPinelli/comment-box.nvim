@@ -193,7 +193,8 @@ You can call the `setup()` function in your _init.lua(.vim)_ to configure the wa
 
 ```lua
 require('comment-box').setup({
-	box_width = 70, -- width of the boxex
+	doc_width = 80, -- width of the document
+	box_width = 60, -- width of the boxes
 	borders = { -- symbols used to draw a box
 		top = "─",
 		bottom = "─",
@@ -217,9 +218,13 @@ require('comment-box').setup({
 })
 ```
 
+### `doc_width`
+
+Width of the document. It is used to center the boxes and lines.
+
 ### `box_width`
 
-Width of the boxes.
+Width of the boxes (must be <= `doc_width`).
 
 ### `borders`
 
