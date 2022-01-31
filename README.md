@@ -42,10 +42,10 @@ If you're fine with the default settings (see [Configuration](#configuration-and
 
 | Command | Description | function |
 |--- | --- | --- |
-|`CBlbox[num]` | **Left aligned box** with **Left aligned text** | `require("comment-box").lbox([num])` |
-|`CBclbox[num]` | **Centered box** with **Left aligned text** | `require("comment-box").clbox([num])` |
-|`CBcbox[num]` | **Left aligned box** with **centered text** | `require("comment-box").clbox([num])` |
-|`CBccbox[num]` | **Centered box** with **centered text** | `require("comment-box").clbox([num])` |
+|`CBlbox[num]` | _Left aligned box_ with _Left aligned text_ | `require("comment-box").lbox([num])` |
+|`CBclbox[num]` | _Centered box_ with _Left aligned text_ | `require("comment-box").clbox([num])` |
+|`CBcbox[num]` | _Left aligned box_ with _centered text_ | `require("comment-box").clbox([num])` |
+|`CBccbox[num]` | _Centered box_ with _centered text_ | `require("comment-box").clbox([num])` |
 
 The `[num]` parameter is optional. It's the number of a predefined style from the catalog (see [Catalog](#the-catalog)). By leaving it empty, the box or line will be drawn with the style you defined or if you didn't define one, with the default style.
 
@@ -77,8 +77,8 @@ Examples:
 
 | Command | Description | function |
 |--- | --- | --- |
-|`CBline[num]` | **Left aligned line** | `require("comment-box").line([num])` |
-|`CBcline[num]` | **Centered line** | `require("comment-box").cline([num])` |
+|`CBline[num]` | _Left aligned line_ | `require("comment-box").line([num])` |
+|`CBcline[num]` | _Centered line_ | `require("comment-box").cline([num])` |
 
 To draw a line, place your cursor where you want it and in _normal_ or _insert_ mode, use one of the command/function above.
 
