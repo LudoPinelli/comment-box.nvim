@@ -6,25 +6,14 @@ You have this long config file and you want to clearly (and beautifully) separat
 
 This plugin tries to remedy this by giving you easy boxes and lines the way you want them to be.
 
-### :fire: Breaking changes
-
-If you installed this plugin before the 01/21/22 and customized the box and/or line, you will experience some errors.
-
-- The `horizontal` parameter for the box is now now divided in `top` and `bottom`,
-- the `vertical` parameter for the box is now divided in `left` and `right`,
-- the `line` parameter is now a table containing `line`, `line_start`, `line_end`,
-- the `width` parameter is now divided in `box_width` and `line_width`.
-
-Just make the appropriate changes in your `setup({})` function and everything will fall in place. :)
-
 ## Overview
 
 _comment-box_ allows you to:
 
-- draw a box around the selected text or actual line with a simple keyboard shortcut, the text is automatically wrap to fit the width of the box and can be centered,
-- create your own type of box by choosing its width and the characters used to draw the top, bottom, left, right and corners of it
-- draw a line with a simple keyboard shortcut,
-- create your own type of line by choosing its width and the characters used to draw its start, end and body,
+- draw a box around the selected text or actual line with a simple keyboard shortcut. The box can be left aligned or centered, with the text left aligned or centered,
+- create your own type of box by choosing its width and the characters used to draw the top, bottom, left, right and corners of it.
+- draw a line with a simple keyboard shortcut. The line can be left aligned or centered.
+- create your own type of line by choosing its width and the characters used to draw its start, end and body.
 - choose from a catalog of 22 predefined boxes and 10 predefined lines and use it by simply pass its number to the function call.
 
 Mainly designed for code comments, _comment-box_ can also be used to brighten up the dull _.txt_ files! You can also use it in _markdown_ and _orgmode_ files, however, if it makes sense if you use those formats "as is" (for note taking for example), it's not a good idea if you plan to convert them to other formats.
@@ -47,60 +36,70 @@ If you're fine with the default settings (see [Configuration](#configuration-and
 
 ## Usage
 
-### To put some text in a box
+### Commands
 
-Put your cursor on the line you want in a box, or select multiple lines, then use one of the two functions provided:
+#### Boxes
 
-```lua
--- To draw a box with the text left justified:
-:lua require("comment-box").lbox()
+| Command | Description | function |
+|--- | --- | --- |
+|`CBlbox[num]` | **Left aligned box** with **Left aligned text** | `require("comment-box").lbox([num])` |
+|`CBclbox[num]` | **Centered box** with **Left aligned text** | `require("comment-box").clbox([num])` |
+|`CBcbox[num]` | **Left aligned box** with **centered text** | `require("comment-box").clbox([num])` |
+|`CBccbox[num]` | **Centered box** with **centered text** | `require("comment-box").clbox([num])` |
 
--- To draw a box with the text centered:
-:lua require("comment-box").cbox()
-```
+The `[num]` parameter is optional. It's the number of a predefined style from the catalog (see [Catalog](#the-catalog)). By leaving it empty, the box or line will be drawn with the style you defined or if you didn't define one, with the default style.
 
-But you will probably want to use their syntactic sugar equivalent:
-
-```lua
--- To draw a box with the text left justified:
-:CBlbox
-
--- To draw a box with the text centered:
-:CBcbox
-```
-
-Optionally, you can pass an argument to use one of the predefined type of boxes of the catalog (see [Catalog](#the-catalog)), for example:
-
-```lua
--- Use the box 17 of the catalog with the text left justified:
-:lua require("comment-box").lbox(17)
--- or
-:CBlbox17
-```
+To draw a box, place your cursor on the line of text you want in a box, or select multiple lines in _visual mode_, then use one of the command/function above.
 
 **Note**: if a line is too long to fit in the box, _comment-box_ will automatically wrap it for you.
 
-### To draw a line
+**Note2**: a box is centered relatively to the width of your document (set to the standard 80 by default, you can change it with the `setup()` function - see [Configuration](#configuration-and-creating-your-own-type-of-box))
 
-In _normal_ or _insert_ mode, use:
-
+Examples:
 ```lua
-:lua require("comment-box").line()
-```
-
-Its syntactic sugar equivalent:
-
-```lua
-:CBline
-```
-
-Optionally, you can pass an argument to use one of the predefined type of lines of the catalog (see [Catalog](#the-catalog)), for example:
-
-```lua
--- Use the line 6 of the catalog:
-:lua require("comment-box").line(6)
+-- A left aligned box with the text left justified:
+:CBlbox
 -- or
-:CBline6
+:lua require("comment-box").lbox()
+
+-- A centered box with the text centered:
+:CBccbox
+-- or
+:lua require("comment-box").ccbox()
+
+-- A left aligned box with the text left justified, using the syle 17 from the catalog:
+:CBlbox17
+-- or
+:lua require("comment-box").lbox(17)
+```
+
+#### Lines
+
+| Command | Description | function |
+|--- | --- | --- |
+|`CBline[num]` | **Left aligned line** | `require("comment-box").line([num])` |
+|`CBcline[num]` | **Centered line** | `require("comment-box").cline([num])` |
+
+To draw a line, place your cursor where you want it and in _normal_ or _insert_ mode, use one of the command/function above.
+
+**Note**: a line is centered relatively to the width of your document (set to the standard 80 by default, you can change it with the `setup()` function - see [Configuration](#configuration-and-creating-your-own-type-of-box))
+
+Examples:
+```lua
+-- A left aligned line:
+:CBline
+- or
+:lua require("comment-box").line()
+
+-- A centered line:
+:CBcline
+-- or
+:lua require("comment-box").cline()
+
+-- A centered line using the style 6 from the catalog:
+:CBcline6
+-- or
+:lua require("comment-box").cline(4)
 ```
 
 ### Keybindings examples
@@ -108,14 +107,17 @@ Optionally, you can pass an argument to use one of the predefined type of lines 
 #### Vim script:
 
 ```shell
+# left aligned box with left aligned text
 nnoremap <Leader>bb <Cmd>lua require('comment-box').lbox()<CR>
 vnoremap <Leader>bb <Cmd>lua require('comment-box').lbox()<CR>
 
-nnoremap <Leader>bc <Cmd>lua require('comment-box').cbox()<CR>
-vnoremap <Leader>bc <Cmd>lua require('comment-box').cbox()<CR>
+# centered box with centered text
+nnoremap <Leader>bc <Cmd>lua require('comment-box').ccbox()<CR>
+vnoremap <Leader>bc <Cmd>lua require('comment-box').ccbox()<CR>
 
-nnoremap <Leader>bl <Cmd>lua require('comment-box').line()<CR>
-inoremap <M-l> <Cmd>lua require('comment-box').line()<CR>
+# centered line
+nnoremap <Leader>bl <Cmd>lua require('comment-box').cline()<CR>
+inoremap <M-l> <Cmd>lua require('comment-box').cline()<CR>
 ```
 
 #### Lua
@@ -123,14 +125,17 @@ inoremap <M-l> <Cmd>lua require('comment-box').line()<CR>
 ```lua
 local keymap = vim.api.nvim_set_keymap
 
+-- left aligned box with left aligned text
 keymap("n", "<Leader>bb", "<Cmd>lua require('comment-box').lbox()<CR>", {})
 keymap("v", "<Leader>bb", "<Cmd>lua require('comment-box').lbox()<CR>", {})
 
-keymap("n", "<Leader>bc", "<Cmd>lua require('comment-box').cbox()<CR>", {})
-keymap("v", "<Leader>bc", "<Cmd>lua require('comment-box').cbox()<CR>", {})
+-- centered box with centered text
+keymap("n", "<Leader>bc", "<Cmd>lua require('comment-box').ccbox()<CR>", {})
+keymap("v", "<Leader>bc", "<Cmd>lua require('comment-box').ccbox()<CR>", {})
 
-keymap("n", "<Leader>bl", "<Cmd>lua require('comment-box').line()<CR>", {})
-keymap("i", "<M-l>", "<Cmd>lua require('comment-box').line()<CR>", {})
+-- centered line
+keymap("n", "<Leader>bl", "<Cmd>lua require('comment-box').cline()<CR>", {})
+keymap("i", "<M-l>", "<Cmd>lua require('comment-box').cline()<CR>", {})
 ```
 
 Or if you use _Neovim-nightly_:
@@ -139,11 +144,14 @@ Or if you use _Neovim-nightly_:
 local keymap = vim.keymap.set
 local cb = require("comment-box")
 
+-- left aligned box with left aligned text
 keymap({ "n", "v"}, "<Leader>bb", cb.lbox, {})
-keymap({ "n", "v"}, "<Leader>bc", cb.cbox, {})
+-- centered box with centered text
+keymap({ "n", "v"}, "<Leader>bc", cb.ccbox, {})
 
-keymap("n", "<Leader>bl", cb.line, {})
-keymap("i", "<M-l>", cb.line, {})
+-- centered line
+keymap("n", "<Leader>bl", cb.cline, {})
+keymap("i", "<M-l>", cb.cline, {})
 ```
 
 ## The catalog
