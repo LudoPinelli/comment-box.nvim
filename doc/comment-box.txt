@@ -21,21 +21,23 @@ CONTENTS                                                    *comment-box-content
     2. Prerequisite.....................................|comment-box-prerequisite|
     3. Installation.....................................|comment-box-installation|
     4. Usage...................................................|comment-box-usage|
-        4.1. To put some text in a box.....|comment-box-to_put_some_text_in_a_box|
-        4.2. To draw a line...........................|comment-box-to_draw_a_line|
-        4.3. Keybindings examples...............|comment-box-keybindings_examples|
+        4.1. Commands.......................................|comment-box-commands|
+            4.1.1 Boxes........................................|comment-box-boxes|
+            4.1.2 Lines........................................|comment-box-lines|
+        4.2. Keybindings examples...............|comment-box-keybindings_examples|
             5.3.1. Vim script:............................|comment-box-vim_script|
             5.3.2. Lua...........................................|comment-box-lua|
     5. The catalog...........................................|comment-box-catalog|
     6. Configuration and creating your own type of box.|comment-box-configuration|
-        6.1. 'box_width'...................................|comment-box-box_width|
-        6.2. 'borders'.......................................|comment-box-borders|
-        6.3. 'line_width'.................................|comment-box-line_width|
-        6.4. 'line'.............................................|comment-box-line|
-        6.5. 'outer_blank_lines'...................|comment-box-outer_blank_lines|
-        6.6. 'inner_blank_lines'...................|comment-box-inner_blank_lines|
-        6.7. 'line_blank_line_above'...........|comment-box-line_blank_line_above|
-        6.8  'line_blank_line_below'...........|comment-box-line_blank_line_below|
+        6.1. 'doc_width'...................................|comment-box-doc_width|
+        6.2. 'box_width'...................................|comment-box-box_width|
+        6.3. 'borders'.......................................|comment-box-borders|
+        6.4. 'line_width'.................................|comment-box-line_width|
+        6.5. 'line'.............................................|comment-box-line|
+        6.6. 'outer_blank_lines'...................|comment-box-outer_blank_lines|
+        6.7. 'inner_blank_lines'...................|comment-box-inner_blank_lines|
+        6.8. 'line_blank_line_above'...........|comment-box-line_blank_line_above|
+        6.9  'line_blank_line_below'...........|comment-box-line_blank_line_below|
     7. Acknowledgement...............................|comment-box-acknowledgement|
     8. About...................................................|comment-box-about|
     9. License...............................................|comment-box-license|
@@ -47,11 +49,12 @@ OVERVIEW                                                    *comment-box-overvie
 comment-box allows you to:
 
 *   draw a box around the selected text or actual line with a simple keyboard
-    shortcut, the text is automatically wrap to fit the width of the box and can
-    be centered,
+    shortcut. The box can be left aligned or centered, with the text left aligned
+    or centered. Too long text are automatically wrapped to fit in the box.
 *   create your own type of box by choosing its width and the characters used to
     draw the top, bottom, left, right and corners of it
-*   draw a line with a simple keyboard shortcut,
+*   draw a line with a simple keyboard shortcut. The line can be left aligned or
+    centered.
 *   create your own type of line by choosing its width and the characters used
     to draw its start, end and body,
 *   choose from a catalog of 22 predefined boxes and 10 predefined lines and use
@@ -84,89 +87,138 @@ all you have to do, however, comment-box does not come with any keybinding, see
 --------------------------------------------------------------------------------
 USAGE                                                          *comment-box-usage*
 
-TO PUT SOME TEXT IN A BOX                  *comment-box-to_put_some_text_in_a_box*
+BOXES                                                          *comment-box-boxes*
 
-Put your cursor on the line you want in a box, or select multiple lines, then
-use one of the two functions provided:
->
-    -- To draw a box with the text left justified:
-    :lua require("comment-box").lbox()
-    -- To draw a box with the text centered:
-    :lua require("comment-box").cbox()
-<
++----------------------------------------------------------------------------+
+|   Command   |      Description       |              function               |
++-------------+------------------------+-------------------------------------+
+|CBlbox[num]  | Left aligned box witht | require("comment-box").lbox([num])  |
+|             | left aligned text      |                                     |
++-------------+------------------------+-------------------------------------+
+|CBclbox[num] | Centered box with Left | require("comment-box").clbox([num]) |
+|             | aligned text           |                                     |
++-------------+------------------------+-------------------------------------+
+|CBcbox[num]  | Left aligned box with  | require("comment-box").clbox([num]) |
+|             | centered text          |                                     |
++-------------+------------------------+-------------------------------------+
+|CBccbox[num] | Centered box with      | require("comment-box").clbox([num]) |
+|             | centered text          |                                     |
++----------------------------------------------------------------------------+
 
-But you will probably want to use their syntactic sugar equivalent:
->
-    -- To draw a box with the text left justified:
-    :CBlbox
-    -- To draw a box with the text centered:
-    :CBcbox
-<
+The [num] parameter is optional. It's the number of a predefined style from the
+catalog (see |comment-box-catalog|). By leaving it empty, the box or line will be
+drawn with the style you defined or if you didn't define one, with the default
+style.
 
-Optionally, you can pass an argument to use one of the predefined type of boxes
-of the catalog (see |comment-box-catalog|), for example:
->
-    -- Use the box 17 of the catalog with the text left justified:
-    :lua require("comment-box").lbox(17)
-    -- or
-    :CBlbox17
-<
+To draw a box, place your cursor on the line of text you want in a box, or select
+multiple lines in visual mode, then use one of the command/function above.
 
 Note: if a line is too long to fit in the box, comment-box will automatically
 wrap it for you.
+Note2: a box is centered relatively to the width of your document (set to the
+standard 80 by default, you can change it with the setup() function - see
+|comment-box-configuration|)
 
-TO DRAW A LINE                                        *comment-box-to_draw_a_line*
-
-In normal or insert mode, use:
+Examples
 >
-    :lua require("comment-box").line()
-<
-
-Its syntactic sugar equivalent:
->
-    :CBline
-<
-
-Optionally, you can pass an argument to use one of the predefined type of lines
-of the catalog (see |comment-box-catalog|), for example:
->
-    -- Use the line 6 of the catalog:
-    :lua require("comment-box").line(6)
+    -- A left aligned box with the text left justified:
+    :CBlbox
     -- or
-    :CBline6
+    :lua require("comment-box").lbox()
+
+    -- A centered box with the text centered:
+    :CBccbox
+    -- or
+    :lua require("comment-box").ccbox()
+
+    -- A left aligned box with the text left justified, using the syle 17 from
+    -- the catalog:
+    :CBlbox17
+    -- or
+    :lua require("comment-box").lbox(17)
+<
+
+LINES                                                          *comment-box-lines*
+
++-----------------------------------------------------------------------+
+|   Command   |    Description    |             function                |
++-------------+-------------------+-------------------------------------+
+|CBline[num]  | Left aligned line | require("comment-box").line([num])  |
+|CBcline[num] | Centered line     | require("comment-box").cline([num]) |
++-----------------------------------------------------------------------+
+
+To draw a line, place your cursor where you want it and in normal or insert mode,
+use one of the command/function above.
+
+Note: a line is centered relatively to the width of your document (set to the
+standard 80 by default, you can change it with the setup() function - see
+|comment-box-configuration|)
+
+Examples:
+>
+    -- A left aligned line:
+    :CBline
+    -- or
+    :lua require("comment-box").line()
+
+    -- A centered line:
+    :CBcline
+    -- or
+    :lua require("comment-box").cline()
+
+    -- A centered line using the style 6 from the catalog:
+    :CBcline6
+    -- or
+    :lua require("comment-box").cline(4)
 <
 
 KEYBINDINGS EXAMPLES                            *comment-box-keybindings_examples*
 
 VIM SCRIPT:                                              *comment-box-vim_script:*
 >
+    #left aligned box with left aligned text
     nnoremap <Leader>bb <Cmd>lua require('comment-box').lbox()<CR>
     vnoremap <Leader>bb <Cmd>lua require('comment-box').lbox()<CR>
-    nnoremap <Leader>bc <Cmd>lua require('comment-box').cbox()<CR>
-    vnoremap <Leader>bc <Cmd>lua require('comment-box').cbox()<CR>
-    nnoremap <Leader>bl <Cmd>lua require('comment-box').line()<CR>
-    inoremap <M-l> <Cmd>lua require('comment-box').line()<CR>
+
+    # centered box with centered text
+    nnoremap <Leader>bc <Cmd>lua require('comment-box').ccbox()<CR>
+    vnoremap <Leader>bc <Cmd>lua require('comment-box').ccbox()<CR>
+
+    # centered line
+    nnoremap <Leader>bl <Cmd>lua require('comment-box').cline()<CR>
+    inoremap <M-l> <Cmd>lua require('comment-box').cline()<CR>
 <
 
 LUA                                                              *comment-box-lua*
 >
     local keymap = vim.api.nvim_set_keymap
+
+    -- left aligned box with left aligned text
     keymap("n", "<Leader>bb", "<Cmd>lua require('comment-box').lbox()<CR>", {})
     keymap("v", "<Leader>bb", "<Cmd>lua require('comment-box').lbox()<CR>", {})
-    keymap("n", "<Leader>bc", "<Cmd>lua require('comment-box').cbox()<CR>", {})
-    keymap("v", "<Leader>bc", "<Cmd>lua require('comment-box').cbox()<CR>", {})
-    keymap("n", "<Leader>bl", "<Cmd>lua require('comment-box').line()<CR>", {})
-    keymap("i", "<M-l>", "<Cmd>lua require('comment-box').line()<CR>", {})
+
+    -- centered box with centered text
+    keymap("n", "<Leader>bc", "<Cmd>lua require('comment-box').ccbox()<CR>", {})
+    keymap("v", "<Leader>bc", "<Cmd>lua require('comment-box').ccbox()<CR>", {})
+
+    -- centered line
+    keymap("n", "<Leader>bl", "<Cmd>lua require('comment-box').cline()<CR>", {})
+    keymap("i", "<M-l>", "<Cmd>lua require('comment-box').cline()<CR>", {})
 <
 
 Or if you use Neovim-nightly:
 >
     local keymap = vim.keymap.set
     local cb = require("comment-box")
+
+    -- left aligned box with left aligned text
     keymap({ "n", "v"}, "<Leader>bb", cb.lbox, {})
-    keymap({ "n", "v"}, "<Leader>bc", cb.cbox, {})
-    keymap("n", "<Leader>bl", cb.line, {})
-    keymap("i", "<M-l>", cb.line, {})
+    -- centered box with centered text
+    keymap({ "n", "v"}, "<Leader>bc", cb.ccbox, {})
+
+    -- centered line
+    keymap("n", "<Leader>bl", cb.cline, {})
+    keymap("i", "<M-l>", cb.cline, {})
 <
 
 --------------------------------------------------------------------------------
@@ -215,7 +267,8 @@ comment-box does its things. This is also where you can create your own type of
 box. Here is the list of the options with their default value:
 >
     require('comment-box').setup({
-    	box_width = 70, -- width of the boxex
+	    doc_width = 80, -- width of the document
+    	box_width = 60, -- width of the boxex
     	borders = { -- symbols used to draw a box
     		top = "─",
     		bottom = "─",
@@ -238,6 +291,10 @@ box. Here is the list of the options with their default value:
       line_blank_line_below = false, -- insert a blank line below the line
     })
 <
+
+`doc_width`                                                *comment-box-doc_width*
+
+Width of the document. It is used to center the boxes and lines.
 
 'box_width'                                                *comment-box-box_width*
 

@@ -10,7 +10,7 @@ This plugin tries to remedy this by giving you easy boxes and lines the way you 
 
 _comment-box_ allows you to:
 
-- draw a box around the selected text or actual line with a simple keyboard shortcut. The box can be left aligned or centered, with the text left aligned or centered,
+- draw a box around the selected text or actual line with a simple keyboard shortcut. The box can be left aligned or centered, with the text left aligned or centered. Too long text are automatically wrapped to fit in the box.
 - create your own type of box by choosing its width and the characters used to draw the top, bottom, left, right and corners of it.
 - draw a line with a simple keyboard shortcut. The line can be left aligned or centered.
 - create your own type of line by choosing its width and the characters used to draw its start, end and body.
@@ -88,7 +88,7 @@ Examples:
 ```lua
 -- A left aligned line:
 :CBline
-- or
+-- or
 :lua require("comment-box").line()
 
 -- A centered line:
