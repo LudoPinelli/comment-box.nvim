@@ -40,7 +40,7 @@ local line_start_pos, line_end_pos
 local centered_text
 local centered_box
 local final_box_width
-local adapted = true
+local adapted
 
 -- ╭────────────────────────────────────────────────────────────────────╮
 -- │                                UTILS                               │
@@ -94,10 +94,11 @@ local function skip_cs(line)
 	local cs_len = vim.fn.strdisplaywidth(comment_string)
 
 	if trimmed_line:sub(1, cs_len) == comment_string then
-		line = line:gsub(vim.pesc(comment_string), "", 1)
+		line = line:gsub(vim.pesc(comment_string), "", 1) -- remove comment string
+		line = line:gsub("[ \t]+%f[\r\n%z]", "") -- remove trailing spaces
 	end
 	if centered_text then
-		return vim.trim(line) -- if centered need to trim for correct padding
+		return vim.trim(line) -- if centered need to trim both ends for correct padding
 	else
 		return line
 	end
@@ -171,7 +172,7 @@ function set_lead_space()
 	lead_space_ab = " "
 	lead_space_bb = " "
 	if centered_box then
-		lead_space_ab = string.rep(
+		lead_space_bb = string.rep(
 			" ",
 			math.floor((settings.doc_width - final_box_width) / 2 - vim.fn.strdisplaywidth(comment_string) + 0.5)
 		)
@@ -193,6 +194,7 @@ end
 -- Build the box
 local function create_box(choice)
 	local borders = set_borders(choice)
+	local text = get_text()
 	local trail = " "
 
 	-- ┌                                                                    ┐
@@ -252,8 +254,6 @@ local function create_box(choice)
 			lead_space_bb = ""
 		end
 	end
-
-	local text = get_text()
 
 	local ext_top_row = string.format(
 		"%s%s%s%s%s",
@@ -341,6 +341,7 @@ local function create_box(choice)
 			local pad = final_box_width - vim.fn.strdisplaywidth(line) - offset
 
 			lead_space_ab, lead_space_bb = set_lead_space()
+			trail = " "
 			if borders.right == "" and line == "" then
 				lead_space_ab = ""
 				trail = ""
@@ -448,6 +449,7 @@ local function print_lbox(choice, lstart, lend)
 	lend = tonumber(lend)
 	centered_text = false
 	centered_box = false
+	adapted = false
 	display_box(choice, lstart, lend)
 end
 
@@ -458,6 +460,7 @@ local function print_cbox(choice, lstart, lend)
 	lend = tonumber(lend)
 	centered_text = true
 	centered_box = false
+	adapted = false
 	display_box(choice, lstart, lend)
 end
 
@@ -468,6 +471,7 @@ local function print_clbox(choice, lstart, lend)
 	lend = tonumber(lend)
 	centered_text = false
 	centered_box = true
+	adapted = false
 	display_box(choice, lstart, lend)
 end
 
@@ -478,6 +482,51 @@ local function print_ccbox(choice, lstart, lend)
 	lend = tonumber(lend)
 	centered_text = true
 	centered_box = true
+	adapted = false
+	display_box(choice, lstart, lend)
+end
+
+-- Print a left aligned box with text left aligned
+local function print_albox(choice, lstart, lend)
+	choice = tonumber(choice)
+	lstart = tonumber(lstart)
+	lend = tonumber(lend)
+	centered_text = false
+	centered_box = false
+	adapted = true
+	display_box(choice, lstart, lend)
+end
+
+-- Print a left aligned box with text centered
+local function print_acbox(choice, lstart, lend)
+	choice = tonumber(choice)
+	lstart = tonumber(lstart)
+	lend = tonumber(lend)
+	centered_text = true
+	centered_box = false
+	adapted = true
+	display_box(choice, lstart, lend)
+end
+
+-- Print a centered box with text left aligned
+local function print_aclbox(choice, lstart, lend)
+	choice = tonumber(choice)
+	lstart = tonumber(lstart)
+	lend = tonumber(lend)
+	centered_text = false
+	centered_box = true
+	adapted = true
+	display_box(choice, lstart, lend)
+end
+
+-- Print a centered box with text centered
+local function print_accbox(choice, lstart, lend)
+	choice = tonumber(choice)
+	lstart = tonumber(lstart)
+	lend = tonumber(lend)
+	centered_text = true
+	centered_box = true
+	adapted = true
 	display_box(choice, lstart, lend)
 end
 
@@ -509,6 +558,10 @@ return {
 	cbox = print_cbox,
 	clbox = print_clbox,
 	ccbox = print_ccbox,
+	albox = print_albox,
+	acbox = print_acbox,
+	aclbox = print_aclbox,
+	accbox = print_accbox,
 	line = print_line,
 	cline = print_cline,
 	catalog = open_catalog,
