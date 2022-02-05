@@ -48,15 +48,10 @@ local adapted = true
 
 -- Compute padding
 local function get_pad(line)
-	local pad = (final_box_width - vim.fn.strdisplaywidth(line)) / 2
-	local odd
+	local start_pad = math.floor((final_box_width - vim.fn.strdisplaywidth(line)) / 2)
+	local end_pad = final_box_width - (start_pad + vim.fn.strdisplaywidth(line))
 
-	if vim.fn.strdisplaywidth(line) % 2 == 0 then
-		odd = false
-	else
-		odd = true
-	end
-	return pad, odd
+	return start_pad, end_pad
 end
 
 -- Store the range of the selected text in 'line_start_pos'/'line_end_pos'
@@ -101,10 +96,10 @@ local function skip_cs(line)
 	if trimmed_line:sub(1, cs_len) == comment_string then
 		line = line:gsub(vim.pesc(comment_string), "", 1)
 	end
-	if not centered_text then
+	if centered_text then
+		return vim.trim(line) -- if centered need to trim for correct padding
+	else
 		return line
-	else -- if centered need to trim for correct padding
-		return vim.trim(line)
 	end
 end
 
@@ -132,7 +127,7 @@ local function format_lines(text)
 			if vim.fn.strdisplaywidth(str) >= settings.doc_width - 2 then
 				final_box_width = settings.doc_width - 2
 			elseif vim.fn.strdisplaywidth(str) > final_box_width and final_box_width < settings.doc_width - 2 then
-				final_box_width = vim.fn.strdisplaywidth(str)
+				final_box_width = vim.fn.strdisplaywidth(str) + 2
 			end
 		else
 			final_box_width = settings.box_width - 2
@@ -176,9 +171,9 @@ function set_lead_space()
 	lead_space_ab = " "
 	lead_space_bb = " "
 	if centered_box then
-		lead_space_bb = string.rep(
+		lead_space_ab = string.rep(
 			" ",
-			math.floor((settings.doc_width - final_box_width) / 2 - vim.fn.strdisplaywidth(comment_string))
+			math.floor((settings.doc_width - final_box_width) / 2 - vim.fn.strdisplaywidth(comment_string) + 0.5)
 		)
 	end
 
@@ -306,8 +301,7 @@ local function create_box(choice)
 		-- └                                                                    ┘
 
 		for _, line in pairs(text) do
-			local pad, odd = get_pad(line)
-			local parity_pad
+			local start_pad, end_pad = get_pad(line)
 
 			lead_space_ab, lead_space_bb = set_lead_space()
 			if borders.right == "" and line == "" then
@@ -317,12 +311,6 @@ local function create_box(choice)
 					lead_space_bb = ""
 					borders.left = ""
 				end
-			else
-				if odd then
-					parity_pad = pad + 1
-				else
-					parity_pad = pad
-				end
 			end
 
 			int_row = string.format(
@@ -330,9 +318,9 @@ local function create_box(choice)
 				comment_string,
 				lead_space_bb,
 				borders.left,
-				string.rep(lead_space_ab, parity_pad),
+				string.rep(lead_space_ab, start_pad),
 				line,
-				string.rep(trail, pad),
+				string.rep(trail, end_pad),
 				borders.right
 			)
 
