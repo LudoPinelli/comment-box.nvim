@@ -10,7 +10,7 @@ This plugin tries to remedy this by giving you easy boxes and lines the way you 
 
 _comment-box_ allows you to:
 
-- draw a box around the selected text or actual line with a simple keyboard shortcut. The box can be left aligned or centered, with the text left aligned or centered. Too long text are automatically wrapped to fit in the box.
+- draw a box around the selected text or actual line with a simple keyboard shortcut. The box can be left aligned or centered, can have a fixed size or be adapted to the text. The text can be left aligned or centered. Too long text are automatically wrapped to fit in the box.
 - create your own type of box by choosing its width and the characters used to draw the top, bottom, left, right and corners of it.
 - draw a line with a simple keyboard shortcut. The line can be left aligned or centered.
 - create your own type of line by choosing its width and the characters used to draw its start, end and body.
@@ -42,32 +42,44 @@ If you're fine with the default settings (see [Configuration](#configuration-and
 
 | Command | Description | function |
 |--- | --- | --- |
-|`CBlbox[num]` | _Left aligned box_ with _Left aligned text_ | `require("comment-box").lbox([num])` |
-|`CBclbox[num]` | _Centered box_ with _Left aligned text_ | `require("comment-box").clbox([num])` |
-|`CBcbox[num]` | _Left aligned box_ with _centered text_ | `require("comment-box").clbox([num])` |
-|`CBccbox[num]` | _Centered box_ with _centered text_ | `require("comment-box").clbox([num])` |
+|`CBlbox[num]` | _Left aligned box of fixed size_ with _Left aligned text_ | `require("comment-box").lbox([num])` |
+|`CBclbox[num]` | _Centered box of fixed size_ with _Left aligned text_ | `require("comment-box").clbox([num])` |
+|`CBcbox[num]` | _Left aligned box of fixed size_ with _centered text_ | `require("comment-box").cbox([num])` |
+|`CBccbox[num]` | _Centered box of fixed size_ with _centered text_ | `require("comment-box").ccbox([num])` |
+|`CBalbox[num]` | _Left aligned adapted box_ with _Left aligned text_ | `require("comment-box").albox([num])` |
+|`CBaclbox[num]` | _Centered adapted box_ with _Left aligned text_ | `require("comment-box").aclbox([num])` |
+|`CBacbox[num]` | _Left aligned adapted box_ with _centered text_ | `require("comment-box").acbox([num])` |
+|`CBaccbox[num]` | _Centered adapted box_ with _centered text_ | `require("comment-box").accbox([num])` |
 
 The `[num]` parameter is optional. It's the number of a predefined style from the catalog (see [Catalog](#the-catalog)). By leaving it empty, the box or line will be drawn with the style you defined or if you didn't define one, with the default style.
+
+A 'centered' box is centered relatively to the width of your document (set to the standard 80 by default, you can change it with the `setup()` function - see [Configuration](#configuration-and-creating-your-own-type-of-box))
+
+An 'adapted' box means than the box width will be adapted to the width of the text. However, if the width of the text exceed the width of the document, the box will have the width of the document.
 
 To draw a box, place your cursor on the line of text you want in a box, or select multiple lines in _visual mode_, then use one of the command/function above.
 
 **Note**: if a line is too long to fit in the box, _comment-box_ will automatically wrap it for you.
 
-**Note2**: a box is centered relatively to the width of your document (set to the standard 80 by default, you can change it with the `setup()` function - see [Configuration](#configuration-and-creating-your-own-type-of-box))
-
 Examples:
 ```lua
--- A left aligned box with the text left justified:
+-- A left aligned fixed size box with the text left justified:
 :CBlbox
 -- or
 :lua require("comment-box").lbox()
 
--- A centered box with the text centered:
+-- A centered fixed size box with the text centered:
 :CBccbox
 -- or
 :lua require("comment-box").ccbox()
 
--- A left aligned box with the text left justified, using the syle 17 from the catalog:
+-- A centered adapted box with the text centered:
+:CBaccbox
+-- or
+:lua require("comment-box").accbox()
+
+-- A left aligned fixed size box with the text left justified,
+-- using the syle 17 from the catalog:
 :CBlbox17
 -- or
 :lua require("comment-box").lbox(17)
@@ -107,13 +119,13 @@ Examples:
 #### Vim script:
 
 ```shell
-# left aligned box with left aligned text
+# left aligned fixed size box with left aligned text
 nnoremap <Leader>bb <Cmd>lua require('comment-box').lbox()<CR>
 vnoremap <Leader>bb <Cmd>lua require('comment-box').lbox()<CR>
 
-# centered box with centered text
-nnoremap <Leader>bc <Cmd>lua require('comment-box').ccbox()<CR>
-vnoremap <Leader>bc <Cmd>lua require('comment-box').ccbox()<CR>
+# centered adapted box with centered text
+nnoremap <Leader>bc <Cmd>lua require('comment-box').accbox()<CR>
+vnoremap <Leader>bc <Cmd>lua require('comment-box').accbox()<CR>
 
 # centered line
 nnoremap <Leader>bl <Cmd>lua require('comment-box').cline()<CR>
@@ -125,13 +137,13 @@ inoremap <M-l> <Cmd>lua require('comment-box').cline()<CR>
 ```lua
 local keymap = vim.api.nvim_set_keymap
 
--- left aligned box with left aligned text
+-- left aligned fixed size box with left aligned text
 keymap("n", "<Leader>bb", "<Cmd>lua require('comment-box').lbox()<CR>", {})
 keymap("v", "<Leader>bb", "<Cmd>lua require('comment-box').lbox()<CR>", {})
 
--- centered box with centered text
-keymap("n", "<Leader>bc", "<Cmd>lua require('comment-box').ccbox()<CR>", {})
-keymap("v", "<Leader>bc", "<Cmd>lua require('comment-box').ccbox()<CR>", {})
+-- centered adapted box with centered text
+keymap("n", "<Leader>bc", "<Cmd>lua require('comment-box').accbox()<CR>", {})
+keymap("v", "<Leader>bc", "<Cmd>lua require('comment-box').accbox()<CR>", {})
 
 -- centered line
 keymap("n", "<Leader>bl", "<Cmd>lua require('comment-box').cline()<CR>", {})
@@ -144,10 +156,10 @@ Or if you use _Neovim-nightly_:
 local keymap = vim.keymap.set
 local cb = require("comment-box")
 
--- left aligned box with left aligned text
+-- left aligned fixed size box with left aligned text
 keymap({ "n", "v"}, "<Leader>bb", cb.lbox, {})
--- centered box with centered text
-keymap({ "n", "v"}, "<Leader>bc", cb.ccbox, {})
+-- centered adapted box with centered text
+keymap({ "n", "v"}, "<Leader>bc", cb.accbox, {})
 
 -- centered line
 keymap("n", "<Leader>bl", cb.cline, {})
@@ -220,11 +232,11 @@ require('comment-box').setup({
 
 ### `doc_width`
 
-Width of the document. It is used to center the boxes and lines.
+Width of the document. It is used to center the boxes and lines and determine the max width of the adapted boxes.
 
 ### `box_width`
 
-Width of the boxes (must be <= `doc_width`).
+Width of the fixed size boxes (must be <= `doc_width`).
 
 ### `borders`
 
