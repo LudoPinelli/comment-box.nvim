@@ -37,10 +37,10 @@ local catalog = require("comment-box.catalog_view")
 local comment_string
 local line_start_pos, line_end_pos
 
-local box_width = settings.box_width - 4
 local centered_text
 local centered_box
-local max_line_length
+local final_box_width
+local adapted = true
 
 -- ╭────────────────────────────────────────────────────────────────────╮
 -- │                                UTILS                               │
@@ -48,7 +48,7 @@ local max_line_length
 
 -- Compute padding
 local function get_pad(line)
-	local pad = (settings.box_width - vim.fn.strdisplaywidth(line) - 2) / 2
+	local pad = (final_box_width - vim.fn.strdisplaywidth(line)) / 2
 	local odd
 
 	if vim.fn.strdisplaywidth(line) % 2 == 0 then
@@ -111,11 +111,11 @@ end
 -- Wrap lines too long to fit in box
 local function wrap(text)
 	local str_tab = {}
-	local str = text:sub(1, box_width - 2)
+	local str = text:sub(1, final_box_width - 6)
 	local rstr = str:reverse()
 	local f = rstr:find(" ")
 
-	f = box_width - 2 - f
+	f = final_box_width - 6 - f
 	table.insert(str_tab, string.sub(text, 1, f))
 	table.insert(str_tab, string.sub(text, f + 1))
 	return str_tab
@@ -123,15 +123,21 @@ end
 
 -- Prepare each line and rewrote the table in case of wraping lines
 local function format_lines(text)
-	max_line_length = 0
+	final_box_width = 0
 	for pos, str in ipairs(text) do
 		table.remove(text, pos)
 		str = skip_cs(str)
 		table.insert(text, pos, str)
-		if vim.fn.strdisplaywidth(str) > max_line_length then
-			max_line_length = vim.fn.strdisplaywidth(str)
+		if adapted then
+			if vim.fn.strdisplaywidth(str) >= settings.doc_width - 2 then
+				final_box_width = settings.doc_width - 2
+			elseif vim.fn.strdisplaywidth(str) > final_box_width and final_box_width < settings.doc_width - 2 then
+				final_box_width = vim.fn.strdisplaywidth(str)
+			end
+		else
+			final_box_width = settings.box_width - 2
 		end
-		if vim.fn.strdisplaywidth(str) > box_width - 2 then
+		if vim.fn.strdisplaywidth(str) > final_box_width then
 			to_insert = wrap(str)
 			for ipos, st in ipairs(to_insert) do
 				table.insert(text, pos + ipos, st)
@@ -172,7 +178,7 @@ function set_lead_space()
 	if centered_box then
 		lead_space_bb = string.rep(
 			" ",
-			math.floor((settings.doc_width - settings.box_width) / 2 - vim.fn.strdisplaywidth(comment_string))
+			math.floor((settings.doc_width - final_box_width) / 2 - vim.fn.strdisplaywidth(comment_string))
 		)
 	end
 
@@ -252,12 +258,14 @@ local function create_box(choice)
 		end
 	end
 
+	local text = get_text()
+
 	local ext_top_row = string.format(
 		"%s%s%s%s%s",
 		comment_string,
 		lead_space_bb,
 		borders.top_left,
-		string.rep(borders.top, settings.box_width - 2),
+		string.rep(borders.top, final_box_width),
 		borders.top_right
 	)
 
@@ -266,7 +274,7 @@ local function create_box(choice)
 		comment_string,
 		lead_space_bb,
 		borders.bottom_left,
-		string.rep(borders.bottom, settings.box_width - 2),
+		string.rep(borders.bottom, final_box_width),
 		borders.bottom_right
 	)
 
@@ -275,7 +283,7 @@ local function create_box(choice)
 		comment_string,
 		lead_space_bb,
 		borders.left,
-		string.rep(trail, settings.box_width - 2),
+		string.rep(trail, final_box_width),
 		borders.right
 	)
 
@@ -296,8 +304,6 @@ local function create_box(choice)
 		-- ┌                                                                    ┐
 		-- │ If text centered                                                   │
 		-- └                                                                    ┘
-
-		local text = get_text()
 
 		for _, line in pairs(text) do
 			local pad, odd = get_pad(line)
@@ -337,16 +343,14 @@ local function create_box(choice)
 		-- │ If text left justified                                             │
 		-- └                                                                    ┘
 
-		local text = get_text()
-
 		for _, line in pairs(text) do
-			local offset = 3
+			local offset = 1
 
 			if not centered_box and line:find("^\t") then
-				offset = 2
+				offset = 0
 			end
 
-			local pad = settings.box_width - vim.fn.strdisplaywidth(line) - offset
+			local pad = final_box_width - vim.fn.strdisplaywidth(line) - offset
 
 			lead_space_ab, lead_space_bb = set_lead_space()
 			if borders.right == "" and line == "" then
@@ -396,7 +400,7 @@ local function create_line(choice, centered_line)
 	if centered_line then
 		lead_space = string.rep(
 			" ",
-			math.floor((settings.doc_width - settings.box_width) / 2 - vim.fn.strdisplaywidth(comment_string))
+			math.floor((settings.doc_width - settings.line_width) / 2 - vim.fn.strdisplaywidth(comment_string))
 		)
 	end
 
