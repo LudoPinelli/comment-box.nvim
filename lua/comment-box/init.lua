@@ -1,6 +1,6 @@
--- ╭────────────────────────────────────────────────────────────────────╮
--- │                              SETTINGS                              │
--- ╰────────────────────────────────────────────────────────────────────╯
+--         ╭──────────────────────────────────────────────────────────╮
+--         │                         SETTINGS                         │
+--         ╰──────────────────────────────────────────────────────────╯
 
 local settings = {
 	doc_width = 80,
@@ -27,9 +27,9 @@ local settings = {
 	line_blank_line_below = false,
 }
 
--- ╭────────────────────────────────────────────────────────────────────╮
--- │                           LOCAL VARIABLES                          │
--- ╰────────────────────────────────────────────────────────────────────╯
+--         ╭──────────────────────────────────────────────────────────╮
+--         │                     LOCAL VARIABLES                      │
+--         ╰──────────────────────────────────────────────────────────╯
 
 local cat = require("comment-box.catalog")
 local catalog = require("comment-box.catalog_view")
@@ -42,9 +42,9 @@ local centered_box
 local final_box_width
 local adapted
 
--- ╭────────────────────────────────────────────────────────────────────╮
--- │                                UTILS                               │
--- ╰────────────────────────────────────────────────────────────────────╯
+--         ╭──────────────────────────────────────────────────────────╮
+--         │                          UTILS                           │
+--         ╰──────────────────────────────────────────────────────────╯
 
 -- Compute padding
 local function get_pad(line)
@@ -181,9 +181,9 @@ function set_lead_space()
 	return lead_space_ab, lead_space_bb
 end
 
--- ╭────────────────────────────────────────────────────────────────────╮
--- │                                CORE                                │
--- ╰────────────────────────────────────────────────────────────────────╯
+--         ╭──────────────────────────────────────────────────────────╮
+--         │                           CORE                           │
+--         ╰──────────────────────────────────────────────────────────╯
 
 -- Return the selected text
 local function get_text()
@@ -197,9 +197,9 @@ local function create_box(choice)
 	local text = get_text()
 	local trail = " "
 
-	-- ┌                                                                    ┐
-	-- │    Deal with the two ways to declare transparent borders           │
-	-- └                                                                    ┘
+	-- ╓                                                       ╖
+	-- ║ Deal with the two ways to declare transparent borders ║
+	-- ╙                                                       ╜
 
 	if borders.top_left == "" then
 		borders.top_left = " "
@@ -296,9 +296,9 @@ local function create_box(choice)
 	end
 
 	if centered_text then
-		-- ┌                                                                    ┐
-		-- │ If text centered                                                   │
-		-- └                                                                    ┘
+		-- ╓                  ╖
+		-- ║ If text centered ║
+		-- ╙                  ╜
 
 		for _, line in pairs(text) do
 			local start_pad, end_pad = get_pad(line)
@@ -327,9 +327,9 @@ local function create_box(choice)
 			table.insert(lines, int_row)
 		end
 	else
-		-- ┌                                                                    ┐
-		-- │ If text left justified                                             │
-		-- └                                                                    ┘
+		-- ╓                        ╖
+		-- ║ If text left justified ║
+		-- ╙                        ╜
 
 		for _, line in pairs(text) do
 			local offset = 1
@@ -438,9 +438,9 @@ function display_line(choice, centered_line)
 	vim.api.nvim_win_set_cursor(0, cur)
 end
 
--- ╭────────────────────────────────────────────────────────────────────╮
--- │                          PUBLIC FUNCTIONS                          │
--- ╰────────────────────────────────────────────────────────────────────╯
+--         ╭──────────────────────────────────────────────────────────╮
+--         │                     PUBLIC FUNCTIONS                     │
+--         ╰──────────────────────────────────────────────────────────╯
 
 -- Print a left aligned box with text left aligned
 local function print_lbox(choice, lstart, lend)
