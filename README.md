@@ -222,7 +222,7 @@ require('comment-box').setup({
 		line = "─",
 		line_start = "─",
 		line_end = "─",
-    }
+    },
   outer_blank_lines = false, -- insert a blank line above and below the box
   inner_blank_lines = false, -- insert a blank line above and below the text
   line_blank_line_above = false, -- insert a blank line above the line
