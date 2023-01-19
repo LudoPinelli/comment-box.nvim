@@ -2,6 +2,7 @@
 --         │                         SETTINGS                         │
 --         ╰──────────────────────────────────────────────────────────╯
 
+---@class CommentBoxConfig
 local settings = {
 	doc_width = 80,
 	box_width = 60,
@@ -16,7 +17,7 @@ local settings = {
 		bottom_right = "╯",
 	},
 	line_width = 60,
-	line = {
+	lines = {
 		line = "─",
 		line_start = "─",
 		line_end = "─",
@@ -34,13 +35,22 @@ local settings = {
 local cat = require("comment-box.catalog")
 local catalog = require("comment-box.catalog_view")
 
+---@type string
 local comment_string
+---@type number, number
 local line_start_pos, line_end_pos
 
+---@type boolean
 local centered_text
+---@type boolean
 local centered_box
+---@type number
 local final_box_width
+---@type boolean
 local adapted
+
+---@type string, string
+local lead_space_ab, lead_space_bb
 
 --         ╭──────────────────────────────────────────────────────────╮
 --         │                          UTILS                           │
@@ -55,10 +65,12 @@ local function get_pad(line)
 end
 
 -- Store the range of the selected text in 'line_start_pos'/'line_end_pos'
+---@param lstart? number
+---@param lend? number
 local function get_range(lstart, lend)
 	local mode = vim.api.nvim_get_mode().mode
 
-	if lend ~= lstart then
+	if lstart and lend and lend ~= lstart then
 		line_start_pos = lstart
 		line_end_pos = lend
 	else
@@ -76,7 +88,9 @@ local function get_range(lstart, lend)
 end
 
 -- Return the correct cursor position after a box has been created
-function set_cur_pos(end_pos)
+---@param end_pos number
+---@return number
+local function set_cur_pos(end_pos)
 	local cur_pos = end_pos + 2
 
 	if settings.inner_blank_lines then
@@ -89,6 +103,8 @@ function set_cur_pos(end_pos)
 end
 
 -- Skip comment string if there is one at the beginning of the line trop longue
+---@param line string
+---@return string
 local function skip_cs(line)
 	local trimmed_line = vim.trim(line)
 	local cs_len = vim.fn.strdisplaywidth(comment_string)
@@ -105,6 +121,8 @@ local function skip_cs(line)
 end
 
 -- Wrap lines too long to fit in box
+---@param text string
+---@return string[]
 local function wrap(text)
 	local str_tab = {}
 	local str = text:sub(1, final_box_width - 6)
@@ -118,6 +136,7 @@ local function wrap(text)
 end
 
 -- Prepare each line and rewrote the table in case of wraping lines
+---@param text string[]
 local function format_lines(text)
 	final_box_width = 0
 	for pos, str in ipairs(text) do
@@ -134,7 +153,7 @@ local function format_lines(text)
 			final_box_width = settings.box_width - 2
 		end
 		if vim.fn.strdisplaywidth(str) > final_box_width then
-			to_insert = wrap(str)
+			local to_insert = wrap(str)
 			for ipos, st in ipairs(to_insert) do
 				table.insert(text, pos + ipos, st)
 			end
@@ -145,6 +164,8 @@ local function format_lines(text)
 end
 
 -- Set the symbols used to draw the box
+---@param choice number?
+---@return table
 local function set_borders(choice)
 	choice = choice or 0
 	local borders
@@ -157,17 +178,21 @@ local function set_borders(choice)
 end
 
 -- Set the symbols used to draw the line
+---@param choice number?
+---@return table
 local function set_line(choice)
 	choice = choice or 0
 	local symbols
 	if choice == 0 then
-		symbols = settings.line
+		symbols = settings.lines
 	else
 		symbols = cat.lines[choice] or settings.lines
 	end
 	return symbols
 end
 
+---@return string
+---@return string
 function set_lead_space()
 	lead_space_ab = " "
 	lead_space_bb = " "
@@ -186,12 +211,14 @@ end
 --         ╰──────────────────────────────────────────────────────────╯
 
 -- Return the selected text
+---@return string[]
 local function get_text()
 	local text = vim.api.nvim_buf_get_lines(0, line_start_pos - 1, line_end_pos, false)
 	return format_lines(text)
 end
 
 -- Build the box
+---@param choice number?
 local function create_box(choice)
 	local borders = set_borders(choice)
 	local text = get_text()
@@ -306,7 +333,6 @@ local function create_box(choice)
 			lead_space_ab, lead_space_bb = set_lead_space()
 			if borders.right == "" and line == "" then
 				lead_space_ab = ""
-				parity_pad = 0
 				if borders.left == " " or borders.left == "" then
 					lead_space_bb = ""
 					borders.left = ""
@@ -381,6 +407,8 @@ local function create_box(choice)
 end
 
 -- Build a line
+---@param choice number?
+---@param centered_line boolean
 local function create_line(choice, centered_line)
 	local symbols = set_line(choice)
 	comment_string = vim.bo.commentstring
@@ -417,14 +445,19 @@ local function create_line(choice, centered_line)
 	return line
 end
 
-function display_box(choice, lstart, lend)
+---@param choice number?
+---@param lstart number?
+---@param lend number?
+local function display_box(choice, lstart, lend)
 	get_range(lstart, lend)
 	vim.api.nvim_buf_set_lines(0, line_start_pos - 1, line_end_pos, false, create_box(choice))
 	-- Move the cursor to match the result
 	vim.api.nvim_win_set_cursor(0, { set_cur_pos(line_end_pos), 1 })
 end
 
-function display_line(choice, centered_line)
+---@param choice number?
+---@param centered_line boolean 
+local function display_line(choice, centered_line)
 	local line = vim.fn.line(".")
 	vim.api.nvim_buf_set_lines(0, line - 1, line, false, create_line(choice, centered_line))
 
@@ -443,6 +476,9 @@ end
 --         ╰──────────────────────────────────────────────────────────╯
 
 -- Print a left aligned box with text left aligned
+---@param choice number?
+---@param lstart number?
+---@param lend number?
 local function print_lbox(choice, lstart, lend)
 	choice = tonumber(choice)
 	lstart = tonumber(lstart)
@@ -454,6 +490,9 @@ local function print_lbox(choice, lstart, lend)
 end
 
 -- Print a left aligned box with text centered
+---@param choice number?
+---@param lstart number?
+---@param lend number?
 local function print_cbox(choice, lstart, lend)
 	choice = tonumber(choice)
 	lstart = tonumber(lstart)
@@ -465,6 +504,7 @@ local function print_cbox(choice, lstart, lend)
 end
 
 -- Print a centered box with text left aligned
+---@param choice number?
 local function print_clbox(choice, lstart, lend)
 	choice = tonumber(choice)
 	lstart = tonumber(lstart)
@@ -476,6 +516,9 @@ local function print_clbox(choice, lstart, lend)
 end
 
 -- Print a centered box with text centered
+---@param choice number?
+---@param lstart number?
+---@param lend number?
 local function print_ccbox(choice, lstart, lend)
 	choice = tonumber(choice)
 	lstart = tonumber(lstart)
@@ -487,6 +530,9 @@ local function print_ccbox(choice, lstart, lend)
 end
 
 -- Print a left aligned box with text left aligned
+---@param choice number?
+---@param lstart number?
+---@param lend number?
 local function print_albox(choice, lstart, lend)
 	choice = tonumber(choice)
 	lstart = tonumber(lstart)
@@ -498,6 +544,9 @@ local function print_albox(choice, lstart, lend)
 end
 
 -- Print a left aligned box with text centered
+---@param choice number?
+---@param lstart number?
+---@param lend number?
 local function print_acbox(choice, lstart, lend)
 	choice = tonumber(choice)
 	lstart = tonumber(lstart)
@@ -509,6 +558,9 @@ local function print_acbox(choice, lstart, lend)
 end
 
 -- Print a centered box with text left aligned
+---@param choice number?
+---@param lstart number?
+---@param lend number?
 local function print_aclbox(choice, lstart, lend)
 	choice = tonumber(choice)
 	lstart = tonumber(lstart)
@@ -520,6 +572,9 @@ local function print_aclbox(choice, lstart, lend)
 end
 
 -- Print a centered box with text centered
+---@param choice number?
+---@param lstart number?
+---@param lend number?
 local function print_accbox(choice, lstart, lend)
 	choice = tonumber(choice)
 	lstart = tonumber(lstart)
@@ -531,6 +586,7 @@ local function print_accbox(choice, lstart, lend)
 end
 
 -- Print a left aligned line
+---@param choice number?
 local function print_line(choice)
 	choice = tonumber(choice)
 	local centered_line = false
@@ -538,6 +594,7 @@ local function print_line(choice)
 end
 
 -- Print a centered line
+---@param choice number?
 local function print_cline(choice)
 	choice = tonumber(choice)
 	local centered_line = true
@@ -549,8 +606,9 @@ local function open_catalog()
 end
 
 -- Config
-local function setup(update)
-	settings = vim.tbl_deep_extend("force", settings, update or {})
+---@param config? CommentBoxConfig
+local function setup(config)
+	settings = vim.tbl_deep_extend("force", settings, config or {})
 end
 
 return {

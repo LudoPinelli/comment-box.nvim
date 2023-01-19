@@ -1,3 +1,4 @@
+---@type number, number
 local buf, win
 
 local function open_win()
@@ -36,10 +37,6 @@ local function view()
 	vim.api.nvim_buf_set_option(0, "modifiable", false)
 end
 
-local function close()
-	vim.api.nvim_win_close(win, true)
-end
-
 local function keymap()
 	vim.api.nvim_buf_set_keymap(
 		buf,
@@ -50,13 +47,13 @@ local function keymap()
 	)
 end
 
-local function view_cat()
-	open_win()
-	keymap()
-	view()
-end
-
 return {
-	view_cat = view_cat,
-	close = close,
+	view_cat = function()
+		open_win()
+		keymap()
+		view()
+	end,
+	close = function()
+		vim.api.nvim_win_close(win, true)
+	end,
 }
