@@ -456,7 +456,7 @@ local function display_box(choice, lstart, lend)
 end
 
 ---@param choice number?
----@param centered_line boolean 
+---@param centered_line boolean
 local function display_line(choice, centered_line)
 	local line = vim.fn.line(".")
 	vim.api.nvim_buf_set_lines(0, line - 1, line, false, create_line(choice, centered_line))
