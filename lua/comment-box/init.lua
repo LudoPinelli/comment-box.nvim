@@ -221,6 +221,12 @@ end
 ---@param choice number?
 local function create_box(choice)
 	local borders = set_borders(choice)
+
+	comment_string = vim.bo.commentstring:match("^(.*)%%s(.*)")
+	if not comment_string or vim.bo.filetype == "markdown" or vim.bo.filetype == "org" then
+		comment_string = ""
+	end
+
 	local text = get_text()
 	local trail = " "
 
@@ -258,12 +264,6 @@ local function create_box(choice)
 	end
 	if borders.bottom == " " and borders.bottom_right == "" then
 		borders.bottom = ""
-	end
-
-	comment_string = vim.bo.commentstring
-	comment_string = comment_string:match("^(.*)%%s(.*)")
-	if not comment_string or vim.bo.filetype == "markdown" or vim.bo.filetype == "org" then
-		comment_string = ""
 	end
 
 	lead_space_ab, lead_space_bb = set_lead_space()
