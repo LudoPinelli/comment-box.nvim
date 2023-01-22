@@ -110,6 +110,7 @@ local function skip_cs(line)
 	local cs_len = vim.fn.strdisplaywidth(comment_string)
 
 	if trimmed_line:sub(1, cs_len) == comment_string then
+		line = line:gsub("^%s+", "") -- remove whitespace before comment string
 		line = line:gsub(vim.pesc(comment_string), "", 1) -- remove comment string
 		line = line:gsub("[ \t]+%f[\r\n%z]", "") -- remove trailing spaces
 	end
@@ -120,6 +121,13 @@ local function skip_cs(line)
 	end
 end
 
+-- See if a piece of text contains a url
+---@param text string
+---@return number|nil, number|nil
+local function is_url(text)
+	return vim.regex("\\v(https?|ftp|file|ssh|git|mailto)://\\S+"):match_str(text)
+end
+
 -- Wrap lines too long to fit in box
 ---@param text string
 ---@return string[]
@@ -128,10 +136,15 @@ local function wrap(text)
 	local str = text:sub(1, final_box_width - 6)
 	local rstr = str:reverse()
 	local f = rstr:find(" ")
+	local url_start, _ = is_url(text)
 
-	f = final_box_width - 6 - f
-	table.insert(str_tab, string.sub(text, 1, f))
-	table.insert(str_tab, string.sub(text, f + 1))
+	if f and (not url_start or f < url_start) then
+		f = final_box_width - 6 - f
+		table.insert(str_tab, string.sub(text, 1, f))
+		table.insert(str_tab, string.sub(text, f + 1))
+	else
+		table.insert(str_tab, text)
+	end
 	return str_tab
 end
 
@@ -139,19 +152,33 @@ end
 ---@param text string[]
 local function format_lines(text)
 	final_box_width = 0
+	local url_width = 0
+
+	for _, str in ipairs(text) do
+		local url_start, url_end = is_url(str)
+		if url_start then
+			url_width = math.max(url_width, url_end - url_start + 1)
+		end
+	end
+
 	for pos, str in ipairs(text) do
 		table.remove(text, pos)
 		str = skip_cs(str)
 		table.insert(text, pos, str)
+
 		if adapted then
-			if vim.fn.strdisplaywidth(str) >= settings.doc_width - 2 then
-				final_box_width = settings.doc_width - 2
-			elseif vim.fn.strdisplaywidth(str) > final_box_width and final_box_width < settings.doc_width - 2 then
+			if vim.fn.strdisplaywidth(str) >= math.max(url_width, settings.doc_width - 2) then
+				final_box_width = math.max(url_width, settings.doc_width - 2)
+			elseif
+				vim.fn.strdisplaywidth(str) > final_box_width
+				and final_box_width < math.max(url_width, settings.doc_width - 2)
+			then
 				final_box_width = vim.fn.strdisplaywidth(str) + 2
 			end
 		else
-			final_box_width = settings.box_width - 2
+			final_box_width = math.max(url_width, settings.doc_width - 2)
 		end
+
 		if vim.fn.strdisplaywidth(str) > final_box_width then
 			local to_insert = wrap(str)
 			for ipos, st in ipairs(to_insert) do
@@ -193,7 +220,7 @@ end
 
 ---@return string
 ---@return string
-function set_lead_space()
+local function set_lead_space()
 	lead_space_ab = " "
 	lead_space_bb = " "
 	if centered_box then
