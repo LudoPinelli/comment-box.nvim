@@ -248,9 +248,10 @@ end
 ---@param choice number?
 local function create_box(choice)
 	local borders = set_borders(choice)
+	local filetype = vim.bo.filetype
 
 	comment_string = vim.bo.commentstring:match("^(.*)%%s(.*)")
-	if not comment_string or vim.bo.filetype == "markdown" or vim.bo.filetype == "org" then
+	if not comment_string or filetype == "markdown" or filetype == "org" then
 		comment_string = ""
 	end
 
@@ -441,6 +442,8 @@ local function create_line(choice, centered_line)
 	comment_string = vim.bo.commentstring
 	local line = {}
 	local lead_space = " "
+	local filetype = vim.bo.filetype
+
 	if centered_line then
 		lead_space = string.rep(
 			" ",
@@ -449,7 +452,7 @@ local function create_line(choice, centered_line)
 	end
 
 	comment_string = comment_string:match("^(.*)%%s(.*)")
-	if not comment_string or vim.bo.filetype == "markdown" or vim.bo.filetype == "org" then
+	if not comment_string or filetype == "markdown" or filetype == "org" then
 		comment_string = ""
 	end
 	if settings.line_blank_line_above then
