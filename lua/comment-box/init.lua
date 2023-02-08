@@ -36,7 +36,7 @@ local cat = require("comment-box.catalog")
 local catalog = require("comment-box.catalog_view")
 
 ---@type string
-local comment_string
+local comment_string, comment_string_bottom_row, comment_string_int_row, comment_string_end
 ---@type number, number
 local line_start_pos, line_end_pos
 
@@ -249,10 +249,22 @@ end
 local function create_box(choice)
 	local borders = set_borders(choice)
 	local filetype = vim.bo.filetype
+	comment_string = vim.bo.commentstring
 
-	comment_string = vim.bo.commentstring:match("^(.*)%%s(.*)")
+	comment_string, comment_string_end = comment_string:match("^(.*)%%s(.*)")
+
+
 	if not comment_string or filetype == "markdown" or filetype == "org" then
 		comment_string = ""
+	end
+
+	-- TODO: Iimplement below as a style option for multi style commenting.
+        if comment_string_end ~= "" then
+		comment_string_bottom_row =  string.rep(" ", string.len(comment_string) )
+		comment_string_int_row = comment_string_bottom_row
+	else
+                comment_string_bottom_row = comment_string
+		comment_string_int_row = comment_string
 	end
 
 	local text = get_text()
@@ -321,7 +333,7 @@ local function create_box(choice)
 
 	local ext_bottom_row = string.format(
 		"%s%s%s%s%s",
-		comment_string,
+		comment_string_bottom_row,
 		lead_space_bb,
 		borders.bottom_left,
 		string.rep(borders.bottom, final_box_width),
@@ -330,7 +342,7 @@ local function create_box(choice)
 
 	local inner_blank_line = string.format(
 		"%s%s%s%s%s",
-		comment_string,
+		comment_string_int_row,
 		lead_space_bb,
 		borders.left,
 		string.rep(trail, final_box_width),
@@ -369,7 +381,7 @@ local function create_box(choice)
 
 			int_row = string.format(
 				"%s%s%s%s%s%s%s",
-				comment_string,
+				comment_string_int_row,
 				lead_space_bb,
 				borders.left,
 				string.rep(lead_space_ab, start_pad),
@@ -408,7 +420,7 @@ local function create_box(choice)
 
 			int_row = string.format(
 				"%s%s%s%s%s%s%s",
-				comment_string,
+				comment_string_int_row,
 				lead_space_bb,
 				borders.left,
 				lead_space_ab,
@@ -426,6 +438,8 @@ local function create_box(choice)
 	end
 
 	table.insert(lines, ext_bottom_row)
+
+	table.insert(lines, comment_string_end)
 
 	if settings.outer_blank_lines then
 		table.insert(lines, "")
@@ -451,22 +465,29 @@ local function create_line(choice, centered_line)
 		)
 	end
 
-	comment_string = comment_string:match("^(.*)%%s(.*)")
+	if lead_space == "" then
+		 lead_space = " "
+	end
+
+	comment_string, comment_string_end = comment_string:match("^(.*)%%s(.*)")
+
 	if not comment_string or filetype == "markdown" or filetype == "org" then
 		comment_string = ""
 	end
+
 	if settings.line_blank_line_above then
 		table.insert(line, "")
 	end
 	table.insert(
 		line,
 		string.format(
-			"%s%s%s%s%s",
+			"%s%s%s%s%s%s",
 			comment_string,
 			lead_space,
 			symbols.line_start,
 			string.rep(symbols.line, settings.line_width - 2),
-			symbols.line_end
+			symbols.line_end,
+ 			comment_string_end
 		)
 	)
 	if settings.line_blank_line_below then
@@ -655,3 +676,4 @@ return {
 	catalog = open_catalog,
 	setup = setup,
 }
+
