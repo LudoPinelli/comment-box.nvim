@@ -176,7 +176,7 @@ local function format_lines(text)
 				final_box_width = vim.fn.strdisplaywidth(str) + 2
 			end
 		else
-			final_box_width = math.max(url_width, settings.doc_width - 2)
+			final_box_width = math.max(url_width, settings.box_width - 2)
 		end
 
 		if vim.fn.strdisplaywidth(str) > final_box_width then
