@@ -102,7 +102,7 @@ local function set_cur_pos(end_pos)
 	return cur_pos
 end
 
--- Skip comment string if there is one at the beginning of the line trop longue
+-- Skip comment string if there is one at the beginning of the linee
 ---@param line string
 ---@return string
 local function skip_cs(line)
@@ -170,8 +170,8 @@ local function format_lines(text)
 			if vim.fn.strdisplaywidth(str) >= math.max(url_width, settings.doc_width - 2) then
 				final_box_width = math.max(url_width, settings.doc_width - 2)
 			elseif
-				vim.fn.strdisplaywidth(str) > final_box_width
-				and final_box_width < math.max(url_width, settings.doc_width - 2)
+					vim.fn.strdisplaywidth(str) > final_box_width
+					and final_box_width < math.max(url_width, settings.doc_width - 2)
 			then
 				final_box_width = vim.fn.strdisplaywidth(str) + 2
 			end
@@ -259,11 +259,11 @@ local function create_box(choice)
 	end
 
 	-- TODO: Iimplement below as a style option for multi style commenting.
-        if comment_string_end ~= "" then
-		comment_string_bottom_row =  string.rep(" ", string.len(comment_string) )
+	if comment_string_end ~= "" then
+		comment_string_bottom_row = string.rep(" ", string.len(comment_string))
 		comment_string_int_row = comment_string_bottom_row
 	else
-                comment_string_bottom_row = comment_string
+		comment_string_bottom_row = comment_string
 		comment_string_int_row = comment_string
 	end
 
@@ -466,7 +466,7 @@ local function create_line(choice, centered_line)
 	end
 
 	if lead_space == "" then
-		 lead_space = " "
+		lead_space = " "
 	end
 
 	comment_string, comment_string_end = comment_string:match("^(.*)%%s(.*)")
@@ -487,7 +487,7 @@ local function create_line(choice, centered_line)
 			symbols.line_start,
 			string.rep(symbols.line, settings.line_width - 2),
 			symbols.line_end,
- 			comment_string_end
+			comment_string_end
 		)
 	)
 	if settings.line_blank_line_below then
@@ -676,4 +676,3 @@ return {
 	catalog = open_catalog,
 	setup = setup,
 }
-

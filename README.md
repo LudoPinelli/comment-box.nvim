@@ -4,7 +4,7 @@
 
 You have this long config file and you want to clearly (and beautifully) separate each part. So you put lines of symbols as separators. Boxes would have been better but too tedious to make, not to mention if you want to center your text in it.
 
-This plugin tries to remedy this by giving you easy boxes and lines the way you want them to be.
+This plugin tries to remedy this by giving you easy boxes and lines the way you want them to be in any kind of plain text file.
 
 ## Overview
 
@@ -18,9 +18,11 @@ _comment-box_ allows you to:
 
 Mainly designed for code comments, _comment-box_ can also be used to brighten up the dull _.txt_ files! You can also use it in _markdown_ and _orgmode_ files, however, if it makes sense if you use those formats "as is" (for note taking for example), it's not a good idea if you plan to convert them to other formats.
 
+**Note**: multi-line commenting as used in C is quite tricky and not fully supported yet.
+
 ## Prerequisite
 
-_Neovim_ 0.5+
+_Neovim_ 0.8+
 
 ## Installation
 
@@ -271,4 +273,4 @@ I learned and borrow from those plugins' code:
 - [better-escape](https://github.com/max397574/better-escape.nvim)
 - [nvim-comment](https://github.com/terrortylor/nvim-comment/blob/main/lua/nvim_comment.lua)
 
-@HiPhish for his excellent advice to make the code a bit better (I'm still working on it...).
+Thnaks to @HiPhish for his excellent advice to make the code a bit better (I'm still working on it...) and all the contributors.

@@ -12,7 +12,7 @@ been better but too tedious to make, not to mention if you want to center your
 text in it.
 
 This plugin tries to remedy this by giving you easy boxes and lines the way you
-want them to be.
+want them to be in any kind of plain text file.
 
 ================================================================================
 CONTENTS                                                    *comment-box-contents*
@@ -66,10 +66,13 @@ the dull .txt files! You can also use it in markdown and orgmode files, however,
 if it makes sense if you use those formats "as is" (for note taking for
 example), it's not a good idea if you plan to convert them to other formats.
 
+Note: multi-line commenting as used in C is quite tricky and not fully supported
+yet.
+
 --------------------------------------------------------------------------------
 PREREQUISITE                                            *comment-box-prerequisite*
 
-Neovim 0.5+
+Neovim 0.8+
 
 --------------------------------------------------------------------------------
 INSTALLATION                                            *comment-box-installation*
