@@ -266,6 +266,13 @@ The symbols used to draw the lines. Let your creativity go wild! Or just use the
 
 Self explanatory!
 
+## TODO
+
+- [x] Convert commands creation from vimscript to lua
+- [ ] "Titled lines" (issue #10)
+- [ ] Right alignement
+- [ ] Option for displaying comments/docstring as virtual text (issue #5)
+
 ## Acknowledgement
 
 I learned and borrow from those plugins' code:
