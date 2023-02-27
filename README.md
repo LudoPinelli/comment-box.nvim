@@ -272,6 +272,7 @@ Self explanatory!
 - [ ] "Titled lines" (issue #10)
 - [ ] Right alignement
 - [ ] Option for displaying comments/docstring as virtual text (issue #5)
+- [ ] Full support of multi-line style comments
 
 ## Acknowledgement
 
