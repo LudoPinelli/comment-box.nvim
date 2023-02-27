@@ -31,7 +31,6 @@ local settings = {
 --         ╭──────────────────────────────────────────────────────────╮
 --         │                     LOCAL VARIABLES                      │
 --         ╰──────────────────────────────────────────────────────────╯
-
 local cat = require("comment-box.catalog")
 local catalog = require("comment-box.catalog_view")
 
