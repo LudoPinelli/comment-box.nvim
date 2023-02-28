@@ -1,5 +1,3 @@
-print("Comment-box dev branch")
-
 vim.api.nvim_create_user_command(
 	'CBlbox',
 	function(opts)
