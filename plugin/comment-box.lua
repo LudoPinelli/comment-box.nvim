@@ -1,7 +1,7 @@
 vim.api.nvim_create_user_command(
 	'CBlbox',
 	function(opts)
-		require 'comment-box.init'.lbox(opts.args, opts.line1, opts.line2)
+		require 'comment-box'.lbox(opts.args, opts.line1, opts.line2)
 	end,
 	{
 		nargs = '?',
@@ -13,7 +13,7 @@ vim.api.nvim_create_user_command(
 vim.api.nvim_create_user_command(
 	'CBcbox',
 	function(opts)
-		require 'comment-box.init'.cbox(opts.args, opts.line1, opts.line2)
+		require 'comment-box'.cbox(opts.args, opts.line1, opts.line2)
 	end,
 	{
 		nargs = '?',
@@ -25,7 +25,7 @@ vim.api.nvim_create_user_command(
 vim.api.nvim_create_user_command(
 	'CBclbox',
 	function(opts)
-		require 'comment-box.init'.clbox(opts.args, opts.line1, opts.line2)
+		require 'comment-box'.clbox(opts.args, opts.line1, opts.line2)
 	end,
 	{
 		nargs = '?',
@@ -37,7 +37,7 @@ vim.api.nvim_create_user_command(
 vim.api.nvim_create_user_command(
 	'CBccbox',
 	function(opts)
-		require 'comment-box.init'.ccbox(opts.args, opts.line1, opts.line2)
+		require 'comment-box'.ccbox(opts.args, opts.line1, opts.line2)
 	end,
 	{
 		nargs = '?',
@@ -49,7 +49,7 @@ vim.api.nvim_create_user_command(
 vim.api.nvim_create_user_command(
 	'CBalbox',
 	function(opts)
-		require 'comment-box.init'.albox(opts.args, opts.line1, opts.line2)
+		require 'comment-box'.albox(opts.args, opts.line1, opts.line2)
 	end,
 	{
 		nargs = '?',
@@ -61,7 +61,7 @@ vim.api.nvim_create_user_command(
 vim.api.nvim_create_user_command(
 	'CBacbox',
 	function(opts)
-		require 'comment-box.init'.acbox(opts.args, opts.line1, opts.line2)
+		require 'comment-box'.acbox(opts.args, opts.line1, opts.line2)
 	end,
 	{
 		nargs = '?',
@@ -73,7 +73,7 @@ vim.api.nvim_create_user_command(
 vim.api.nvim_create_user_command(
 	'CBaclbox',
 	function(opts)
-		require 'comment-box.init'.aclbox(opts.args, opts.line1, opts.line2)
+		require 'comment-box'.aclbox(opts.args, opts.line1, opts.line2)
 	end,
 	{
 		nargs = '?',
@@ -85,7 +85,7 @@ vim.api.nvim_create_user_command(
 vim.api.nvim_create_user_command(
 	'CBaccbox',
 	function(opts)
-		require 'comment-box.init'.accbox(opts.args, opts.line1, opts.line2)
+		require 'comment-box'.accbox(opts.args, opts.line1, opts.line2)
 	end,
 	{
 		nargs = '?',
@@ -97,7 +97,7 @@ vim.api.nvim_create_user_command(
 vim.api.nvim_create_user_command(
 	'CBline',
 	function(opts)
-		require 'comment-box.init'.line(opts.args)
+		require 'comment-box'.line(opts.args)
 	end,
 	{
 		nargs = '?',
@@ -108,7 +108,7 @@ vim.api.nvim_create_user_command(
 vim.api.nvim_create_user_command(
 	'CBcline',
 	function(opts)
-		require 'comment-box.init'.cline(opts.args)
+		require 'comment-box'.cline(opts.args)
 	end,
 	{
 		nargs = '?',
@@ -119,7 +119,7 @@ vim.api.nvim_create_user_command(
 vim.api.nvim_create_user_command(
 	'CBcatalog',
 	function()
-		require 'comment-box.init'.catalog()
+		require 'comment-box'.catalog()
 	end,
 	{ desc = 'Open the catalog' }
 )
