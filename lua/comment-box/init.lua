@@ -43,6 +43,8 @@ local line_start_pos, line_end_pos
 local centered_text
 ---@type boolean
 local centered_box
+---@type boolean
+local right_aligned_text
 ---@type number
 local final_box_width
 ---@type boolean
@@ -57,9 +59,15 @@ local lead_space_ab, lead_space_bb
 
 -- Compute padding
 local function get_pad(line)
-	local start_pad = math.floor((final_box_width - vim.fn.strdisplaywidth(line)) / 2)
-	local end_pad = final_box_width - (start_pad + vim.fn.strdisplaywidth(line))
-
+	local start_pad = 0
+	local end_pad = 0
+	if centered_text then
+		start_pad = math.floor((final_box_width - vim.fn.strdisplaywidth(line)) / 2)
+		end_pad = final_box_width - (start_pad + vim.fn.strdisplaywidth(line))
+	elseif right_aligned_text then
+		start_pad = final_box_width - vim.fn.strdisplaywidth(line) - 1
+		end_pad = final_box_width - (start_pad + vim.fn.strdisplaywidth(line))
+	end
 	return start_pad, end_pad
 end
 
@@ -101,7 +109,7 @@ local function set_cur_pos(end_pos)
 	return cur_pos
 end
 
--- Skip comment string if there is one at the beginning of the linee
+-- Skip comment string if there is one at the beginning of the line
 ---@param line string
 ---@return string
 local function skip_cs(line)
@@ -113,7 +121,7 @@ local function skip_cs(line)
 		line = line:gsub(vim.pesc(comment_string), "", 1) -- remove comment string
 		line = line:gsub("[ \t]+%f[\r\n%z]", "") -- remove trailing spaces
 	end
-	if centered_text then
+	if centered_text or right_aligned_text then
 		return vim.trim(line) -- if centered need to trim both ends for correct padding
 	else
 		return line
@@ -361,10 +369,10 @@ local function create_box(choice)
 		table.insert(lines, inner_blank_line)
 	end
 
-	if centered_text then
-		-- ╓                  ╖
-		-- ║ If text centered ║
-		-- ╙                  ╜
+	if centered_text or right_aligned_text then
+		-- ╓                                   ╖
+		-- ║ If text centered or right aligned ║
+		-- ╙                                   ╜
 
 		for _, line in pairs(text) do
 			local start_pad, end_pad = get_pad(line)
@@ -534,6 +542,7 @@ local function print_lbox(choice, lstart, lend)
 	lstart = tonumber(lstart)
 	lend = tonumber(lend)
 	centered_text = false
+	right_aligned_text = false
 	centered_box = false
 	adapted = false
 	display_box(choice, lstart, lend)
@@ -548,6 +557,22 @@ local function print_cbox(choice, lstart, lend)
 	lstart = tonumber(lstart)
 	lend = tonumber(lend)
 	centered_text = true
+	right_aligned_text = false
+	centered_box = false
+	adapted = false
+	display_box(choice, lstart, lend)
+end
+
+-- Print a left aligned box with text right aligned
+---@param choice number?
+---@param lstart number?
+---@param lend number?
+local function print_rbox(choice, lstart, lend)
+	choice = tonumber(choice)
+	lstart = tonumber(lstart)
+	lend = tonumber(lend)
+	centered_text = false
+	right_aligned_text = true
 	centered_box = false
 	adapted = false
 	display_box(choice, lstart, lend)
@@ -560,6 +585,7 @@ local function print_clbox(choice, lstart, lend)
 	lstart = tonumber(lstart)
 	lend = tonumber(lend)
 	centered_text = false
+	right_aligned_text = false
 	centered_box = true
 	adapted = false
 	display_box(choice, lstart, lend)
@@ -574,6 +600,22 @@ local function print_ccbox(choice, lstart, lend)
 	lstart = tonumber(lstart)
 	lend = tonumber(lend)
 	centered_text = true
+	right_aligned_text = false
+	centered_box = true
+	adapted = false
+	display_box(choice, lstart, lend)
+end
+
+-- Print a centered box with text right aligned
+---@param choice number?
+---@param lstart number?
+---@param lend number?
+local function print_crbox(choice, lstart, lend)
+	choice = tonumber(choice)
+	lstart = tonumber(lstart)
+	lend = tonumber(lend)
+	centered_text = false
+	right_aligned_text = true
 	centered_box = true
 	adapted = false
 	display_box(choice, lstart, lend)
@@ -588,6 +630,7 @@ local function print_albox(choice, lstart, lend)
 	lstart = tonumber(lstart)
 	lend = tonumber(lend)
 	centered_text = false
+	right_aligned_text = false
 	centered_box = false
 	adapted = true
 	display_box(choice, lstart, lend)
@@ -602,6 +645,7 @@ local function print_acbox(choice, lstart, lend)
 	lstart = tonumber(lstart)
 	lend = tonumber(lend)
 	centered_text = true
+	right_aligned_text = false
 	centered_box = false
 	adapted = true
 	display_box(choice, lstart, lend)
@@ -616,6 +660,7 @@ local function print_aclbox(choice, lstart, lend)
 	lstart = tonumber(lstart)
 	lend = tonumber(lend)
 	centered_text = false
+	right_aligned_text = false
 	centered_box = true
 	adapted = true
 	display_box(choice, lstart, lend)
@@ -630,6 +675,7 @@ local function print_accbox(choice, lstart, lend)
 	lstart = tonumber(lstart)
 	lend = tonumber(lend)
 	centered_text = true
+	right_aligned_text = false
 	centered_box = true
 	adapted = true
 	display_box(choice, lstart, lend)
@@ -664,8 +710,10 @@ end
 return {
 	lbox = print_lbox,
 	cbox = print_cbox,
+	rbox = print_rbox,
 	clbox = print_clbox,
 	ccbox = print_ccbox,
+	crbox = print_crbox,
 	albox = print_albox,
 	acbox = print_acbox,
 	aclbox = print_aclbox,
