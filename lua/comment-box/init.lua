@@ -463,7 +463,7 @@ end
 -- Build a line
 ---@param choice number?
 ---@param centered_line boolean
-local function create_line(choice, centered_line)
+local function create_line(choice, centered_line, right_aligned_line)
 	local symbols = set_line(choice)
 	comment_string = vim.bo.commentstring
 	local line = {}
@@ -474,6 +474,11 @@ local function create_line(choice, centered_line)
 		lead_space = string.rep(
 			" ",
 			math.floor((settings.doc_width - settings.line_width) / 2 - vim.fn.strdisplaywidth(comment_string))
+		)
+	elseif right_aligned_line then
+		lead_space = string.rep(
+			" ",
+			settings.doc_width - settings.line_width - vim.fn.strdisplaywidth(comment_string)
 		)
 	end
 
@@ -520,9 +525,9 @@ end
 
 ---@param choice number?
 ---@param centered_line boolean
-local function display_line(choice, centered_line)
+local function display_line(choice, centered_line, right_aligned_line)
 	local line = vim.fn.line(".")
-	vim.api.nvim_buf_set_lines(0, line - 1, line, false, create_line(choice, centered_line))
+	vim.api.nvim_buf_set_lines(0, line - 1, line, false, create_line(choice, centered_line, right_aligned_line))
 
 	local cur = vim.api.nvim_win_get_cursor(0)
 	if settings.line_blank_line_below then
@@ -769,7 +774,8 @@ end
 local function print_line(choice)
 	choice = tonumber(choice)
 	local centered_line = false
-	display_line(choice, centered_line)
+	local right_aligned_line = false
+	display_line(choice, centered_line, right_aligned_line)
 end
 
 -- Print a centered line
@@ -777,7 +783,17 @@ end
 local function print_cline(choice)
 	choice = tonumber(choice)
 	local centered_line = true
-	display_line(choice, centered_line)
+	local right_aligned_line = false
+	display_line(choice, centered_line, right_aligned_line)
+end
+
+-- Print a right aligned line
+---@param choice number?
+local function print_rline(choice)
+	choice = tonumber(choice)
+	local centered_line = false
+	local right_aligned_line = true
+	display_line(choice, centered_line, right_aligned_line)
 end
 
 local function open_catalog()
@@ -807,6 +823,7 @@ return {
 	arbox = print_arbox,
 	line = print_line,
 	cline = print_cline,
+	rline = print_rline,
 	catalog = open_catalog,
 	setup = setup,
 }
