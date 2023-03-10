@@ -96,32 +96,46 @@ BOXES                                                          *comment-box-boxe
 +------------------------------------------------------------------------------+
 |   Command    |      Description        |              function               |
 +--------------+-------------------------+-------------------------------------+
-|CBlbox[num]   | Left aligned fixed size | require("comment-box").lbox([num])  |
+|CBllbox[num]  | Left aligned fixed size | require("comment-box").llbox([num]) |
 |              | box with left aligned   |                                     |
+|              | text                    |                                     |
++--------------+-------------------------+-------------------------------------+
+|CBlcbox[num]  | Left aligned fixed size | require("comment-box").lcbox([num]) |
+|              | box with centered text  |                                     |
++--------------+-------------------------+-------------------------------------+
+|CBlrbox[num]  | Left aligned fixed size | require("comment-box").lrbox([num]) |
+|              | box with right aligned  |                                     |
 |              | text                    |                                     |
 +--------------+-------------------------+-------------------------------------+
 |CBclbox[num]  | Centered fixed size box | require("comment-box").clbox([num]) |
 |              | with left aligned text  |                                     |
 +--------------+-------------------------+-------------------------------------+
-|CBcbox[num]   | Left aligned fixed size | require("comment-box").cbox([num])  |
-|              | box with centered text  |                                     |
-+--------------+-------------------------+-------------------------------------+
 |CBccbox[num]  | Centered fixed size box | require("comment-box").ccbox([num]) |
 |              | with centered text      |                                     |
 +--------------+-------------------------+-------------------------------------+
-|CBalbox[num]  | Left aligned adapted    | require("comment-box").lbox([num])  |
-|              | box with left aligned   |                                     |
+|CBcrbox[num]  | Centered fixed size box | require("comment-box").crbox([num]) |
+|              | with right aligned text |                                     |
++--------------+-------------------------+-------------------------------------+
+|CBrlbox[num]  | Right aligned fixed     | require("comment-box").rlbox([num]) |
+|              | size box with left      |                                     |
+|              | aligned text            |                                     |
++--------------+-------------------------+-------------------------------------+
+|CBrcbox[num]  | Right aligned fixed     | require("comment-box").rcbox([num]) |
+|              | size box with centered  |                                     |
 |              | text                    |                                     |
 +--------------+-------------------------+-------------------------------------+
-|CBaclbox[num] | Centered adapted box    | require("comment-box").aclbox([num])|
-|              | with aligned text       |                                     |
+|CBrrbox[num]  | Right aligned fixed     | require("comment-box").rrbox([num]) |
+|              | size box with right     |                                     |
+|              | aligned text            |                                     |
 +--------------+-------------------------+-------------------------------------+
-|CBacbox[num]  | Left aligned adapted    | require("comment-box").acbox([num]) |
-|              | box with centered text  |                                     |
+|CBalbox[num]  | Left aligned adapted    | require("comment-box").albox([num]) |
+|              | box                     |                                     |
 +--------------+-------------------------+-------------------------------------+
-|CBaccbox[num] | Centered adapted box    | require("comment-box").accbox([num])|
-|              | with centered text      |                                     |
+|CBacbox[num]  | Centered adapted box    | require("comment-box").acbox([num]) |
 +------------------------------------------------------------------------------+
+|CBarbox[num]  | Right aligned adapted   | require("comment-box").arbox([num]) |
+|              | box                     |                                     |
++--------------+-------------------------+-------------------------------------+
 
 The [num] parameter is optional. It's the number of a predefined style from the
 catalog (see |comment-box-catalog|). By leaving it empty, the box or line will be
@@ -130,11 +144,14 @@ style.
 
 A 'centered' box is centered relatively to the width of your document (set to the
 standard 80 by default, you can change it with the `setup()` function - see
-|comment-box-configuration|)
+|comment-box-configuration|). Same for 'right aligned' boxes.
 
 An 'adapted' box means than the box width will be adapted to the width of the
 text. However, if the width of the text exceed the width of the document, the box
 will have the width of the document.
+In case of multiple lines with various size, the text is aligned according to the
+position of the box (left aligned if the box is left aligned, centered if the box
+is centered, right aligned if the box is right aligned).
 
 To draw a box, place your cursor on the line of text you want in a box, or select
 multiple lines in visual mode, then use one of the command/function above.
@@ -145,9 +162,9 @@ wrap it for you.
 Examples
 >
     -- A left aligned fixed size box with the text left justified:
-    :CBlbox
+    :CBllbox
     -- or
-    :lua require("comment-box").lbox()
+    :lua require("comment-box").llbox()
 
     -- A centered fixed size box with the text centered:
     :CBccbox
@@ -161,26 +178,27 @@ Examples
 
     -- A left aligned fixed size box with the text left justified,
     -- using the syle 17 from the catalog:
-    :CBlbox17
+    :CBllbox17
     -- or
-    :lua require("comment-box").lbox(17)
+    :lua require("comment-box").llbox(17)
 <
 
 LINES                                                          *comment-box-lines*
 
-+-----------------------------------------------------------------------+
-|   Command   |    Description    |             function                |
-+-------------+-------------------+-------------------------------------+
-|CBline[num]  | Left aligned line | require("comment-box").line([num])  |
-|CBcline[num] | Centered line     | require("comment-box").cline([num]) |
-+-----------------------------------------------------------------------+
++------------------------------------------------------------------------+
+|   Command   |    Description     |             function                |
++-------------+--------------------+-------------------------------------+
+|CBline[num]  | Left aligned line  | require("comment-box").line([num])  |
+|CBcline[num] | Centered line      | require("comment-box").cline([num]) |
+|CBrline[num] | Right aligned line | require("comment-box").rline([num]) |
++------------------------------------------------------------------------+
 
 To draw a line, place your cursor where you want it and in normal or insert mode,
 use one of the command/function above.
 
-Note: a line is centered relatively to the width of your document (set to the
-standard 80 by default, you can change it with the setup() function - see
-|comment-box-configuration|)
+Note: a line is centered or right aligned according to the width of your document
+(set to the standard 80 by default, you can change it with the setup() function
+- see|comment-box-configuration|)
 
 Examples:
 >
@@ -194,10 +212,10 @@ Examples:
     -- or
     :lua require("comment-box").cline()
 
-    -- A centered line using the style 6 from the catalog:
-    :CBcline6
+    -- A right aligned line using the style 6 from the catalog:
+    :CBrline6
     -- or
-    :lua require("comment-box").cline(4)
+    :lua require("comment-box").rline(6)
 <
 
 KEYBINDINGS EXAMPLES                            *comment-box-keybindings_examples*
