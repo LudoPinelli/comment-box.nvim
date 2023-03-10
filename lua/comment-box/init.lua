@@ -239,7 +239,10 @@ local function set_lead_space()
 		)
 	end
 	if right_aligned_box then
-		lead_space_bb = string.rep(" ", settings.doc_width - final_box_width - vim.fn.strdisplaywidth(comment_string))
+		lead_space_bb = string.rep(
+			" ",
+			settings.doc_width - final_box_width - vim.fn.strdisplaywidth(comment_string) - 2
+		)
 	end
 
 	return lead_space_ab, lead_space_bb
@@ -478,7 +481,7 @@ local function create_line(choice, centered_line, right_aligned_line)
 	elseif right_aligned_line then
 		lead_space = string.rep(
 			" ",
-			settings.doc_width - settings.line_width - vim.fn.strdisplaywidth(comment_string)
+			settings.doc_width - settings.line_width - vim.fn.strdisplaywidth(comment_string) + 2
 		)
 	end
 
