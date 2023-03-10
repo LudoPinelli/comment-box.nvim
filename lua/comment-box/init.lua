@@ -533,6 +533,9 @@ end
 --         │                     PUBLIC FUNCTIONS                     │
 --         ╰──────────────────────────────────────────────────────────╯
 
+--  ▲            ▲
+--  █ DEPRECATED █
+--  ▼            ▼
 -- Print a left aligned box with text left aligned
 ---@param choice number?
 ---@param lstart number?
@@ -548,6 +551,24 @@ local function print_lbox(choice, lstart, lend)
 	display_box(choice, lstart, lend)
 end
 
+-- Print a left aligned box with text left aligned
+---@param choice number?
+---@param lstart number?
+---@param lend number?
+local function print_llbox(choice, lstart, lend)
+	choice = tonumber(choice)
+	lstart = tonumber(lstart)
+	lend = tonumber(lend)
+	centered_text = false
+	right_aligned_text = false
+	centered_box = false
+	adapted = false
+	display_box(choice, lstart, lend)
+end
+
+--  ▲            ▲
+--  █ DEPRECATED █
+--  ▼            ▼
 -- Print a left aligned box with text centered
 ---@param choice number?
 ---@param lstart number?
@@ -563,11 +584,26 @@ local function print_cbox(choice, lstart, lend)
 	display_box(choice, lstart, lend)
 end
 
+-- Print a left aligned box with text centered
+---@param choice number?
+---@param lstart number?
+---@param lend number?
+local function print_lcbox(choice, lstart, lend)
+	choice = tonumber(choice)
+	lstart = tonumber(lstart)
+	lend = tonumber(lend)
+	centered_text = true
+	right_aligned_text = false
+	centered_box = false
+	adapted = false
+	display_box(choice, lstart, lend)
+end
+
 -- Print a left aligned box with text right aligned
 ---@param choice number?
 ---@param lstart number?
 ---@param lend number?
-local function print_rbox(choice, lstart, lend)
+local function print_lrbox(choice, lstart, lend)
 	choice = tonumber(choice)
 	lstart = tonumber(lstart)
 	lend = tonumber(lend)
@@ -682,8 +718,10 @@ end
 
 return {
 	lbox = print_lbox,
+	llbox = print_llbox,
 	cbox = print_cbox,
-	rbox = print_rbox,
+	lcbox = print_lcbox,
+	lrbox = print_lrbox,
 	clbox = print_clbox,
 	ccbox = print_ccbox,
 	crbox = print_crbox,
