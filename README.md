@@ -1,3 +1,14 @@
+#### - BREAKING CHANGE (March 10 2023) -
+The functions `aclbox()`(`:CBaclbox`) and `accbox()` (`:CBaccbox`) have been removed since if the box is adapted to the size of the text it doesn't matter if this one is centered or left aligned. In case of multiple lines of various size, the shorter lines are aligned according to the position of the box.<br>
+Therefore the function `acbox()` (`:CBacbox`) which was drawing a left aligned adapted box with centered text now draws a centered adapted box.
+
+Also, in order to keep a consistent and logical naming convention, two functions are considered deprecated. If you use them in your keybindings, thanks to rename them accordingly:
+| Old name | New name |
+|---|---|
+| `CBlbox` / `require("comment-box").lbox()` | `CBllbox` / `require("comment-box).llbox()`|
+| `CBcbox` / `require("comment-box").cbox()` | `CBlcbox` / `require("comment-box).lcbox()`|
+
+---
 <h1 align="center">comment-box.nvim</h1>
 
 ![comment-box](./imgs/bc-title.jpg?raw=true)
@@ -44,20 +55,25 @@ If you're fine with the default settings (see [Configuration](#configuration-and
 
 | Command | Description | function |
 |--- | --- | --- |
-|`CBlbox[num]` | _Left aligned box of fixed size_ with _Left aligned text_ | `require("comment-box").lbox([num])` |
-|`CBclbox[num]` | _Centered box of fixed size_ with _Left aligned text_ | `require("comment-box").clbox([num])` |
-|`CBcbox[num]` | _Left aligned box of fixed size_ with _centered text_ | `require("comment-box").cbox([num])` |
-|`CBccbox[num]` | _Centered box of fixed size_ with _centered text_ | `require("comment-box").ccbox([num])` |
-|`CBalbox[num]` | _Left aligned adapted box_ with _Left aligned text_ | `require("comment-box").albox([num])` |
-|`CBaclbox[num]` | _Centered adapted box_ with _Left aligned text_ | `require("comment-box").aclbox([num])` |
-|`CBacbox[num]` | _Left aligned adapted box_ with _centered text_ | `require("comment-box").acbox([num])` |
-|`CBaccbox[num]` | _Centered adapted box_ with _centered text_ | `require("comment-box").accbox([num])` |
+|`CBllbox[num]` | _Left aligned box of fixed size_ with _Left aligned text_ | `require("comment-box").llbox([num])` |
+|`CBlcbox[num]` | _Left aligned box of fixed size_ with _Centered text_ | `require("comment-box").lcbox([num])` |
+|`CBlrbox[num]` | _Left aligned box of fixed size_ with _Right aligned text_ | `require("comment-box").lrbox([num])` |
+|`CBclbox[num]` | _Centered box of fixed size_ with _Left aligned text_ | `require("comment-box").lcbox([num])` |
+|`CBccbox[num]` | _Centered box of fixed size_ with _Centered text_ | `require("comment-box").ccbox([num])` |
+|`CBcrbox[num]` | _Centered box of fixed size_ with _Right aligned text_ | `require("comment-box").crbox([num])` |
+|`CBrlbox[num]` | _Right aligned box of fixed size_ with _Left aligned text_ | `require("comment-box").rlbox([num])` |
+|`CBrcbox[num]` | _Right aligned box of fixed size_ with _Centered text_ | `require("comment-box").rcbox([num])` |
+|`CBrrbox[num]` | _Right aligned box of fixed size_ with _Right aligned text_ | `require("comment-box").rrbox([num])` |
+|`CBalbox[num]` | _Left aligned adapted box_ | `require("comment-box").albox([num])` |
+|`CBacbox[num]` | _Centered adapted box_ | `require("comment-box").acbox([num])` |
+|`CBarbox[num]` | _Right aligned adapted box_ | `require("comment-box").arbox([num])` |
 
 The `[num]` parameter is optional. It's the number of a predefined style from the catalog (see [Catalog](#the-catalog)). By leaving it empty, the box or line will be drawn with the style you defined or if you didn't define one, with the default style.
 
-A 'centered' box is centered relatively to the width of your document (set to the standard 80 by default, you can change it with the `setup()` function - see [Configuration](#configuration-and-creating-your-own-type-of-box))
+A 'centered' box is centered relatively to the width of your document (set to the standard 80 by default, you can change it with the `setup()` function - see [Configuration](#configuration-and-creating-your-own-type-of-box)). Same for 'right aligned' boxes.
 
 An 'adapted' box means than the box width will be adapted to the width of the text. However, if the width of the text exceed the width of the document, the box will have the width of the document.
+In case of multiple lines with various size, the text is aligned according to the position of the box (left aligned if the box is left aligned, centered if the box is centered, right aligned if the box is right aligned).
 
 To draw a box, place your cursor on the line of text you want in a box, or select multiple lines in _visual mode_, then use one of the command/function above.
 
@@ -66,25 +82,25 @@ To draw a box, place your cursor on the line of text you want in a box, or selec
 Examples:
 ```lua
 -- A left aligned fixed size box with the text left justified:
-:CBlbox
+:CBllbox
 -- or
-:lua require("comment-box").lbox()
+:lua require("comment-box").llbox()
 
 -- A centered fixed size box with the text centered:
 :CBccbox
 -- or
 :lua require("comment-box").ccbox()
 
--- A centered adapted box with the text centered:
-:CBaccbox
+-- A centered adapted box:
+:CBacbox
 -- or
-:lua require("comment-box").accbox()
+:lua require("comment-box").acbox()
 
 -- A left aligned fixed size box with the text left justified,
 -- using the syle 17 from the catalog:
-:CBlbox17
+:CBllbox17
 -- or
-:lua require("comment-box").lbox(17)
+:lua require("comment-box").llbox(17)
 ```
 
 #### Lines
@@ -93,10 +109,11 @@ Examples:
 |--- | --- | --- |
 |`CBline[num]` | _Left aligned line_ | `require("comment-box").line([num])` |
 |`CBcline[num]` | _Centered line_ | `require("comment-box").cline([num])` |
+|`CBrline[num]` | _Right aligned line_ | `require("comment-box").rline([num])` |
 
 To draw a line, place your cursor where you want it and in _normal_ or _insert_ mode, use one of the command/function above.
 
-**Note**: a line is centered relatively to the width of your document (set to the standard 80 by default, you can change it with the `setup()` function - see [Configuration](#configuration-and-creating-your-own-type-of-box))
+**Note**: a line is centered or right aligned according to the width of your document (set to the standard 80 by default, you can change it with the `setup()` function - see [Configuration](#configuration-and-creating-your-own-type-of-box))
 
 Examples:
 ```lua
@@ -110,10 +127,10 @@ Examples:
 -- or
 :lua require("comment-box").cline()
 
--- A centered line using the style 6 from the catalog:
-:CBcline6
+-- A right aligned line using the style 6 from the catalog:
+:CBrline6
 -- or
-:lua require("comment-box").cline(4)
+:lua require("comment-box").rline(6)
 ```
 
 ### Keybindings examples
@@ -135,24 +152,6 @@ inoremap <M-l> <Cmd>lua require('comment-box').cline()<CR>
 ```
 
 #### Lua
-
-```lua
-local keymap = vim.api.nvim_set_keymap
-
--- left aligned fixed size box with left aligned text
-keymap("n", "<Leader>bb", "<Cmd>lua require('comment-box').lbox()<CR>", {})
-keymap("v", "<Leader>bb", "<Cmd>lua require('comment-box').lbox()<CR>", {})
-
--- centered adapted box with centered text
-keymap("n", "<Leader>bc", "<Cmd>lua require('comment-box').accbox()<CR>", {})
-keymap("v", "<Leader>bc", "<Cmd>lua require('comment-box').accbox()<CR>", {})
-
--- centered line
-keymap("n", "<Leader>bl", "<Cmd>lua require('comment-box').cline()<CR>", {})
-keymap("i", "<M-l>", "<Cmd>lua require('comment-box').cline()<CR>", {})
-```
-
-Or if you use _Neovim-nightly_:
 
 ```lua
 local keymap = vim.keymap.set
@@ -207,24 +206,24 @@ You can call the `setup()` function in your _init.lua(.vim)_ to configure the wa
 
 ```lua
 require('comment-box').setup({
-	doc_width = 80, -- width of the document
-	box_width = 60, -- width of the boxes
-	borders = { -- symbols used to draw a box
-		top = "─",
-		bottom = "─",
-		left = "│",
-		right = "│",
-		top_left = "╭",
-		top_right = "╮",
-		bottom_left = "╰",
-		bottom_right = "╯",
-	},
+  doc_width = 80, -- width of the document
+  box_width = 60, -- width of the boxes
+  borders = { -- symbols used to draw a box
+    top = "─",
+    bottom = "─",
+    left = "│",
+    right = "│",
+    top_left = "╭",
+    top_right = "╮",
+    bottom_left = "╰",
+    bottom_right = "╯",
+  },
   line_width = 70, -- width of the lines
   line = { -- symbols used to draw a line
-		line = "─",
-		line_start = "─",
-		line_end = "─",
-    },
+    line = "─",
+    line_start = "─",
+    line_end = "─",
+  },
   outer_blank_lines = false, -- insert a blank line above and below the box
   inner_blank_lines = false, -- insert a blank line above and below the text
   line_blank_line_above = false, -- insert a blank line above the line
@@ -270,7 +269,7 @@ Self explanatory!
 
 - [x] Convert commands creation from vimscript to lua
 - [ ] "Titled lines" (issue #10)
-- [ ] Right alignement
+- [x] Right alignement
 - [ ] Option for displaying comments/docstring as virtual text (issue #5)
 - [ ] Full support of multi-line style comments
 
