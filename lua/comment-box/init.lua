@@ -740,7 +740,7 @@ local function print_acbox(choice, lstart, lend)
 	choice = tonumber(choice)
 	lstart = tonumber(lstart)
 	lend = tonumber(lend)
-	centered_text = false
+	centered_text = true
 	right_aligned_text = false
 	centered_box = true
 	right_aligned_box = false
@@ -757,7 +757,7 @@ local function print_arbox(choice, lstart, lend)
 	lstart = tonumber(lstart)
 	lend = tonumber(lend)
 	centered_text = false
-	right_aligned_text = false
+	right_aligned_text = true
 	centered_box = false
 	right_aligned_box = true
 	adapted = true
