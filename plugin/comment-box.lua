@@ -97,6 +97,42 @@ vim.api.nvim_create_user_command(
 )
 
 vim.api.nvim_create_user_command(
+	'CBrlbox',
+	function(opts)
+		require 'comment-box.init'.rlbox(opts.args, opts.line1, opts.line2)
+	end,
+	{
+		nargs = '?',
+		range = 2,
+		desc = 'Print a right aligned box with text left aligned',
+	}
+)
+
+vim.api.nvim_create_user_command(
+	'CBrcbox',
+	function(opts)
+		require 'comment-box.init'.rcbox(opts.args, opts.line1, opts.line2)
+	end,
+	{
+		nargs = '?',
+		range = 2,
+		desc = 'Print a right aligned box with text centered',
+	}
+)
+
+vim.api.nvim_create_user_command(
+	'CBrrbox',
+	function(opts)
+		require 'comment-box.init'.rrbox(opts.args, opts.line1, opts.line2)
+	end,
+	{
+		nargs = '?',
+		range = 2,
+		desc = 'Print a right aligned box with text right aligned',
+	}
+)
+
+vim.api.nvim_create_user_command(
 	'CBalbox',
 	function(opts)
 		require 'comment-box.init'.albox(opts.args, opts.line1, opts.line2)
@@ -117,6 +153,18 @@ vim.api.nvim_create_user_command(
 		nargs = '?',
 		range = 2,
 		desc = 'Print a centered adapted box',
+	}
+)
+
+vim.api.nvim_create_user_command(
+	'CBarbox',
+	function(opts)
+		require 'comment-box.init'.arbox(opts.args, opts.line1, opts.line2)
+	end,
+	{
+		nargs = '?',
+		range = 2,
+		desc = 'Print a right aligned adapted box',
 	}
 )
 
