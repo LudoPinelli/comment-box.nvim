@@ -617,11 +617,12 @@ local function print_crbox(choice, lstart, lend)
 	centered_text = false
 	right_aligned_text = true
 	centered_box = true
+	right_aligned_box = false
 	adapted = false
 	display_box(choice, lstart, lend)
 end
 
--- Print a left aligned box with text left aligned
+-- Print a left aligned adapted box
 ---@param choice number?
 ---@param lstart number?
 ---@param lend number?
@@ -632,11 +633,12 @@ local function print_albox(choice, lstart, lend)
 	centered_text = false
 	right_aligned_text = false
 	centered_box = false
+	right_aligned_box = false
 	adapted = true
 	display_box(choice, lstart, lend)
 end
 
--- Print a left aligned box with text centered
+-- Print a centered adapted box
 ---@param choice number?
 ---@param lstart number?
 ---@param lend number?
@@ -644,39 +646,10 @@ local function print_acbox(choice, lstart, lend)
 	choice = tonumber(choice)
 	lstart = tonumber(lstart)
 	lend = tonumber(lend)
-	centered_text = true
-	right_aligned_text = false
-	centered_box = false
-	adapted = true
-	display_box(choice, lstart, lend)
-end
-
--- Print a centered box with text left aligned
----@param choice number?
----@param lstart number?
----@param lend number?
-local function print_aclbox(choice, lstart, lend)
-	choice = tonumber(choice)
-	lstart = tonumber(lstart)
-	lend = tonumber(lend)
 	centered_text = false
 	right_aligned_text = false
 	centered_box = true
-	adapted = true
-	display_box(choice, lstart, lend)
-end
-
--- Print a centered box with text centered
----@param choice number?
----@param lstart number?
----@param lend number?
-local function print_accbox(choice, lstart, lend)
-	choice = tonumber(choice)
-	lstart = tonumber(lstart)
-	lend = tonumber(lend)
-	centered_text = true
-	right_aligned_text = false
-	centered_box = true
+	right_aligned_box = false
 	adapted = true
 	display_box(choice, lstart, lend)
 end
@@ -716,8 +689,6 @@ return {
 	crbox = print_crbox,
 	albox = print_albox,
 	acbox = print_acbox,
-	aclbox = print_aclbox,
-	accbox = print_accbox,
 	line = print_line,
 	cline = print_cline,
 	catalog = open_catalog,

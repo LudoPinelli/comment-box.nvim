@@ -80,7 +80,7 @@ vim.api.nvim_create_user_command(
 	{
 		nargs = '?',
 		range = 2,
-		desc = 'Print a left aligned box with text left aligned',
+		desc = 'Print a left aligned adapted box',
 	}
 )
 
@@ -92,31 +92,7 @@ vim.api.nvim_create_user_command(
 	{
 		nargs = '?',
 		range = 2,
-		desc = 'Print a left aligned box with text centered',
-	}
-)
-
-vim.api.nvim_create_user_command(
-	'CBaclbox',
-	function(opts)
-		require 'comment-box.init'.aclbox(opts.args, opts.line1, opts.line2)
-	end,
-	{
-		nargs = '?',
-		range = 2,
-		desc = 'Print a centered box with text left aligned',
-	}
-)
-
-vim.api.nvim_create_user_command(
-	'CBaccbox',
-	function(opts)
-		require 'comment-box.init'.accbox(opts.args, opts.line1, opts.line2)
-	end,
-	{
-		nargs = '?',
-		range = 2,
-		desc = 'Print a centered box with text centered',
+		desc = 'Print a centered adapted box',
 	}
 )
 
