@@ -273,7 +273,7 @@ local function create_box(choice)
 		comment_string = ""
 	end
 
-	-- TODO: Iimplement below as a style option for multi style commenting.
+	-- TODO: Implement below as a style option for multi style commenting.
 	if comment_string_end ~= "" then
 		comment_string_bottom_row = string.rep(" ", string.len(comment_string))
 		comment_string_int_row = comment_string_bottom_row
@@ -454,7 +454,9 @@ local function create_box(choice)
 
 	table.insert(lines, ext_bottom_row)
 
-	table.insert(lines, comment_string_end)
+	if comment_string_end ~= "" then
+		table.insert(lines, comment_string_end)
+	end
 
 	if settings.outer_blank_lines then
 		table.insert(lines, "")
