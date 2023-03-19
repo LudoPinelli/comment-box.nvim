@@ -38,6 +38,8 @@ local catalog = require("comment-box.catalog_view")
 local comment_string, comment_string_bottom_row, comment_string_int_row, comment_string_end
 ---@type number, number
 local line_start_pos, line_end_pos
+---@type boolean
+local titled
 
 ---@type boolean
 local centered_text
@@ -119,9 +121,9 @@ local function skip_cs(line)
 	local cs_len = vim.fn.strdisplaywidth(comment_string)
 
 	if trimmed_line:sub(1, cs_len) == comment_string then
-		line = line:gsub("^%s+", "") -- remove whitespace before comment string
+		line = line:gsub("^%s+", "")                    -- remove whitespace before comment string
 		line = line:gsub(vim.pesc(comment_string), "", 1) -- remove comment string
-		line = line:gsub("[ \t]+%f[\r\n%z]", "") -- remove trailing spaces
+		line = line:gsub("[ \t]+%f[\r\n%z]", "")        -- remove trailing spaces
 	end
 	if centered_text or right_aligned_text then
 		return vim.trim(line) -- if centered need to trim both ends for correct padding
