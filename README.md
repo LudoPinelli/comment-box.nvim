@@ -143,8 +143,8 @@ nnoremap <Leader>bb <Cmd>lua require('comment-box').lbox()<CR>
 vnoremap <Leader>bb <Cmd>lua require('comment-box').lbox()<CR>
 
 # centered adapted box with centered text
-nnoremap <Leader>bc <Cmd>lua require('comment-box').accbox()<CR>
-vnoremap <Leader>bc <Cmd>lua require('comment-box').accbox()<CR>
+nnoremap <Leader>bc <Cmd>lua require('comment-box').ccbox()<CR>
+vnoremap <Leader>bc <Cmd>lua require('comment-box').ccbox()<CR>
 
 # centered line
 nnoremap <Leader>bl <Cmd>lua require('comment-box').cline()<CR>
@@ -160,7 +160,7 @@ local cb = require("comment-box")
 -- left aligned fixed size box with left aligned text
 keymap({ "n", "v"}, "<Leader>bb", cb.lbox, {})
 -- centered adapted box with centered text
-keymap({ "n", "v"}, "<Leader>bc", cb.accbox, {})
+keymap({ "n", "v"}, "<Leader>bc", cb.ccbox, {})
 
 -- centered line
 keymap("n", "<Leader>bl", cb.cline, {})
