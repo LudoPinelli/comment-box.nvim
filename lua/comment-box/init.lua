@@ -16,7 +16,7 @@ local settings = {
 		bottom_left = "╰",
 		bottom_right = "╯",
 	},
-	line_width = 76,
+	line_width = 60,
 	lines = {
 		line = "─",
 		line_start = "─",
