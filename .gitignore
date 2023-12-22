@@ -42,3 +42,6 @@ luac.out
 
 doc/tags
 test.lua
+python_file.py
+lua_file.lua
+rust_file.rs

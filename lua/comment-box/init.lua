@@ -121,9 +121,9 @@ local function skip_cs(line)
 	local cs_len = vim.fn.strdisplaywidth(comment_string)
 
 	if trimmed_line:sub(1, cs_len) == comment_string then
-		line = line:gsub("^%s+", "")                    -- remove whitespace before comment string
+		line = line:gsub("^%s+", "") -- remove whitespace before comment string
 		line = line:gsub(vim.pesc(comment_string), "", 1) -- remove comment string
-		line = line:gsub("[ \t]+%f[\r\n%z]", "")        -- remove trailing spaces
+		line = line:gsub("[ \t]+%f[\r\n%z]", "") -- remove trailing spaces
 	end
 	if centered_text or right_aligned_text then
 		return vim.trim(line) -- if centered need to trim both ends for correct padding
@@ -175,14 +175,15 @@ local function format_lines(text)
 	for pos, str in ipairs(text) do
 		table.remove(text, pos)
 		str = skip_cs(str)
+		str = vim.trim(str)
 		table.insert(text, pos, str)
 
 		if adapted then
 			if vim.fn.strdisplaywidth(str) >= math.max(url_width, settings.doc_width - 2) then
 				final_box_width = math.max(url_width, settings.doc_width - 2)
 			elseif
-					vim.fn.strdisplaywidth(str) > final_box_width
-					and final_box_width < math.max(url_width, settings.doc_width - 2)
+				vim.fn.strdisplaywidth(str) > final_box_width
+				and final_box_width < math.max(url_width, settings.doc_width - 2)
 			then
 				final_box_width = vim.fn.strdisplaywidth(str) + 2
 			end
@@ -241,10 +242,8 @@ local function set_lead_space()
 		)
 	end
 	if right_aligned_box then
-		lead_space_bb = string.rep(
-			" ",
-			settings.doc_width - final_box_width - vim.fn.strdisplaywidth(comment_string) - 2
-		)
+		lead_space_bb =
+			string.rep(" ", settings.doc_width - final_box_width - vim.fn.strdisplaywidth(comment_string) - 2)
 	end
 
 	return lead_space_ab, lead_space_bb
@@ -269,7 +268,6 @@ local function create_box(choice)
 	comment_string = vim.bo.commentstring
 
 	comment_string, comment_string_end = comment_string:match("^(.*)%%s(.*)")
-
 
 	if not comment_string or filetype == "markdown" or filetype == "org" then
 		comment_string = ""
@@ -483,10 +481,8 @@ local function create_line(choice, centered_line, right_aligned_line)
 			math.floor((settings.doc_width - settings.line_width) / 2 - vim.fn.strdisplaywidth(comment_string))
 		)
 	elseif right_aligned_line then
-		lead_space = string.rep(
-			" ",
-			settings.doc_width - settings.line_width - vim.fn.strdisplaywidth(comment_string) + 2
-		)
+		lead_space =
+			string.rep(" ", settings.doc_width - settings.line_width - vim.fn.strdisplaywidth(comment_string) + 2)
 	end
 
 	if lead_space == "" then
@@ -534,7 +530,13 @@ end
 ---@param centered_line boolean
 local function display_line(choice, centered_line, right_aligned_line)
 	local line = vim.fn.line(".")
-	vim.api.nvim_buf_set_lines(0, line - 1, line, false, create_line(choice, centered_line, right_aligned_line))
+	vim.api.nvim_buf_set_lines(
+		0,
+		line - 1,
+		tonumber(line),
+		false,
+		create_line(choice, centered_line, right_aligned_line)
+	)
 
 	local cur = vim.api.nvim_win_get_cursor(0)
 	if settings.line_blank_line_below then
