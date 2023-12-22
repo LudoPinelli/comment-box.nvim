@@ -1,12 +1,8 @@
-#### - BREAKING CHANGE (March 10 2023) -
-The functions `aclbox()`(`:CBaclbox`) and `accbox()` (`:CBaccbox`) have been removed since if the box is adapted to the size of the text it doesn't matter if this one is centered or left aligned. In case of multiple lines of various size, the shorter lines are aligned according to the position of the box.<br>
-Therefore the function `acbox()` (`:CBacbox`) which was drawing a left aligned adapted box with centered text now draws a centered adapted box.
-
-Also, in order to keep a consistent and logical naming convention, two functions are considered deprecated. If you use them in your keybindings, thanks to rename them accordingly:
-| Old name | New name |
-|---|---|
-| `CBlbox` / `require("comment-box").lbox()` | `CBllbox` / `require("comment-box).llbox()`|
-| `CBcbox` / `require("comment-box").cbox()` | `CBlcbox` / `require("comment-box).lcbox()`|
+#### - LATEST CHANGES (December 22 2023) -
+- **REMOVED**: deprecated commands `CBlbox` (`lbox()`) and `CBcbox` (`cbox()`). (Replaced by `CBllbox` (`llbox()`) and `CBlcbox` (`lcbox()`) respectively)
+- **FIX**: In some filetypes (specifically the ones using `//` as comment strings) there was two spaces between the comment strings and a left align box instead of one (_issue#26_)
+- **FIX**: If more than one space was between the comment string and the comment, it lead to a misalignment of the text in the box (_issue#28_)
+- **FIX**: _"Not an editor command"_ error when launching the catalog on Windows (courtesy of [@HaloGamer33](https://github.com/HaloGamer33)).
 
 ---
 <h1 align="center">comment-box.nvim</h1>
@@ -43,6 +39,10 @@ For example with packer:
 
 ```lua
 use("LudoPinelli/comment-box.nvim")
+```
+With lazy:
+```lua
+{ "LudoPinelli/comment-box.nvim", }
 ```
 
 If you're fine with the default settings (see [Configuration](#configuration-and-creating-your-own-type-of-box)), it's all you have to do, however, _comment-box_ does not come with any keybinding, see [Keybindings examples](#keybindings-examples) to make your own.
@@ -139,8 +139,8 @@ Examples:
 
 ```shell
 # left aligned fixed size box with left aligned text
-nnoremap <Leader>bb <Cmd>lua require('comment-box').lbox()<CR>
-vnoremap <Leader>bb <Cmd>lua require('comment-box').lbox()<CR>
+nnoremap <Leader>bb <Cmd>lua require('comment-box').llbox()<CR>
+vnoremap <Leader>bb <Cmd>lua require('comment-box').llbox()<CR>
 
 # centered adapted box with centered text
 nnoremap <Leader>bc <Cmd>lua require('comment-box').ccbox()<CR>
@@ -158,7 +158,7 @@ local keymap = vim.keymap.set
 local cb = require("comment-box")
 
 -- left aligned fixed size box with left aligned text
-keymap({ "n", "v"}, "<Leader>bb", cb.lbox, {})
+keymap({ "n", "v"}, "<Leader>bb", cb.llbox, {})
 -- centered adapted box with centered text
 keymap({ "n", "v"}, "<Leader>bc", cb.ccbox, {})
 
@@ -280,4 +280,4 @@ I learned and borrow from those plugins' code:
 - [better-escape](https://github.com/max397574/better-escape.nvim)
 - [nvim-comment](https://github.com/terrortylor/nvim-comment/blob/main/lua/nvim_comment.lua)
 
-Thnaks to @HiPhish for his excellent advice to make the code a bit better (I'm still working on it...) and all the contributors.
+Thanks to [@HiPhish](https://github.com/HiPhish) for his excellent advice to make the code a bit better (I'm still working on it...) and all the contributors.

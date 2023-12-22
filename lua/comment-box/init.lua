@@ -22,6 +22,7 @@ local settings = {
 		line_start = "─",
 		line_end = "─",
 	},
+	text_left_padding = 1,
 	outer_blank_lines = false,
 	inner_blank_lines = false,
 	line_blank_line_above = false,
@@ -472,6 +473,7 @@ end
 local function create_line(choice, centered_line, right_aligned_line)
 	local symbols = set_line(choice)
 	comment_string = vim.bo.commentstring
+	comment_string = vim.bo.commentstring
 	local line = {}
 	local lead_space = " "
 	local filetype = vim.bo.filetype
@@ -553,25 +555,6 @@ end
 --         │                     PUBLIC FUNCTIONS                     │
 --         ╰──────────────────────────────────────────────────────────╯
 
---  ▲            ▲
---  █ DEPRECATED █
---  ▼            ▼
--- Print a left aligned box with text left aligned
----@param choice number?
----@param lstart number?
----@param lend number?
-local function print_lbox(choice, lstart, lend)
-	choice = tonumber(choice)
-	lstart = tonumber(lstart)
-	lend = tonumber(lend)
-	centered_text = false
-	right_aligned_text = false
-	centered_box = false
-	right_aligned_box = false
-	adapted = false
-	display_box(choice, lstart, lend)
-end
-
 -- Print a left aligned box with text left aligned
 ---@param choice number?
 ---@param lstart number?
@@ -581,25 +564,6 @@ local function print_llbox(choice, lstart, lend)
 	lstart = tonumber(lstart)
 	lend = tonumber(lend)
 	centered_text = false
-	right_aligned_text = false
-	centered_box = false
-	right_aligned_box = false
-	adapted = false
-	display_box(choice, lstart, lend)
-end
-
---  ▲            ▲
---  █ DEPRECATED █
---  ▼            ▼
--- Print a left aligned box with text centered
----@param choice number?
----@param lstart number?
----@param lend number?
-local function print_cbox(choice, lstart, lend)
-	choice = tonumber(choice)
-	lstart = tonumber(lstart)
-	lend = tonumber(lend)
-	centered_text = true
 	right_aligned_text = false
 	centered_box = false
 	right_aligned_box = false
@@ -817,9 +781,7 @@ local function setup(config)
 end
 
 return {
-	lbox = print_lbox,
 	llbox = print_llbox,
-	cbox = print_cbox,
 	lcbox = print_lcbox,
 	lrbox = print_lrbox,
 	clbox = print_clbox,
