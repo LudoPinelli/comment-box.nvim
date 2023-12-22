@@ -33,7 +33,7 @@ end
 local function view()
 	vim.api.nvim_buf_set_option(buf, "modifiable", true)
 	local cat_path = vim.api.nvim_get_runtime_file("catalog/catalog.txt", false)[1]
-	vim.api.nvim_command("$read" .. cat_path)
+	vim.api.nvim_command("$read " .. cat_path)
 	vim.api.nvim_buf_set_option(0, "modifiable", false)
 end
 
