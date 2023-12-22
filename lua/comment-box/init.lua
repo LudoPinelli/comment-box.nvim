@@ -268,6 +268,7 @@ local function create_box(choice)
 	comment_string = vim.bo.commentstring
 
 	comment_string, comment_string_end = comment_string:match("^(.*)%%s(.*)")
+	comment_string = vim.trim(comment_string)
 
 	if not comment_string or filetype == "markdown" or filetype == "org" then
 		comment_string = ""
