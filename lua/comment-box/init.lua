@@ -22,7 +22,6 @@ local settings = {
 		line_start = "─",
 		line_end = "─",
 	},
-	text_left_padding = 1,
 	outer_blank_lines = false,
 	inner_blank_lines = false,
 	line_blank_line_above = false,
@@ -39,8 +38,6 @@ local catalog = require("comment-box.catalog_view")
 local comment_string, comment_string_bottom_row, comment_string_int_row, comment_string_end
 ---@type number, number
 local line_start_pos, line_end_pos
----@type boolean
-local titled
 
 ---@type boolean
 local centered_text
@@ -160,7 +157,7 @@ local function wrap(text)
 	return str_tab
 end
 
--- Prepare each line and rewrote the table in case of wraping lines
+-- prepare each line and rewrote the table in case of wraping lines
 ---@param text string[]
 local function format_lines(text)
 	final_box_width = 0

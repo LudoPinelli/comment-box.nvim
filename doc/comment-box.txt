@@ -84,6 +84,11 @@ For example with packer:
     use("LudoPinelli/comment-box.nvim")
 <
 
+With lazy:
+>
+    { "ludoPinelli/comment-box.nvim", }
+<
+
 If you're fine with the default settings (see |comment-box-configuration|), it's
 all you have to do, however, comment-box does not come with any keybinding, see
 |comment-box-keybindings_examples| to make your own.
@@ -223,12 +228,12 @@ KEYBINDINGS EXAMPLES                            *comment-box-keybindings_example
 VIM SCRIPT:                                              *comment-box-vim_script:*
 >
     #left aligned fixed size box with left aligned text
-    nnoremap <Leader>bb <Cmd>lua require('comment-box').lbox()<CR>
-    vnoremap <Leader>bb <Cmd>lua require('comment-box').lbox()<CR>
+    nnoremap <Leader>bb <Cmd>lua require('comment-box').llbox()<CR>
+    vnoremap <Leader>bb <Cmd>lua require('comment-box').llbox()<CR>
 
-    # centered adapted box with centered text
-    nnoremap <Leader>bc <Cmd>lua require('comment-box').accbox()<CR>
-    vnoremap <Leader>bc <Cmd>lua require('comment-box').accbox()<CR>
+    # centered adapted box
+    nnoremap <Leader>bc <Cmd>lua require('comment-box').acbox()<CR>
+    vnoremap <Leader>bc <Cmd>lua require('comment-box').acbox()<CR>
 
     # centered line
     nnoremap <Leader>bl <Cmd>lua require('comment-box').cline()<CR>
@@ -241,9 +246,9 @@ LUA                                                              *comment-box-lu
     local cb = require("comment-box")
 
     -- left aligned fixed size box with left aligned text
-    keymap({ "n", "v"}, "<Leader>bb", cb.lbox, {})
-    -- centered adapted box with centered text
-    keymap({ "n", "v"}, "<Leader>bc", cb.accbox, {})
+    keymap({ "n", "v"}, "<Leader>bb", cb.llbox, {})
+    -- centered adapted box
+    keymap({ "n", "v"}, "<Leader>bc", cb.acbox, {})
 
     -- centered line
     keymap("n", "<Leader>bl", cb.cline, {})
