@@ -49,13 +49,13 @@ OVERVIEW                                                    *comment-box-overvie
 comment-box allows you to:
 
 *   draw a box around the selected text or actual line with a simple keyboard
-    shortcut. The box can be left aligned or centered, can have a fixed size or
-    be adapted to the text. The text can be left aligned or centered. Too long
-    text are automatically wrapped to fit in the box.
+    shortcut. The box can be left aligned, right aligned or centered, can have
+    a fixed size or be adapted to the text. The text can be left aligned or
+    centered. Too long text are automatically wrapped to fit in the box.
 *   create your own type of box by choosing its width and the characters used to
     draw the top, bottom, left, right and corners of it
-*   draw a line with a simple keyboard shortcut. The line can be left aligned or
-    centered.
+*   draw a line with a simple keyboard shortcut. The line can be left aligned,
+    right aligned or centered.
 *   create your own type of line by choosing its width and the characters used
     to draw its start, end and body,
 *   choose from a catalog of 22 predefined boxes and 10 predefined lines and use

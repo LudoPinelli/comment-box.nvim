@@ -17,9 +17,9 @@ This plugin tries to remedy this by giving you easy boxes and lines the way you 
 
 _comment-box_ allows you to:
 
-- draw a box around the selected text or actual line with a simple keyboard shortcut. The box can be left aligned or centered, can have a fixed size or be adapted to the text. The text can be left aligned or centered. Too long text are automatically wrapped to fit in the box.
+- draw a box around the selected text or actual line with a simple keyboard shortcut. The box can be left aligned, right aligned or centered, can have a fixed size or be adapted to the text. The text can be left aligned or centered. Too long text are automatically wrapped to fit in the box.
 - create your own type of box by choosing its width and the characters used to draw the top, bottom, left, right and corners of it.
-- draw a line with a simple keyboard shortcut. The line can be left aligned or centered.
+- draw a line with a simple keyboard shortcut. The line can be left aligned, right aligned or centered.
 - create your own type of line by choosing its width and the characters used to draw its start, end and body.
 - choose from a catalog of 22 predefined boxes and 10 predefined lines and use it by simply pass its number to the function call.
 
@@ -58,7 +58,7 @@ If you're fine with the default settings (see [Configuration](#configuration-and
 |`CBllbox[num]` | _Left aligned box of fixed size_ with _Left aligned text_ | `require("comment-box").llbox([num])` |
 |`CBlcbox[num]` | _Left aligned box of fixed size_ with _Centered text_ | `require("comment-box").lcbox([num])` |
 |`CBlrbox[num]` | _Left aligned box of fixed size_ with _Right aligned text_ | `require("comment-box").lrbox([num])` |
-|`CBclbox[num]` | _Centered box of fixed size_ with _Left aligned text_ | `require("comment-box").lcbox([num])` |
+|`CBclbox[num]` | _Centered box of fixed size_ with _Left aligned text_ | `require("comment-box").clbox([num])` |
 |`CBccbox[num]` | _Centered box of fixed size_ with _Centered text_ | `require("comment-box").ccbox([num])` |
 |`CBcrbox[num]` | _Centered box of fixed size_ with _Right aligned text_ | `require("comment-box").crbox([num])` |
 |`CBrlbox[num]` | _Right aligned box of fixed size_ with _Left aligned text_ | `require("comment-box").rlbox([num])` |
