@@ -1,8 +1,5 @@
-#### - LATEST CHANGES (December 22 2023) -
-- **REMOVED**: deprecated commands `CBlbox` (`lbox()`) and `CBcbox` (`cbox()`). (Replaced by `CBllbox` (`llbox()`) and `CBlcbox` (`lcbox()`) respectively)
-- **FIX**: In some filetypes (specifically the ones using `//` as comment strings) there was two spaces between the comment strings and a left align box instead of one (_issue#26_)
-- **FIX**: If more than one space was between the comment string and the comment, it lead to a misalignment of the text in the box (_issue#28_)
-- **FIX**: _"Not an editor command"_ error when launching the catalog on Windows (courtesy of [@HaloGamer33](https://github.com/HaloGamer33)).
+#### - LATEST CHANGES (December 27 2023) -
+- **ADD**: `CBdbox` command to remove a box (while keeping the text).
 
 ---
 <h1 align="center">comment-box.nvim</h1>
@@ -17,7 +14,7 @@ This plugin tries to remedy this by giving you easy boxes and lines the way you 
 
 _comment-box_ allows you to:
 
-- draw a box around the selected text or actual line with a simple keyboard shortcut. The box can be left aligned, right aligned or centered, can have a fixed size or be adapted to the text. The text can be left aligned or centered. Too long text are automatically wrapped to fit in the box.
+- draw a box around the selected text or actual line with a simple keyboard shortcut. The box can be left aligned, right aligned or centered, can have a fixed size or be adapted to the text. The text can be left aligned or centered. Too long text are automatically wrapped to fit in the box. The box can be removed at any time while keeping the text.
 - create your own type of box by choosing its width and the characters used to draw the top, bottom, left, right and corners of it.
 - draw a line with a simple keyboard shortcut. The line can be left aligned, right aligned or centered.
 - create your own type of line by choosing its width and the characters used to draw its start, end and body.
@@ -67,6 +64,7 @@ If you're fine with the default settings (see [Configuration](#configuration-and
 |`CBalbox[num]` | _Left aligned adapted box_ | `require("comment-box").albox([num])` |
 |`CBacbox[num]` | _Centered adapted box_ | `require("comment-box").acbox([num])` |
 |`CBarbox[num]` | _Right aligned adapted box_ | `require("comment-box").arbox([num])` |
+|`CBdbox` | _Remove a box_ | `require("comment-box")`.dbox() |
 
 The `[num]` parameter is optional. It's the number of a predefined style from the catalog (see [Catalog](#the-catalog)). By leaving it empty, the box or line will be drawn with the style you defined or if you didn't define one, with the default style.
 
@@ -102,6 +100,9 @@ Examples:
 -- or
 :lua require("comment-box").llbox(17)
 ```
+##### Removing a box
+
+To remove a box, select it entirely, then use the command `:CBdbox` (or create a keybind for it, see [Keybindings examples](#keybindings-examples))
 
 #### Lines
 
@@ -149,6 +150,9 @@ vnoremap <Leader>bc <Cmd>lua require('comment-box').acbox()<CR>
 # centered line
 nnoremap <Leader>bl <Cmd>lua require('comment-box').cline()<CR>
 inoremap <M-l> <Cmd>lua require('comment-box').cline()<CR>
+
+# remove a box
+vnoremap <Leader>bd <Cmd>lua require('comment-box').dbox()<CR>
 ```
 
 #### Lua
@@ -165,6 +169,9 @@ keymap({ "n", "v"}, "<Leader>bc", cb.acbox, {})
 -- centered line
 keymap("n", "<Leader>bl", cb.cline, {})
 keymap("i", "<M-l>", cb.cline, {})
+
+-- remove a box
+keymap("v", "<Leader>bd", cb.dbox, {})
 ```
 
 ## The catalog

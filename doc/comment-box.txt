@@ -51,7 +51,8 @@ comment-box allows you to:
 *   draw a box around the selected text or actual line with a simple keyboard
     shortcut. The box can be left aligned, right aligned or centered, can have
     a fixed size or be adapted to the text. The text can be left aligned or
-    centered. Too long text are automatically wrapped to fit in the box.
+    centered. Too long text are automatically wrapped to fit in the box. the
+    box can be removed at any time while keeping the text.
 *   create your own type of box by choosing its width and the characters used to
     draw the top, bottom, left, right and corners of it
 *   draw a line with a simple keyboard shortcut. The line can be left aligned,
@@ -141,6 +142,8 @@ BOXES                                                          *comment-box-boxe
 |CBarbox[num]  | Right aligned adapted   | require("comment-box").arbox([num]) |
 |              | box                     |                                     |
 +--------------+-------------------------+-------------------------------------+
+|CBdbox        | Remove a box            | require("comment-box").dbox()       |
++--------------+-------------------------+-------------------------------------+
 
 The [num] parameter is optional. It's the number of a predefined style from the
 catalog (see |comment-box-catalog|). By leaving it empty, the box or line will be
@@ -187,6 +190,9 @@ Examples
     -- or
     :lua require("comment-box").llbox(17)
 <
+
+REMOVING A BOX : To remove a box, select it entirely, then use then
+command CBdbox (or create a keybind for it, see|keybindings-examples)
 
 LINES                                                          *comment-box-lines*
 
