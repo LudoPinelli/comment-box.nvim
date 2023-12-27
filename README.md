@@ -1,5 +1,6 @@
 #### - LATEST CHANGES (December 27 2023) -
 - **ADD**: `CBdbox` command to remove a box (while keeping the text).
+- **ADD**: `CBy` command to yank the content of a box
 
 ---
 <h1 align="center">comment-box.nvim</h1>
@@ -65,6 +66,7 @@ If you're fine with the default settings (see [Configuration](#configuration-and
 |`CBacbox[num]` | _Centered adapted box_ | `require("comment-box").acbox([num])` |
 |`CBarbox[num]` | _Right aligned adapted box_ | `require("comment-box").arbox([num])` |
 |`CBdbox` | _Remove a box_ | `require("comment-box")`.dbox() |
+|`CBy` | _Yank the content of a box_ | `require("comment-box")`.yank() |
 
 The `[num]` parameter is optional. It's the number of a predefined style from the catalog (see [Catalog](#the-catalog)). By leaving it empty, the box or line will be drawn with the style you defined or if you didn't define one, with the default style.
 
@@ -102,7 +104,12 @@ Examples:
 ```
 ##### Removing a box
 
-To remove a box, select it entirely, then use the command `:CBdbox` (or create a keybind for it, see [Keybindings examples](#keybindings-examples))
+To remove a box, select it entirely, then use the command `CBdbox` (or create a keybind for it, see [Keybindings examples](#keybindings-examples))
+
+##### Yank the content of a box
+
+Select the box (or at least the part including the text), then use the command `CBy`.
+(Note that the text is available in the `+` register, it assumes that you have the `clipboard` option set to `unnamedplus`. If not you will have to specify the register for pasting using `"+p`).
 
 #### Lines
 

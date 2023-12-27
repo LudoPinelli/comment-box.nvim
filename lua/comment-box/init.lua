@@ -263,12 +263,34 @@ end
 --         │                           CORE                           │
 --         ╰──────────────────────────────────────────────────────────╯
 
--- Return the selected text
+-- Return the selected text formated
 ---@return string[]
-local function get_text()
+local function get_formated_text()
   local text =
     vim.api.nvim_buf_get_lines(0, line_start_pos - 1, line_end_pos, false)
   return format_lines(text)
+end
+
+-- Return the raw text
+---@param lstart number?
+---@param lend number?
+---@return string[]
+local function get_text(lstart, lend)
+  get_range(lstart, lend)
+  local text =
+    vim.api.nvim_buf_get_lines(0, line_start_pos - 1, line_end_pos, false)
+  local result = {}
+
+  for _, str in ipairs(text) do
+    -- Remove every spaces, non alphanumerc and | characters at the begining of the string
+    str = str:gsub("^[^%w|]+", "")
+    -- Remove every spaces, non alphanumerc and | characters at the end of the string
+    str = str:gsub("[^%w|]+$", "")
+    if str ~= nil then
+      table.insert(result, str)
+    end
+  end
+  return result
 end
 
 -- Build the box
@@ -294,7 +316,7 @@ local function create_box(choice)
     comment_string_int_row = comment_string
   end
 
-  local text = get_text()
+  local text = get_formated_text()
   local trail = " "
 
   -- ╓                                                       ╖
@@ -491,22 +513,7 @@ local function remove_box(lstart, lend)
     comment_string = ""
   end
 
-  get_range(lstart, lend)
-  local text =
-    vim.api.nvim_buf_get_lines(0, line_start_pos - 1, line_end_pos, false)
-  local result = {}
-
-  for _, str in ipairs(text) do
-    -- Remove every spaces, non alphanumerc and | characters at the begining of the string
-    str = str:gsub("^[^%w|]+", "")
-    -- Remove every spaces, non alphanumerc and | characters at the end of the string
-    str = str:gsub("[^%w|]+$", "")
-    print(str)
-    if str ~= nil then
-      table.insert(result, str)
-    end
-  end
-
+  local result = get_text(lstart, lend)
   local row = ""
   local lines = {}
 
@@ -518,7 +525,14 @@ local function remove_box(lstart, lend)
   end
 
   vim.api.nvim_buf_set_lines(0, line_start_pos - 1, line_end_pos, false, lines)
-  vim.api.nvim_win_set_cursor(0, { set_cur_pos(line_end_pos), 1 })
+end
+
+-- yank the content of a box
+local function yank(lstart, lend)
+  local tab_text = get_text(lstart, lend)
+  local tab_text_to_str = table.concat(tab_text, "\n")
+
+  vim.fn.setreg("+", tab_text_to_str .. "\n", "l")
 end
 
 -- Build a line
@@ -821,6 +835,15 @@ local function delete_box(lstart, lend)
   remove_box(lstart, lend)
 end
 
+-- Yank the content of a box
+---@param lstart number?
+---@param lend number?
+local function yank_in_box(lstart, lend)
+  lstart = tonumber(lstart)
+  lend = tonumber(lend)
+  yank(lstart, lend)
+end
+
 -- Print a left aligned line
 ---@param choice number?
 local function print_line(choice)
@@ -872,6 +895,7 @@ return {
   acbox = print_acbox,
   arbox = print_arbox,
   dbox = delete_box,
+  yank = yank_in_box,
   line = print_line,
   cline = print_cline,
   rline = print_rline,

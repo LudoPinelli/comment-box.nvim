@@ -102,6 +102,14 @@ end, {
   desc = "Remove a box",
 })
 
+vim.api.nvim_create_user_command("CBy", function(opts)
+  require("comment-box").yank(opts.line1, opts.line2)
+end, {
+  nargs = "?",
+  range = 2,
+  desc = "Yank the content of a box",
+})
+
 vim.api.nvim_create_user_command("CBline", function(opts)
   require("comment-box").line(opts.args)
 end, {

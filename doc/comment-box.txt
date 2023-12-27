@@ -144,6 +144,9 @@ BOXES                                                          *comment-box-boxe
 +--------------+-------------------------+-------------------------------------+
 |CBdbox        | Remove a box            | require("comment-box").dbox()       |
 +--------------+-------------------------+-------------------------------------+
+|CBy           | Yank the content of a   | require("comment-box").yank()       |
+|              | box                     |                                     |
++--------------+-------------------------+-------------------------------------+
 
 The [num] parameter is optional. It's the number of a predefined style from the
 catalog (see |comment-box-catalog|). By leaving it empty, the box or line will be
@@ -193,6 +196,14 @@ Examples
 
 REMOVING A BOX : To remove a box, select it entirely, then use then
 command CBdbox (or create a keybind for it, see|keybindings-examples)
+
+YANK THE CONTENT OF A BOX
+
+Select the box (or at least the part including the text), then use the command
+CBy.
+(Note that the text is available in the `+` register, it assumes that you have
+the `clipboard` option set to `unnamedplus`. If not you will have to specify
+the register for pasting using "+p).
 
 LINES                                                          *comment-box-lines*
 
