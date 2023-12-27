@@ -477,6 +477,49 @@ local function create_box(choice)
   return lines
 end
 
+-- Delete box
+local function remove_box()
+  local filetype = vim.bo.filetype
+  comment_string = vim.bo.commentstring
+
+  comment_string, comment_string_end = comment_string:match("^(.*)%%s(.*)")
+  comment_string = vim.trim(comment_string)
+
+  if not comment_string or filetype == "markdown" or filetype == "org" then
+    comment_string = ""
+  end
+
+  local text =
+    vim.api.nvim_buf_get_lines(0, line_start_pos - 1, line_end_pos, false)
+
+  for pos, str in ipairs(text) do
+    table.remove(text, pos)
+    str = skip_cs(str)
+    str = vim.trim(str)
+    if string.match(str, "^[^%w]") then
+      str = str:sub(2, -1)
+      str = vim.trim(str)
+    end
+    if str:sub(-1) ~= [[ %a ]] then
+      str = str:sub(1, -2)
+      str = vim.trim(str)
+    end
+    table.insert(text, pos, str)
+  end
+
+  local row = ""
+  local lines = {}
+
+  for _, line in pairs(text) do
+    if line ~= "" then
+      row = string.format("%s%s%s", comment_string, " ", line)
+      table.insert(lines, row)
+    end
+  end
+
+  return lines
+end
+
 -- Build a line
 ---@param choice number?
 ---@param centered_line boolean
