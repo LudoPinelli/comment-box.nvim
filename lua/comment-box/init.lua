@@ -477,8 +477,10 @@ local function create_box(choice)
   return lines
 end
 
--- Delete box
-local function remove_box()
+-- Remove the box
+---@param lstart number?
+---@param lend number?
+local function remove_box(lstart, lend)
   local filetype = vim.bo.filetype
   comment_string = vim.bo.commentstring
 
@@ -489,35 +491,34 @@ local function remove_box()
     comment_string = ""
   end
 
+  get_range(lstart, lend)
   local text =
     vim.api.nvim_buf_get_lines(0, line_start_pos - 1, line_end_pos, false)
+  local result = {}
 
-  for pos, str in ipairs(text) do
-    table.remove(text, pos)
-    str = skip_cs(str)
-    str = vim.trim(str)
-    if string.match(str, "^[^%w]") then
-      str = str:sub(2, -1)
-      str = vim.trim(str)
+  for _, str in ipairs(text) do
+    -- Remove every spaces, non alphanumerc and | characters at the begining of the string
+    str = str:gsub("^[^%w|]+", "")
+    -- Remove every spaces, non alphanumerc and | characters at the end of the string
+    str = str:gsub("[^%w|]+$", "")
+    print(str)
+    if str ~= nil then
+      table.insert(result, str)
     end
-    if str:sub(-1) ~= [[ %a ]] then
-      str = str:sub(1, -2)
-      str = vim.trim(str)
-    end
-    table.insert(text, pos, str)
   end
 
   local row = ""
   local lines = {}
 
-  for _, line in pairs(text) do
+  for _, line in pairs(result) do
     if line ~= "" then
       row = string.format("%s%s%s", comment_string, " ", line)
       table.insert(lines, row)
     end
   end
 
-  return lines
+  vim.api.nvim_buf_set_lines(0, line_start_pos - 1, line_end_pos, false, lines)
+  vim.api.nvim_win_set_cursor(0, { set_cur_pos(line_end_pos), 1 })
 end
 
 -- Build a line
@@ -811,6 +812,15 @@ local function print_arbox(choice, lstart, lend)
   display_box(choice, lstart, lend)
 end
 
+-- Remove a box
+---@param lstart number?
+---@param lend number?
+local function delete_box(lstart, lend)
+  lstart = tonumber(lstart)
+  lend = tonumber(lend)
+  remove_box(lstart, lend)
+end
+
 -- Print a left aligned line
 ---@param choice number?
 local function print_line(choice)
@@ -861,6 +871,7 @@ return {
   albox = print_albox,
   acbox = print_acbox,
   arbox = print_arbox,
+  dbox = delete_box,
   line = print_line,
   cline = print_cline,
   rline = print_rline,
