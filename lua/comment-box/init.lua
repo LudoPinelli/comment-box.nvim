@@ -5,7 +5,7 @@
 ---@class CommentBoxConfig
 local settings = {
   doc_width = 80,
-  box_width = 60,
+  box_width = 70,
   borders = {
     top = "─",
     bottom = "─",
@@ -16,7 +16,7 @@ local settings = {
     bottom_left = "╰",
     bottom_right = "╯",
   },
-  line_width = 60,
+  line_width = 70,
   lines = {
     line = "─",
     line_start = "─",
@@ -284,9 +284,9 @@ local function get_text(lstart, lend)
   local result = {}
 
   for _, str in ipairs(text) do
-    -- Remove every spaces, non alphanumerc and | characters at the begining of the string
+    -- Remove every spaces, non alphanumeric and | characters at the begining of the string
     str = str:gsub("^[^%w|]+", "")
-    -- Remove every spaces, non alphanumerc and | characters at the end of the string
+    -- Remove every spaces, non alphanumeric and | characters at the end of the string
     str = str:gsub("[^%w|]+$", "")
     if str ~= nil then
       table.insert(result, str)
@@ -503,7 +503,7 @@ local function create_box(choice)
   return lines
 end
 
--- Remove the box
+-- Remove a box
 ---@param lstart number?
 ---@param lend number?
 local function remove_box(lstart, lend)
