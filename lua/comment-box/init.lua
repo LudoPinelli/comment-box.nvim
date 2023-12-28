@@ -185,17 +185,17 @@ local function format_lines(text)
     if adapted then
       if
         vim.fn.strdisplaywidth(str)
-        >= math.max(url_width, settings.doc_width - 2)
+        >= math.max(url_width, settings.doc_width - 3)
       then
-        final_box_width = math.max(url_width, settings.doc_width - 2)
+        final_box_width = math.max(url_width, settings.doc_width - 3)
       elseif
         vim.fn.strdisplaywidth(str) > final_box_width
-        and final_box_width < math.max(url_width, settings.doc_width - 2)
+        and final_box_width < math.max(url_width, settings.doc_width - 3)
       then
-        final_box_width = vim.fn.strdisplaywidth(str) + 2
+        final_box_width = vim.fn.strdisplaywidth(str) + 3
       end
     else
-      final_box_width = math.max(url_width, settings.box_width - 2)
+      final_box_width = math.max(url_width, settings.box_width - 3)
     end
 
     if vim.fn.strdisplaywidth(str) > final_box_width then
