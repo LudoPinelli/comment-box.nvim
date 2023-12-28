@@ -5,7 +5,7 @@
 ---@class CommentBoxConfig
 local settings = {
   doc_width = 80,
-  box_width = 70,
+  box_width = 60,
   borders = {
     top = "─",
     bottom = "─",
@@ -22,7 +22,8 @@ local settings = {
     line_start = "─",
     line_end = "─",
   },
-  outer_blank_lines = false,
+  outer_blank_lines_above = false,
+  outer_blank_lines_below = false,
   inner_blank_lines = false,
   line_blank_line_above = false,
   line_blank_line_below = false,
@@ -105,8 +106,11 @@ local function set_cur_pos(end_pos)
   if settings.inner_blank_lines then
     cur_pos = cur_pos + 2
   end
-  if settings.outer_blank_lines then
-    cur_pos = cur_pos + 2
+  if settings.outer_blank_lines_above then
+    cur_pos = cur_pos + 1
+  end
+  if settings.outer_blank_lines_below then
+    cur_pos = cur_pos + 1
   end
   return cur_pos
 end
@@ -405,7 +409,7 @@ local function create_box(choice)
   local int_row = ""
   local lines = {}
 
-  if settings.outer_blank_lines then
+  if settings.outer_blank_lines_above then
     table.insert(lines, "")
   end
 
@@ -496,7 +500,7 @@ local function create_box(choice)
     table.insert(lines, comment_string_end)
   end
 
-  if settings.outer_blank_lines then
+  if settings.outer_blank_lines_below then
     table.insert(lines, "")
   end
 
