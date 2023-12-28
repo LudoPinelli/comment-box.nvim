@@ -172,7 +172,9 @@ local function format_lines(text)
 
   for pos, str in ipairs(text) do
     table.remove(text, pos)
-    str = skip_cs(str)
+    if comment_string ~= nil then
+      str = skip_cs(str)
+    end
     str = vim.trim(str)
     table.insert(text, pos, str)
 
@@ -301,7 +303,9 @@ local function create_box(choice)
   comment_string = vim.bo.commentstring
 
   comment_string, comment_string_end = comment_string:match("^(.*)%%s(.*)")
-  comment_string = vim.trim(comment_string)
+  if comment_string ~= nil then
+    comment_string = vim.trim(comment_string)
+  end
 
   if not comment_string or filetype == "markdown" or filetype == "org" then
     comment_string = ""
