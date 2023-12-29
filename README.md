@@ -271,7 +271,7 @@ Width of the lines.
 
 The symbols used to draw the lines. Let your creativity go wild! Or just use the default or choose from the predefined ones (see [Catalog](#the-catalog)).
 
-### `outer_blank_lines` and `inner_blank_lines`
+### `outer_blank_lines_above` `outer_blank_lines_below` and `inner_blank_lines`
 
 ![blank lines](./imgs/bc-blanklines.jpg?raw=true)
 

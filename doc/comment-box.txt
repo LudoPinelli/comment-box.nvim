@@ -368,9 +368,10 @@ Width of the lines.
 The symbols used to draw the lines. Let your creativity go wild! Or just use the
 default or choose from the predefined ones (see |comment-box-catalog|).
 
-'outer_blank_lines'                                *comment-box-outer_blank_lines*
+'outer_blank_lines_above'                    *comment-box-outer_blank_lines_above*
+'outer_blank_lines_below'                    *comment-box-outer_blank_lines_below*
 
-Insert blank lines outside the bow, above and below.
+Insert blank lines outside the box, above and below.
 
 'inner_blank_lines'                                *comment-box-inner_blank_lines*
 
