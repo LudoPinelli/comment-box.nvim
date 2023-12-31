@@ -339,7 +339,7 @@ Self explanatory!
 ## TODO
 
 - [x] Convert commands creation from vimscript to lua
-- [ ] "Titled lines" (issue #10)
+- [x] "Titled lines" (issue #10)
 - [x] Right alignement
 - [ ] Option for displaying comments/docstring as virtual text (issue #5)
 - [ ] Full support of multi-line style comments
