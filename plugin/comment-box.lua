@@ -94,12 +94,12 @@ end, {
   desc = "Print a right aligned adapted box",
 })
 
-vim.api.nvim_create_user_command("CBdbox", function(opts)
+vim.api.nvim_create_user_command("CBd", function(opts)
   require("comment-box").dbox(opts.line1, opts.line2)
 end, {
   nargs = "?",
   range = 2,
-  desc = "Remove a box",
+  desc = "Remove a box or a titled line",
 })
 
 vim.api.nvim_create_user_command("CBy", function(opts)
@@ -107,7 +107,7 @@ vim.api.nvim_create_user_command("CBy", function(opts)
 end, {
   nargs = "?",
   range = 2,
-  desc = "Yank the content of a box",
+  desc = "Yank the content of a box or a titled line",
 })
 
 vim.api.nvim_create_user_command("CBline", function(opts)

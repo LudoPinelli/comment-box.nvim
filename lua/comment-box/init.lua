@@ -79,7 +79,7 @@ local function get_pad(line)
     end_pad = final_width - (start_pad + vim.fn.strdisplaywidth(line))
   elseif right_aligned_text then
     start_pad = final_width - vim.fn.strdisplaywidth(line) - 1
-    end_pad = final_width - (start_pad + vim.fn.strdisplaywidth(line)) - 1
+    end_pad = final_width - (start_pad + vim.fn.strdisplaywidth(line))
   else
     end_pad = final_width - (start_pad + vim.fn.strdisplaywidth(line))
   end
@@ -87,8 +87,8 @@ local function get_pad(line)
 end
 
 -- Store the range of the selected text in 'line_start_pos'/'line_end_pos'
----@param lstart? number
----@param lend? number
+---@param lstart? number?
+---@param lend? number?
 local function get_range(lstart, lend)
   local mode = vim.api.nvim_get_mode().mode
 
@@ -107,6 +107,19 @@ local function get_range(lstart, lend)
       line_end_pos = line_start_pos
     end
   end
+end
+
+-- return commentstring
+local function get_comment_string()
+  comment_string = vim.bo.commentstring
+  comment_string, comment_string_end = comment_string:match("^(.*)%%s(.*)")
+  if comment_string ~= nil then
+    comment_string = vim.trim(comment_string)
+  end
+  if comment_string_end ~= nil then
+    comment_string_end = vim.trim(comment_string_end)
+  end
+  return comment_string, comment_string_end
 end
 
 -- Return the correct cursor position after a box has been created
@@ -158,13 +171,13 @@ end
 ---@return string[]
 local function wrap(text)
   local str_tab = {}
-  local str = text:sub(1, final_width - 6)
+  local str = text:sub(1, final_width - 2)
   local rstr = str:reverse()
   local f = rstr:find(" ")
   local url_start, _ = is_url(text)
 
   if f and (not url_start or f < url_start) then
-    f = final_width - 6 - f
+    f = final_width - 2 - f
     table.insert(str_tab, string.sub(text, 1, f))
     table.insert(str_tab, string.sub(text, f + 1))
   else
@@ -193,28 +206,35 @@ local function format_lines(text)
     end
     str = vim.trim(str)
     table.insert(text, pos, str)
+    local str_width = vim.fn.strdisplaywidth(str)
+    if str_width == nil then
+      str_width = 0
+    end
+    local offset
+    if comment_string ~= nil then
+      offset = vim.fn.strdisplaywidth(comment_string) + 1
+    else
+      offset = 1
+    end
 
     if adapted then
-      if
-        vim.fn.strdisplaywidth(str)
-        >= math.max(url_width, settings.doc_width - 3)
-      then
-        final_width = math.max(url_width, settings.doc_width - 3)
+      if str_width >= math.max(url_width, settings.doc_width - offset) then
+        final_width = math.max(url_width, settings.doc_width - offset) + 2
       elseif
-        vim.fn.strdisplaywidth(str) > final_width
-        and final_width < math.max(url_width, settings.doc_width - 3)
+        str_width > final_width
+        and final_width < math.max(url_width, settings.doc_width - offset)
       then
-        final_width = vim.fn.strdisplaywidth(str) + 3
+        final_width = str_width + 2
       end
     else
       if is_box then
-        final_width = math.max(url_width, settings.box_width - 3)
+        final_width = math.max(url_width, settings.box_width - offset)
       else
-        final_width = math.max(url_width, settings.line_width - 3)
+        final_width = math.max(url_width, settings.line_width - offset)
       end
     end
 
-    if vim.fn.strdisplaywidth(str) > final_width then
+    if str_width > final_width then
       local to_insert = wrap(str)
       for ipos, st in ipairs(to_insert) do
         table.insert(text, pos + ipos, st)
@@ -322,11 +342,7 @@ local function create_box(choice)
   local filetype = vim.bo.filetype
   is_box = true
 
-  comment_string = vim.bo.commentstring
-  comment_string, comment_string_end = comment_string:match("^(.*)%%s(.*)")
-  if comment_string ~= nil then
-    comment_string = vim.trim(comment_string)
-  end
+  comment_string, comment_string_end = get_comment_string()
 
   if not comment_string or filetype == "markdown" or filetype == "org" then
     comment_string = ""
@@ -524,15 +540,13 @@ local function create_box(choice)
   return lines
 end
 
--- Remove a box
+-- Remove a box or a titled line
 ---@param lstart number?
 ---@param lend number?
-local function remove_box(lstart, lend)
+local function remove(lstart, lend)
   local filetype = vim.bo.filetype
-  comment_string = vim.bo.commentstring
 
-  comment_string, comment_string_end = comment_string:match("^(.*)%%s(.*)")
-  comment_string = vim.trim(comment_string)
+  comment_string, comment_string_end = get_comment_string()
 
   if not comment_string or filetype == "markdown" or filetype == "org" then
     comment_string = ""
@@ -552,7 +566,7 @@ local function remove_box(lstart, lend)
   vim.api.nvim_buf_set_lines(0, line_start_pos - 1, line_end_pos, false, lines)
 end
 
--- yank the content of a box
+-- yank the content of a box or titled line
 ---@param lstart number?
 ---@param lend number?
 local function yank(lstart, lend)
@@ -567,39 +581,29 @@ end
 ---@return string[]
 local function create_line(choice)
   local symbols = set_line(choice)
-  comment_string = vim.bo.commentstring
+  is_box = false
+  local filetype = vim.bo.filetype
+  comment_string, comment_string_end = get_comment_string()
   local line = {}
   local lead_space = " "
-  local filetype = vim.bo.filetype
+  local offset = vim.fn.strdisplaywidth(comment_string)
+
+  if settings.line_width > settings.doc_width + offset then
+    settings.line_width = settings.doc_width + offset
+  end
 
   if centered_line then
     lead_space = string.rep(
       " ",
-      math.floor(
-        (settings.doc_width - settings.line_width) / 2
-          - vim.fn.strdisplaywidth(comment_string)
-      )
+      math.floor((settings.doc_width - settings.line_width) / 2) - offset
     )
   elseif right_aligned_line then
-    lead_space = string.rep(
-      " ",
-      settings.doc_width
-        - settings.line_width
-        - vim.fn.strdisplaywidth(comment_string)
-        + 2
-    )
+    lead_space =
+      string.rep(" ", settings.doc_width - settings.line_width - offset)
   end
 
   if lead_space == "" then
     lead_space = " "
-  end
-
-  comment_string, comment_string_end = comment_string:match("^(.*)%%s(.*)")
-  if comment_string ~= nil then
-    comment_string = vim.trim(comment_string)
-  end
-  if comment_string_end ~= nil then
-    comment_string_end = vim.trim(comment_string_end)
   end
 
   if not comment_string or filetype == "markdown" or filetype == "org" then
@@ -616,7 +620,12 @@ local function create_line(choice)
       comment_string,
       lead_space,
       symbols.line_start,
-      string.rep(symbols.line, settings.line_width - 2),
+      string.rep(
+        symbols.line,
+        settings.line_width
+          - vim.fn.strdisplaywidth(symbols.line_start)
+          - vim.fn.strdisplaywidth(symbols.line_end)
+      ),
       symbols.line_end,
       comment_string_end
     )
@@ -632,36 +641,13 @@ end
 local function create_titled_line(choice)
   local symbols = set_line(choice)
   local filetype = vim.bo.filetype
-  comment_string = vim.bo.commentstring
-  is_box = false
+  comment_string, comment_string_end = get_comment_string()
   local line = {}
   local lead_space = " "
+  local offset = vim.fn.strdisplaywidth(comment_string)
 
-  if centered_line then
-    lead_space = string.rep(
-      " ",
-      math.floor(
-        (settings.doc_width - settings.line_width) / 2
-          - vim.fn.strdisplaywidth(comment_string)
-      )
-    )
-  elseif right_aligned_line then
-    lead_space = string.rep(
-      " ",
-      settings.doc_width
-        - settings.line_width
-        - vim.fn.strdisplaywidth(comment_string)
-        + 2
-    )
-  end
-
-  if lead_space == "" then
-    lead_space = " "
-  end
-
-  comment_string, comment_string_end = comment_string:match("^(.*)%%s(.*)")
-  if comment_string ~= nil then
-    comment_string = vim.trim(comment_string)
+  if settings.line_width > settings.doc_width + offset then
+    settings.line_width = settings.doc_width + offset
   end
 
   if not comment_string or filetype == "markdown" or filetype == "org" then
@@ -669,20 +655,29 @@ local function create_titled_line(choice)
   end
 
   local text = get_formated_text()
-
   local start_pad, end_pad = get_pad(text[1])
-
-  if not right_aligned_text and not centered_text then
-    start_pad = 2
-  end
-  if right_aligned_text then
-    end_pad = 2
-    start_pad = start_pad - 2
+  if start_pad > end_pad then
+    start_pad = start_pad - offset - 1
   else
-    end_pad = end_pad
-      - vim.fn.strdisplaywidth(settings.lines.title_left)
-      - vim.fn.strdisplaywidth(settings.lines.title_right)
-      - 1
+    if end_pad > start_pad then
+      end_pad = end_pad - offset - 1
+    end
+  end
+
+  if centered_line then
+    lead_space = string.rep(
+      " ",
+      math.floor((settings.doc_width - settings.line_width) / 2) - offset
+    )
+  else
+    if right_aligned_line then
+      lead_space =
+        string.rep(" ", settings.doc_width - settings.line_width - offset)
+    end
+  end
+
+  if lead_space == "" then
+    lead_space = " "
   end
 
   if settings.line_blank_line_above then
@@ -696,11 +691,11 @@ local function create_titled_line(choice)
       lead_space,
       symbols.line_start,
       string.rep(symbols.line, start_pad),
-      settings.lines.title_left,
+      symbols.title_left,
       " ",
       text[1],
       " ",
-      settings.lines.title_right,
+      symbols.title_right,
       string.rep(symbols.line, end_pad),
       symbols.line_end,
       comment_string_end
@@ -976,19 +971,19 @@ local function print_arbox(choice, lstart, lend)
   display_box(choice, lstart, lend)
 end
 
--- Remove a box
+-- Remove a box or a titled line
 ---@param lstart number?
 ---@param lend number?
-local function delete_box(lstart, lend)
+local function del(lstart, lend)
   lstart = tonumber(lstart)
   lend = tonumber(lend)
-  remove_box(lstart, lend)
+  remove(lstart, lend)
 end
 
--- Yank the content of a box
+-- Yank the content of a box or a titled line
 ---@param lstart number?
 ---@param lend number?
-local function yank_in_box(lstart, lend)
+local function yank_in(lstart, lend)
   lstart = tonumber(lstart)
   lend = tonumber(lend)
   yank(lstart, lend)
@@ -1153,8 +1148,8 @@ return {
   albox = print_albox,
   acbox = print_acbox,
   arbox = print_arbox,
-  dbox = delete_box,
-  yank = yank_in_box,
+  dbox = del,
+  yank = yank_in,
   line = print_line,
   cline = print_cline,
   rline = print_rline,
