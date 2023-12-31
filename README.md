@@ -1,5 +1,5 @@
 #### - LATEST CHANGES (December 31 2023) -
-- **FEAT**: New category -> titled lines (see titled lines)
+- **FEAT**: New category -> titled lines (see [titled lines](#titled-lines))
 - **BREAKING-CHANGE**: `CBdbox` renamed in `CBd`
 - **FEAT**: `CBy` and `CBd` can by used on titled lines also
 
@@ -67,8 +67,6 @@ If you're fine with the default settings (see [Configuration](#configuration-and
 |`CBalbox[num]` | _Left aligned adapted box_ | `require("comment-box").albox([num])` |
 |`CBacbox[num]` | _Centered adapted box_ | `require("comment-box").acbox([num])` |
 |`CBarbox[num]` | _Right aligned adapted box_ | `require("comment-box").arbox([num])` |
-|`CBdbox` | _Remove a box_ | `require("comment-box")`.dbox() |
-|`CBy` | _Yank the content of a box_ | `require("comment-box")`.yank() |
 
 The `[num]` parameter is optional. It's the number of a predefined style from the catalog (see [Catalog](#the-catalog)). By leaving it empty, the box or line will be drawn with the style you defined or if you didn't define one, with the default style.
 
@@ -118,8 +116,6 @@ Examples:
 |`CBrlline[num]` | _Right aligned titled line_ with _Left aligned text_ | `require("comment-box").rlline([num])` |
 |`CBrcline[num]` | _Right aligned titled line_ with _Centered text_ | `require("comment-box").rcline([num])` |
 |`CBrrline[num]` | _Right aligned titled line_ with _Right aligned text_ | `require("comment-box").rrline([num])` |
-|`CBdbox` | _Remove a box_ | `require("comment-box")`.dbox() |
-|`CBy` | _Yank the content of a box_ | `require("comment-box")`.yank() |
 
 The `[num]` parameter is optional. It's the number of a predefined style from the catalog (see [Catalog](#the-catalog)). By leaving it empty, the box will be drawn with the style you defined or if you didn't define one, with the default style.
 
@@ -212,7 +208,7 @@ vnoremap <Leader>bc <Cmd>lua require('comment-box').acbox()<CR>
 nnoremap <Leader>bl <Cmd>lua require('comment-box').cline()<CR>
 inoremap <M-l> <Cmd>lua require('comment-box').cline()<CR>
 
-# remove a box
+# remove a box or a titled line
 vnoremap <Leader>bd <Cmd>lua require('comment-box').dbox()<CR>
 ```
 
@@ -231,8 +227,8 @@ keymap({ "n", "v"}, "<Leader>bc", cb.acbox, {})
 keymap("n", "<Leader>bl", cb.cline, {})
 keymap("i", "<M-l>", cb.cline, {})
 
--- remove a box
-keymap("v", "<Leader>bd", cb.dbox, {})
+-- remove a box or a titled line
+keymap({ "n", "v" }, "<Leader>bd", cb.dbox, {})
 ```
 
 ## The catalog

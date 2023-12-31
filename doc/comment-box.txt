@@ -149,11 +149,6 @@ BOXES                                                          *comment-box-boxe
 |CBarbox[num]  | Right aligned adapted   | require("comment-box").arbox([num]) |
 |              | box                     |                                     |
 +--------------+-------------------------+-------------------------------------+
-|CBdbox        | Remove a box            | require("comment-box").dbox()       |
-+--------------+-------------------------+-------------------------------------+
-|CBy           | Yank the content of a   | require("comment-box").yank()       |
-|              | box                     |                                     |
-+--------------+-------------------------+-------------------------------------+
 
 The [num] parameter is optional. It's the number of a predefined style from the
 catalog (see |comment-box-catalog|). By leaving it empty, the box or line will be
@@ -352,6 +347,10 @@ VIM SCRIPT:                                              *comment-box-vim_script
     # centered line
     nnoremap <Leader>bl <Cmd>lua require('comment-box').cline()<CR>
     inoremap <M-l> <Cmd>lua require('comment-box').cline()<CR>
+
+    # remove a box or a titled line
+    nnoremap <Leader>bd <Cmd>lua require('comment-box').dbox()<CR>
+    vnoremap <Leader>bd <Cmd>lua require('comment-box').dbox()<CR>
 <
 
 LUA                                                              *comment-box-lua*
@@ -360,13 +359,16 @@ LUA                                                              *comment-box-lu
     local cb = require("comment-box")
 
     -- left aligned fixed size box with left aligned text
-    keymap({ "n", "v"}, "<Leader>bb", cb.llbox, {})
+    keymap({ "n", "v" }, "<Leader>bb", cb.llbox, {})
     -- centered adapted box
-    keymap({ "n", "v"}, "<Leader>bc", cb.acbox, {})
+    keymap({ "n", "v" }, "<Leader>bc", cb.acbox, {})
 
     -- centered line
     keymap("n", "<Leader>bl", cb.cline, {})
     keymap("i", "<M-l>", cb.cline, {})
+
+    -- remove a box or a titled line
+    keymap({ "n", "v" }, "<Leader>bd", cb.dbox, {})
 <
 
 --------------------------------------------------------------------------------
