@@ -1,6 +1,7 @@
-#### - LATEST CHANGES (December 27 2023) -
-- **ADD**: `CBdbox` command to remove a box (while keeping the text).
-- **ADD**: `CBy` command to yank the content of a box
+#### - LATEST CHANGES (December 31 2023) -
+- **FEAT**: New category -> titled lines (see titled lines)
+- **BREAKING-CHANGE**: `CBdbox` renamed in `CBd`
+- **FEAT**: `CBy` and `CBd` can by used on titled lines also
 
 ---
 <h1 align="center">comment-box.nvim</h1>
@@ -15,11 +16,12 @@ This plugin tries to remedy this by giving you easy boxes and lines the way you 
 
 _comment-box_ allows you to:
 
-- draw a box around the selected text or actual line with a simple keyboard shortcut. The box can be left aligned, right aligned or centered, can have a fixed size or be adapted to the text. The text can be left aligned or centered. Too long text are automatically wrapped to fit in the box. The box can be removed at any time while keeping the text.
+- draw a box around the selected text or actual line with a simple keyboard shortcut. The box can be left aligned, right aligned or centered, can have a fixed size or be adapted to the text. The text can be left aligned right aligned or centered. Too long text are automatically wrapped to fit in the box. The box can be removed at any time while keeping the text.
 - create your own type of box by choosing its width and the characters used to draw the top, bottom, left, right and corners of it.
+- integrate your text in a drew line. The line can be left aligned, right aligned or centered. The text can be left aligned right aligned or centered. Too long text will be wrapped, the first line will be integrated in the line, the others will appear commented below the line.
 - draw a line with a simple keyboard shortcut. The line can be left aligned, right aligned or centered.
 - create your own type of line by choosing its width and the characters used to draw its start, end and body.
-- choose from a catalog of 22 predefined boxes and 10 predefined lines and use it by simply pass its number to the function call.
+- choose from a catalog of 22 predefined boxes and 13 predefined lines and use it by simply pass its number to the function call.
 
 Mainly designed for code comments, _comment-box_ can also be used to brighten up the dull _.txt_ files! You can also use it in _markdown_ and _orgmode_ files, however, if it makes sense if you use those formats "as is" (for note taking for example), it's not a good idea if you plan to convert them to other formats.
 
@@ -77,7 +79,7 @@ In case of multiple lines with various size, the text is aligned according to th
 
 To draw a box, place your cursor on the line of text you want in a box, or select multiple lines in _visual mode_, then use one of the command/function above.
 
-**Note**: if a line is too long to fit in the box, _comment-box_ will automatically wrap it for you.
+**Note**: if the text is too long to fit in the box, _comment-box_ will automatically wrap it for you.
 
 Examples:
 ```lua
@@ -102,13 +104,65 @@ Examples:
 -- or
 :lua require("comment-box").llbox(17)
 ```
-##### Removing a box
 
-To remove a box, select it entirely, then use the command `CBdbox` (or create a keybind for it, see [Keybindings examples](#keybindings-examples))
+#### Titled lines
 
-##### Yank the content of a box
+| Command | Description | function |
+|--- | --- | --- |
+|`CBllline[num]` | _Left aligned titled line_ with _Left aligned text_ | `require("comment-box").llline([num])` |
+|`CBlcline[num]` | _Left aligned titled line_ with _Centered text_ | `require("comment-box").lcline([num])` |
+|`CBlrline[num]` | _Left aligned titled line_ with _Right aligned text_ | `require("comment-box").lrbox([num])` |
+|`CBclline[num]` | _Centered title line_ with _Left aligned text_ | `require("comment-box").clline([num])` |
+|`CBccline[num]` | _Centered titled line_ with _Centered text_ | `require("comment-box").ccline([num])` |
+|`CBcrline[num]` | _Centered titled line_ with _Right aligned text_ | `require("comment-box").crline([num])` |
+|`CBrlline[num]` | _Right aligned titled line_ with _Left aligned text_ | `require("comment-box").rlline([num])` |
+|`CBrcline[num]` | _Right aligned titled line_ with _Centered text_ | `require("comment-box").rcline([num])` |
+|`CBrrline[num]` | _Right aligned titled line_ with _Right aligned text_ | `require("comment-box").rrline([num])` |
+|`CBdbox` | _Remove a box_ | `require("comment-box")`.dbox() |
+|`CBy` | _Yank the content of a box_ | `require("comment-box")`.yank() |
 
-Select the box (or at least the part including the text), then use the command `CBy`.
+The `[num]` parameter is optional. It's the number of a predefined style from the catalog (see [Catalog](#the-catalog)). By leaving it empty, the box will be drawn with the style you defined or if you didn't define one, with the default style.
+
+A 'centered' titled line is centered relatively to the width of your document (set to the standard 80 by default, you can change it with the `setup()` function - see [Configuration](#configuration-and-creating-your-own-type-of-box)). Same for 'right aligned' titled lines.
+
+To draw a titled line, place your cursor on the line of text you want in, then use one of the command/function above.
+
+**Note**: if the text is too long to fit in the line, _comment-box_ will automatically wrap it for you. The first line of text will be in the line, the others will be commented above it.
+
+Examples:
+```lua
+-- A left aligned titled line with the text left justified:
+:CBllline
+-- or
+:lua require("comment-box").llline()
+
+-- A centered titled line with the text right justified:
+:CBcrline
+-- or
+:lua require("comment-box").crline()
+
+-- A right aligned titled line with the text centered,
+-- using the style 13 from the catalog:
+:CBrcline13
+-- or
+:lua require("comment-box").rcline(13)
+```
+
+#### Removing a box or a titled line while keeping the text
+
+| Command | Description | function |
+|--- | --- | --- |
+|`CBd` | _Remove a box or titled line, keeping its content_ | `require("comment-box").dbox()` |
+
+To remove a box or a titled line, select it in visual mode, then use the command `CBd` (or create a keybind for it, see [Keybindings examples](#keybindings-examples))
+
+#### Yank the content of a box or a titled line
+
+| Command | Description | function |
+|--- | --- | --- |
+|`CBy` | _Yank the content of a box or titled line_ | `require("comment-box").yank()` |
+
+Select the box (or at least the part including the text) or the titled line in visual mode, then use the command `CBy`.
 (Note that the text is available in the `+` register, it assumes that you have the `clipboard` option set to `unnamedplus`. If not you will have to specify the register for pasting using `"+p`).
 
 #### Lines
@@ -237,8 +291,11 @@ require('comment-box').setup({
     line = "─",
     line_start = "─",
     line_end = "─",
+    title_left = "─",
+    title_right = "─",
   },
-  outer_blank_lines = false, -- insert a blank line above and below the box
+  outer_blank_lines_above = false, -- insert a blank line above the box
+  outer_blank_lines_below = false, -- insert a blank line below the box
   inner_blank_lines = false, -- insert a blank line above and below the text
   line_blank_line_above = false, -- insert a blank line above the line
   line_blank_line_below = false, -- insert a blank line below the line
