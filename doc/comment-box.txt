@@ -125,6 +125,9 @@ for the `:CBllbox14` above.
 To remove a box or line, when an Undo is no more a possibility, select the
 box or line and use the :CBd command
 
+You may need to yank the content of a box (without the box). The command is
+`:CBy`.
+
 It's of course easier to use shortcuts (here using `<Leader>c` as prefix):
 >
     local keymap = vim.keymap.set
@@ -151,7 +154,7 @@ Or if you use Which-key:
 
     wk.register({
       ["<Leader>"] = {
-        b = {
+        c = {
           name = " □  Boxes",
           b = { "<Cmd>CBccbox<CR>", "Box Title" },
           t = { "<Cmd>CBllline<CR>", "Titled Line" },

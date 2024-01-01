@@ -58,7 +58,9 @@ If the plugin has tons of commands, you'll most likely need 3 or 4 at most on a 
 
 You may want to try other styles of boxes and lines: open the catalog with `:CBcatalog`, and take note of the style of boxes and lines you want to use. You just have to add the number after the relevant commands (without spaces), like for the `:CBllbox14` above.
 
-To remove a box or line, when an Undo is no more a possibility, select the box or line and use the `:CBd` command
+To remove a box or line, when an Undo is no more a possibility, select the box or line and use the `:CBd` command.
+
+You may need to yank the content of a box (without the box). The command is `:CBy`.
 
 It's of course easier to use shortcuts (here using `<Leader>c` as prefix):
 ```lua
@@ -86,7 +88,7 @@ local wk = require("which-key")
 
 wk.register({
   ["<Leader>"] = {
-    b = {
+    c = {
       name = " □  Boxes",
       b = { "<Cmd>CBccbox<CR>", "Box Title" },
       t = { "<Cmd>CBllline<CR>", "Titled Line" },
