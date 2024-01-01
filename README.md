@@ -1,4 +1,5 @@
 #### - LATEST CHANGES (December 31 2023) -
+- **ADD** [Quick Start](#quick-start) section for people with no time to waste!
 - **FEAT**: New category -> titled lines (see [titled lines](#titled-lines))
 - **BREAKING-CHANGE**: `CBdbox` renamed in `CBd`
 - **FEAT**: `CBy` and `CBd` can by used on titled lines also
@@ -33,19 +34,86 @@ _Neovim_ 0.8+
 
 ## Installation
 
-Install like any other plugin with your favorite package manager.
+Install like any other plugin with your favorite package manager. Some examples:
 
-For example with packer:
-
-```lua
-use("LudoPinelli/comment-box.nvim")
-```
 With lazy:
 ```lua
 { "LudoPinelli/comment-box.nvim", }
 ```
+With packer:
 
-If you're fine with the default settings (see [Configuration](#configuration-and-creating-your-own-type-of-box)), it's all you have to do, however, _comment-box_ does not come with any keybinding, see [Keybindings examples](#keybindings-examples) to make your own.
+```lua
+use("LudoPinelli/comment-box.nvim")
+```
+
+If you're fine with the default settings (see [Configuration](#configuration-and-creating-your-own-type-of-box)), it's all you have to do. However, _comment-box_ does not come with any keybinding, consult the [Quick Start](#quick-start) section for recommandations, or see [Keybindings examples](#keybindings-examples) to fine tuned your own.
+
+## Quick Start
+
+If the plugin has tons of commands, you'll most likely need 3 or 4 at most on a regular basis.
+- You'll probably want a box for titles. I personally choose a centered fixed box with text centered : `:CBccbox`
+- A titled line is nice to divide and name each part. I use a left aligned titled line with the text left aligned: `:CBllline`
+- For a simple separation, a simple line will do: `:CBline`
+- Finally, it can be useful to make some important comments pop. To achieve this, choose an appropriate style, I like the 14: `:CBllbox14`
+
+You may want to try other styles of boxes and lines: open the catalog with `:CBcatalog`, and take note of the style of boxes and lines you want to use. You just have to add the number after the relevant commands (without spaces), like for the `:CBllbox14` above.
+
+To remove a box or line, when an Undo is no more a possibility, select the box or line and use the `:CBd` command
+
+It's of course easier to use shortcuts (here using `<Leader>c` as prefix):
+```lua
+local keymap = vim.keymap.set
+local opts = { noremap = true, silent = true }
+local cb = require("comment-box")
+
+-- Titles
+keymap({ "n", "v" }, "<Leader>cb", "<Cmd>CBccbox<CR>", opts)
+-- Named parts
+keymap({ "n", "v" }, "<Leader>ct", "<Cmd>llline<CR>", opts)
+-- Simple line
+keymap("n", "<Leader>cl", "<Cmd>CBline<CR>", opts)
+-- keymap("i", "<M-l>", "<Cmd>CBline<CR>", opts) -- To use in Insert Mode
+-- Marked comments
+keymap({ "n", "v" }, "<Leader>cm", "<Cmd>CBllbox14<CR>", opts)
+-- Removing a box is simple enough with the command (CBd), but if you
+-- use it a lot:
+-- keymap({ "n", "v" }, "<Leader>cd", "<Cmd>CBd<CR>", opts)
+```
+
+Or if you use Which-key:
+```lua
+local wk = require("which-key")
+
+wk.register({
+  ["<Leader>"] = {
+    b = {
+      name = " □  Boxes",
+      b = { "<Cmd>CBccbox<CR>", "Box Title" },
+      t = { "<Cmd>CBllline<CR>", "Titled Line" },
+      l = { "<Cmd>CBline<CR>", "Simple Line" },
+      m = { "<Cmd>CBllbox14<CR>", "Marked" },
+      -- d = { "<Cmd>CBd<CR>", "Remove a box" },
+    },
+  },
+})
+```
+
+If you want more control, the nomenclature for the commands is fairly simple:
+
+<p align=center>`CB`xy`box|line`[num]
+
+where:
+- `CB` is for "Comment-Box"
+- `x` is for the position of the box or line (`l`: left, `c`: center, `r`: right)
+- `y` is for the text justification (`l`: left, `c`: center, `r`: right)
+- `box|line` to choose if it applies to a box or a line
+- `[num]` is optional an apply a style from the catalog
+
+Exceptions:
+- Adapted boxes: `x` is a (for adapted) `y` is the position of the box.
+- Simple Lines: no `x`. `y` is the position of the line if not left.
+
+See the rest of this doc for more details.
 
 ## Usage
 
@@ -150,7 +218,7 @@ Examples:
 |--- | --- | --- |
 |`CBd` | _Remove a box or titled line, keeping its content_ | `require("comment-box").dbox()` |
 
-To remove a box or a titled line, select it in visual mode, then use the command `CBd` (or create a keybind for it, see [Keybindings examples](#keybindings-examples))
+To remove a box or a titled line, select it, then use the command `CBd` (or create a keybind for it, see [Keybindings examples](#keybindings-examples))
 
 #### Yank the content of a box or a titled line
 
@@ -158,8 +226,9 @@ To remove a box or a titled line, select it in visual mode, then use the command
 |--- | --- | --- |
 |`CBy` | _Yank the content of a box or titled line_ | `require("comment-box").yank()` |
 
-Select the box (or at least the part including the text) or the titled line in visual mode, then use the command `CBy`.
-(Note that the text is available in the `+` register, it assumes that you have the `clipboard` option set to `unnamedplus`. If not you will have to specify the register for pasting using `"+p`).
+Select the box (or at least the part including the text) or the titled line, then use the command `CBy`.
+
+**Note** the text is available in the `+` register, it assumes that you have the `clipboard` option set to `unnamedplus`. If not you may have to specify the register for pasting using `"+p`.
 
 #### Lines
 
@@ -197,45 +266,50 @@ Examples:
 
 ```shell
 # left aligned fixed size box with left aligned text
-nnoremap <Leader>bb <Cmd>lua require('comment-box').llbox()<CR>
-vnoremap <Leader>bb <Cmd>lua require('comment-box').llbox()<CR>
+nnoremap <Leader>cb <Cmd>lua require('comment-box').llbox()<CR>
+vnoremap <Leader>cb <Cmd>lua require('comment-box').llbox()<CR>
 
 # centered adapted box
-nnoremap <Leader>bc <Cmd>lua require('comment-box').acbox()<CR>
-vnoremap <Leader>bc <Cmd>lua require('comment-box').acbox()<CR>
+nnoremap <Leader>cc <Cmd>lua require('comment-box').acbox()<CR>
+vnoremap <Leader>cc <Cmd>lua require('comment-box').acbox()<CR>
 
 # centered line
-nnoremap <Leader>bl <Cmd>lua require('comment-box').cline()<CR>
+nnoremap <Leader>cl <Cmd>lua require('comment-box').cline()<CR>
 inoremap <M-l> <Cmd>lua require('comment-box').cline()<CR>
 
 # remove a box or a titled line
-vnoremap <Leader>bd <Cmd>lua require('comment-box').dbox()<CR>
+vnoremap <Leader>cd <Cmd>lua require('comment-box').dbox()<CR>
+nnoremap <Leader>cd <Cmd>lua require('comment-box').dbox()<CR>
 ```
 
 #### Lua
 
 ```lua
 local keymap = vim.keymap.set
+local opts = { noremap = true, silent = true }
 local cb = require("comment-box")
 
 -- left aligned fixed size box with left aligned text
-keymap({ "n", "v"}, "<Leader>bb", cb.llbox, {})
+keymap({ "n", "v"}, "<Leader>cb", "<Cmd>CBllbox<CR>", opts)
 -- centered adapted box
-keymap({ "n", "v"}, "<Leader>bc", cb.acbox, {})
+keymap({ "n", "v"}, "<Leader>cc", "<Cmd>CBacbox<CR>", opts)
+
+-- left aligned titled line with left aligned text
+keymap({ "n", "v" }, "<Leader>ct", "<Cmd>llline<CR>", opts)
 
 -- centered line
-keymap("n", "<Leader>bl", cb.cline, {})
-keymap("i", "<M-l>", cb.cline, {})
+keymap("n", "<Leader>cl", "<Cmd>CBcline<CR>", opts)
+keymap("i", "<M-l>", "<Cmd>CBcline<CR>", opts)
 
 -- remove a box or a titled line
-keymap({ "n", "v" }, "<Leader>bd", cb.dbox, {})
+keymap({ "n", "v" }, "<Leader>cd", "<Cmd>CBd<CR>", opts)
 ```
 
 ## The catalog
 
 ![The catalog](./imgs/bc-catalog.jpg?raw=true)
 
-The catalog is a collection of 22 predefined types of boxes and 10 types of lines.
+The catalog is a collection of 22 predefined types of boxes and 13 types of lines.
 You can easily access the catalog in _Neovim_ (it will appear in a popup window so it won't mess with what you're doing) using:
 
 ```lua

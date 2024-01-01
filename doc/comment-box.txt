@@ -20,30 +20,31 @@ CONTENTS                                                    *comment-box-content
     1. Overview.............................................|comment-box-overview|
     2. Prerequisite.....................................|comment-box-prerequisite|
     3. Installation.....................................|comment-box-installation|
-    4. Usage...................................................|comment-box-usage|
-        4.1. Commands.......................................|comment-box-commands|
-            4.1.1 Boxes........................................|comment-box-boxes|
-            4.1.2 Titled Lines..........................|comment-box-titled-lines|
-            4.1.3 Lines........................................|comment-box-lines|
-            4.1.4 Removing a box or a titled line.............|comment-box-remove|
-            4.1.5 Yank the content of a box or titled line......|comment-box-yank|
-        4.2. Keybindings examples...............|comment-box-keybindings_examples|
+    4. Quick start...................................................|quick-start|
+    5. Usage...................................................|comment-box-usage|
+        5.1. Commands.......................................|comment-box-commands|
+            5.1.1 Boxes........................................|comment-box-boxes|
+            5.1.2 Titled Lines..........................|comment-box-titled-lines|
+            5.1.3 Lines........................................|comment-box-lines|
+            5.1.4 Removing a box or a titled line.............|comment-box-remove|
+            5.1.5 Yank the content of a box or titled line......|comment-box-yank|
+        5.2. Keybindings examples...............|comment-box-keybindings_examples|
             5.3.1. Vim script:............................|comment-box-vim_script|
             5.3.2. Lua...........................................|comment-box-lua|
-    5. The catalog...........................................|comment-box-catalog|
-    6. Configuration and creating your own type of box.|comment-box-configuration|
-        6.1. 'doc_width'...................................|comment-box-doc_width|
-        6.2. 'box_width'...................................|comment-box-box_width|
-        6.3. 'borders'.......................................|comment-box-borders|
-        6.4. 'line_width'.................................|comment-box-line_width|
-        6.5. 'line'.............................................|comment-box-line|
-        6.6. 'outer_blank_lines'...................|comment-box-outer_blank_lines|
-        6.7. 'inner_blank_lines'...................|comment-box-inner_blank_lines|
-        6.8. 'line_blank_line_above'...........|comment-box-line_blank_line_above|
-        6.9  'line_blank_line_below'...........|comment-box-line_blank_line_below|
-    7. Acknowledgement...............................|comment-box-acknowledgement|
-    8. About...................................................|comment-box-about|
-    9. License...............................................|comment-box-license|
+    6. The catalog...........................................|comment-box-catalog|
+    7. Configuration and creating your own type of box.|comment-box-configuration|
+        7.1. 'doc_width'...................................|comment-box-doc_width|
+        7.2. 'box_width'...................................|comment-box-box_width|
+        7.3. 'borders'.......................................|comment-box-borders|
+        7.4. 'line_width'.................................|comment-box-line_width|
+        7.5. 'line'.............................................|comment-box-line|
+        7.6. 'outer_blank_lines'...................|comment-box-outer_blank_lines|
+        7.7. 'inner_blank_lines'...................|comment-box-inner_blank_lines|
+        7.8. 'line_blank_line_above'...........|comment-box-line_blank_line_above|
+        7.9  'line_blank_line_below'...........|comment-box-line_blank_line_below|
+    8. Acknowledgement...............................|comment-box-acknowledgement|
+    9. About...................................................|comment-box-about|
+   10. License...............................................|comment-box-license|
 
 
 --------------------------------------------------------------------------------
@@ -85,24 +86,104 @@ Neovim 0.8+
 --------------------------------------------------------------------------------
 INSTALLATION                                            *comment-box-installation*
 
-Install like any other plugin with your favorite package manager.
-
-For example with packer:
->
-    use("LudoPinelli/comment-box.nvim")
-<
+Install like any other plugin with your favorite package manager. Some examples:
 
 With lazy:
 >
     { "ludoPinelli/comment-box.nvim", }
 <
 
+With packer:
+>
+    use("LudoPinelli/comment-box.nvim")
+<
+
 If you're fine with the default settings (see |comment-box-configuration|), it's
-all you have to do, however, comment-box does not come with any keybinding, see
-|comment-box-keybindings_examples| to make your own.
+all you have to do. However, comment-box does not come with any keybinding,
+consult the |quick-start| section for recommandations, or see
+|comment-box-keybindings-examples| to fine tuned your own.
+--------------------------------------------------------------------------------
+QUICK START                                                          *quick-start*
+
+
+
+If the plugin has tons of commands, you'll most likely need 3 or 4 at most on a 
+regular basis.
+- You'll probably want a box for titles. I personally choose a centered fixed box
+  with text centered :CBccbox
+- A titled line is nice to divide and name each part. I use a left aligned titled
+  line with the text left aligned: :CBllline
+- For a simple separation, a simple line will do :CBline
+- Finally, it can be useful to make some important comments pop. To achieve this,
+  choose an appropriate style, I like the 14 :CBllbox14
+
+You may want to try other styles of boxes and lines: open the catalog with
+:CBcatalog, and take note of the style of boxes and lines you want to use. You
+just have to add the number after the relevant commands (without spaces), like
+for the `:CBllbox14` above.
+
+To remove a box or line, when an Undo is no more a possibility, select the
+box or line and use the :CBd command
+
+It's of course easier to use shortcuts (here using `<Leader>c` as prefix):
+>
+    local keymap = vim.keymap.set
+    local opts = { noremap = true, silent = true }
+    local cb = require("comment-box")
+
+    -- Titles
+    keymap({ "n", "v" }, "<Leader>cb", "<Cmd>CBccbox<CR>", opts)
+    -- Named parts
+    keymap({ "n", "v" }, "<Leader>ct", "<Cmd>llline<CR>", opts)
+    -- Simple line
+    keymap("n", "<Leader>cl", "<Cmd>CBline<CR>", opts)
+    -- keymap("i", "<M-l>", "<Cmd>CBline<CR>", opts) -- To use in Insert Mode
+    -- Marked comments
+    keymap({ "n", "v" }, "<Leader>cm", "<Cmd>CBllbox14<CR>", opts)
+    -- Removing a box is simple enough with the command (CBd), but if you
+    -- use it a lot:
+    -- keymap({ "n", "v" }, "<Leader>cd", "<Cmd>CBd<CR>", opts)
+<
+
+Or if you use Which-key:
+>
+    local wk = require("which-key")
+
+    wk.register({
+      ["<Leader>"] = {
+        b = {
+          name = " □  Boxes",
+          b = { "<Cmd>CBccbox<CR>", "Box Title" },
+          t = { "<Cmd>CBllline<CR>", "Titled Line" },
+          l = { "<Cmd>CBline<CR>", "Simple Line" },
+          m = { "<Cmd>CBllbox14<CR>", "Marked" },
+          -- d = { "<Cmd>CBd<CR>", "Remove a box" },
+        },
+      },
+    })
+<
+
+If you want more control, the nomenclature for the commands is fairly simple:
+
+`CB`xy`box|line`num
+
+where:
+- CB is for "Comment-Box"
+- x is for the position of the box or line (l: left, c: center, r: right)
+- y is for the text justification (l: left, c: center, r: right)
+- box|line to choose if it applies to a box or a line
+- num is optional an apply a style from the catalog
+
+Exceptions:
+- Adapted boxes: x is a (for adapted) y is the position of the box.
+- Simple Lines: no x. y is the position of the line if not left.
+
+See the rest of this doc for more details.
 
 --------------------------------------------------------------------------------
 USAGE                                                          *comment-box-usage*
+
+
 
 BOXES                                                          *comment-box-boxes*
 
@@ -279,8 +360,8 @@ REMOVING A BOX OR A TITLED LINE WHILE KEEPING THE TEXT        *comment-box-remov
 |         | keeping its content                |                               |
 +---------+------------------------------------+-------------------------------+
 
-To remove a box or a titled line, select it in visual mode, then use the
-command CBd (or create a keybind for it, see|keybindings-examples)
+To remove a box or a titled line, select it, then use the command CBd (or create
+a keybind for it, see|keybindings-examples)
 
 YANK THE CONTENT OF A BOX OR A TITLED LINE                      *comment-box-yank*
 
@@ -291,10 +372,11 @@ YANK THE CONTENT OF A BOX OR A TITLED LINE                      *comment-box-yan
 |         | titled line                        |                               |
 +---------+------------------------------------+-------------------------------+
 
-Select the box (or at least the part including the text) or the titled line
-in visual mode, then use the command CBy.
-(Note that the text is available in the `+` register, it assumes that you have
-the `clipboard` option set to `unnamedplus`. If not you will have to specify
+Select the box (or at least the part including the text) or the titled line,
+then use the command CBy.
+
+Note: the text is available in the `+` register, it assumes that you have the
+`clipboard` option set to `unnamedplus`. If not you may have to specify
 the register for pasting using "+p).
 
 LINES                                                          *comment-box-lines*
@@ -337,38 +419,42 @@ KEYBINDINGS EXAMPLES                            *comment-box-keybindings_example
 VIM SCRIPT:                                              *comment-box-vim_script:*
 >
     #left aligned fixed size box with left aligned text
-    nnoremap <Leader>bb <Cmd>lua require('comment-box').llbox()<CR>
-    vnoremap <Leader>bb <Cmd>lua require('comment-box').llbox()<CR>
+    nnoremap <Leader>cb <Cmd>lua require('comment-box').llbox()<CR>
+    vnoremap <Leader>cb <Cmd>lua require('comment-box').llbox()<CR>
 
     # centered adapted box
-    nnoremap <Leader>bc <Cmd>lua require('comment-box').acbox()<CR>
-    vnoremap <Leader>bc <Cmd>lua require('comment-box').acbox()<CR>
+    nnoremap <Leader>cc <Cmd>lua require('comment-box').acbox()<CR>
+    vnoremap <Leader>cc <Cmd>lua require('comment-box').acbox()<CR>
 
     # centered line
-    nnoremap <Leader>bl <Cmd>lua require('comment-box').cline()<CR>
+    nnoremap <Leader>cl <Cmd>lua require('comment-box').cline()<CR>
     inoremap <M-l> <Cmd>lua require('comment-box').cline()<CR>
 
     # remove a box or a titled line
-    nnoremap <Leader>bd <Cmd>lua require('comment-box').dbox()<CR>
-    vnoremap <Leader>bd <Cmd>lua require('comment-box').dbox()<CR>
+    nnoremap <Leader>cd <Cmd>lua require('comment-box').dbox()<CR>
+    vnoremap <Leader>cd <Cmd>lua require('comment-box').dbox()<CR>
 <
 
 LUA                                                              *comment-box-lua*
 >
     local keymap = vim.keymap.set
+    local opts = { noremap = true, silent = true }
     local cb = require("comment-box")
 
     -- left aligned fixed size box with left aligned text
-    keymap({ "n", "v" }, "<Leader>bb", cb.llbox, {})
+    keymap({ "n", "v" }, "<Leader>cb", "<Cmd>CBllbox<CR>", opts)
     -- centered adapted box
-    keymap({ "n", "v" }, "<Leader>bc", cb.acbox, {})
+    keymap({ "n", "v" }, "<Leader>cc", "<Cmd>CBacbox<CR>", opts)
+
+    -- left aligned titled line with left aligned text
+    keymap({ "n", "v" }, "<Leader>ct", "<Cmd>llline<CR>", opts)
 
     -- centered line
-    keymap("n", "<Leader>bl", cb.cline, {})
-    keymap("i", "<M-l>", cb.cline, {})
+    keymap("n", "<Leader>cl", "<Cmd>CBline<CR>", opts)
+    keymap("i", "<M-l>", "<Cmd>CBline<CR>", opts)
 
     -- remove a box or a titled line
-    keymap({ "n", "v" }, "<Leader>bd", cb.dbox, {})
+    keymap({ "n", "v" }, "<Leader>cd", ""<Cmd>CBd<CR>", opts)
 <
 
 --------------------------------------------------------------------------------
@@ -376,7 +462,7 @@ THE CATALOG                                                  *comment-box-catalo
 
 
 
-The catalog is a collection of 22 predefined types of boxes and 10 types of
+The catalog is a collection of 22 predefined types of boxes and 13 types of
 lines. You can easily access the catalog in Neovim (it will appear in a popup
 window so it won't mess with what you're doing) using:
 >
