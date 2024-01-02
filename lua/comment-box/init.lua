@@ -1,3 +1,4 @@
+---@diagnostic disable: cast-local-type
 --         ╭──────────────────────────────────────────────────────────╮
 --         │                         SETTINGS                         │
 --         ╰──────────────────────────────────────────────────────────╯
@@ -37,9 +38,6 @@ local settings = {
 local cat = require("comment-box.catalog")
 local catalog = require("comment-box.catalog_view")
 
----@type string
-local comment_string, comment_string_bottom_row, comment_string_int_row, comment_string_end =
-  "", "", "", ""
 ---@type number, number
 local line_start_pos, line_end_pos = 0, 0
 
@@ -88,8 +86,8 @@ local function get_pad(line)
 end
 
 -- Store the range of the selected text in 'line_start_pos'/'line_end_pos'
----@param lstart? number?
----@param lend? number?
+---@param lstart number
+---@param lend number
 local function get_range(lstart, lend)
   local mode = vim.api.nvim_get_mode().mode
 
@@ -110,17 +108,18 @@ local function get_range(lstart, lend)
   end
 end
 
--- return commentstring
+-- return comment strings
 local function get_comment_string()
-  comment_string = vim.bo.commentstring
-  comment_string, comment_string_end = comment_string:match("^(.*)%%s(.*)")
-  if comment_string ~= nil then
-    comment_string = vim.trim(comment_string)
+  local comment_string = vim.bo.commentstring
+  local comment_string_start, comment_string_end =
+    comment_string:match("^(.-)%%s(.-)$")
+  if comment_string_start ~= nil then
+    comment_string_start = vim.trim(comment_string_start)
   end
   if comment_string_end ~= nil then
     comment_string_end = vim.trim(comment_string_end)
   end
-  return comment_string, comment_string_end
+  return comment_string_start, comment_string_end
 end
 
 -- Return the correct cursor position after a box has been created
@@ -144,13 +143,13 @@ end
 -- Skip comment string if there is one at the beginning of the line
 ---@param line string
 ---@return string
-local function skip_cs(line)
+local function skip_cs(line, comment_string_start)
   local trimmed_line = vim.trim(line)
-  local cs_len = vim.fn.strdisplaywidth(comment_string)
+  local cs_len = vim.fn.strdisplaywidth(comment_string_start)
 
-  if trimmed_line:sub(1, cs_len) == comment_string then
+  if trimmed_line:sub(1, cs_len) == comment_string_start then
     line = line:gsub("^%s+", "") -- remove whitespace before comment string
-    line = line:gsub(vim.pesc(comment_string), "", 1) -- remove comment string
+    line = line:gsub(vim.pesc(comment_string_start), "", 1) -- remove comment string
     line = line:gsub("[ \t]+%f[\r\n%z]", "") -- remove trailing spaces
   end
   if centered_text or right_aligned_text then
@@ -200,10 +199,12 @@ local function format_lines(text)
     end
   end
 
+  local comment_string_start, _ = get_comment_string()
+
   for pos, str in ipairs(text) do
     table.remove(text, pos)
-    if comment_string ~= nil then
-      str = skip_cs(str)
+    if comment_string_start ~= nil then
+      str = skip_cs(str, comment_string_start)
     end
     str = vim.trim(str)
     table.insert(text, pos, str)
@@ -212,8 +213,8 @@ local function format_lines(text)
       str_width = 0
     end
     local offset
-    if comment_string ~= nil then
-      offset = vim.fn.strdisplaywidth(comment_string) + 1
+    if comment_string_start ~= nil then
+      offset = vim.fn.strdisplaywidth(comment_string_start) + 1
     else
       offset = 1
     end
@@ -279,12 +280,13 @@ end
 local function set_lead_space()
   lead_space_ab = " "
   lead_space_bb = " "
+  local comment_string_start, _ = get_comment_string()
   if centered_box then
     lead_space_bb = string.rep(
       " ",
       math.floor(
         (settings.doc_width - final_width) / 2
-          - vim.fn.strdisplaywidth(comment_string)
+          - vim.fn.strdisplaywidth(comment_string_start)
           + 0.5
       )
     )
@@ -294,7 +296,7 @@ local function set_lead_space()
       " ",
       settings.doc_width
         - final_width
-        - vim.fn.strdisplaywidth(comment_string)
+        - vim.fn.strdisplaywidth(comment_string_start)
         - 2
     )
   end
@@ -315,8 +317,8 @@ local function get_formated_text()
 end
 
 -- Return the raw text
----@param lstart number?
----@param lend number?
+---@param lstart number
+---@param lend number
 ---@return string[]
 local function get_text(lstart, lend)
   get_range(lstart, lend)
@@ -343,19 +345,25 @@ local function create_box(choice)
   local filetype = vim.bo.filetype
   is_box = true
 
-  comment_string, comment_string_end = get_comment_string()
+  local comment_string_start, comment_string_end = get_comment_string()
 
-  if not comment_string or filetype == "markdown" or filetype == "org" then
-    comment_string = ""
+  if
+    not comment_string_start
+    or filetype == "markdown"
+    or filetype == "org"
+  then
+    comment_string_start = ""
   end
 
+  local comment_string_bottom_row, comment_string_int_row = "", ""
   -- TODO: Implement below as a style option for multi style commenting.
   if comment_string_end ~= "" then
-    comment_string_bottom_row = string.rep(" ", string.len(comment_string))
+    comment_string_bottom_row =
+      string.rep(" ", string.len(comment_string_start))
     comment_string_int_row = comment_string_bottom_row
   else
-    comment_string_bottom_row = comment_string
-    comment_string_int_row = comment_string
+    comment_string_bottom_row = comment_string_start
+    comment_string_int_row = comment_string_start
   end
 
   local text = get_formated_text()
@@ -415,7 +423,7 @@ local function create_box(choice)
 
   local ext_top_row = string.format(
     "%s%s%s%s%s",
-    comment_string,
+    comment_string_start,
     lead_space_bb,
     borders.top_left,
     string.rep(borders.top, final_width),
@@ -542,15 +550,19 @@ local function create_box(choice)
 end
 
 -- Remove a box or a titled line
----@param lstart number?
----@param lend number?
+---@param lstart number
+---@param lend number
 local function remove(lstart, lend)
   local filetype = vim.bo.filetype
 
-  comment_string, comment_string_end = get_comment_string()
+  local comment_string_start, _ = get_comment_string()
 
-  if not comment_string or filetype == "markdown" or filetype == "org" then
-    comment_string = ""
+  if
+    not comment_string_start
+    or filetype == "markdown"
+    or filetype == "org"
+  then
+    comment_string_start = ""
   end
 
   local result = get_text(lstart, lend)
@@ -559,7 +571,7 @@ local function remove(lstart, lend)
 
   for _, line in pairs(result) do
     if line ~= "" then
-      row = string.format("%s%s%s", comment_string, " ", line)
+      row = string.format("%s%s%s", comment_string_start, " ", line)
       table.insert(lines, row)
     end
   end
@@ -568,12 +580,13 @@ local function remove(lstart, lend)
 end
 
 -- yank the content of a box or titled line
----@param lstart number?
----@param lend number?
+---@param lstart number
+---@param lend number
 local function yank(lstart, lend)
   local tab_text = get_text(lstart, lend)
   local tab_text_to_str = table.concat(tab_text, "\n")
 
+  ---@diagnostic disable-next-line: param-type-mismatch
   vim.fn.setreg("+", tab_text_to_str .. "\n", "l")
 end
 
@@ -584,10 +597,10 @@ local function create_line(choice)
   local symbols = set_line(choice)
   is_box = false
   local filetype = vim.bo.filetype
-  comment_string, comment_string_end = get_comment_string()
+  local comment_string_start, comment_string_end = get_comment_string()
   local line = {}
   local lead_space = " "
-  local offset = vim.fn.strdisplaywidth(comment_string)
+  local offset = vim.fn.strdisplaywidth(comment_string_start)
 
   if settings.line_width > settings.doc_width + offset then
     settings.line_width = settings.doc_width + offset
@@ -607,8 +620,12 @@ local function create_line(choice)
     lead_space = " "
   end
 
-  if not comment_string or filetype == "markdown" or filetype == "org" then
-    comment_string = ""
+  if
+    not comment_string_start
+    or filetype == "markdown"
+    or filetype == "org"
+  then
+    comment_string_start = ""
   end
 
   if settings.line_blank_line_above then
@@ -618,7 +635,7 @@ local function create_line(choice)
     line,
     string.format(
       "%s%s%s%s%s%s",
-      comment_string,
+      comment_string_start,
       lead_space,
       symbols.line_start,
       string.rep(
@@ -642,18 +659,22 @@ end
 local function create_titled_line(choice)
   local symbols = set_line(choice)
   local filetype = vim.bo.filetype
-  comment_string, comment_string_end = get_comment_string()
+  local comment_string_start, comment_string_end = get_comment_string()
   local line = {}
   local lead_space = " "
-  local offset = vim.fn.strdisplaywidth(comment_string)
+  local offset = vim.fn.strdisplaywidth(comment_string_start)
   is_box = false
 
   if settings.line_width > settings.doc_width + offset then
     settings.line_width = settings.doc_width + offset
   end
 
-  if not comment_string or filetype == "markdown" or filetype == "org" then
-    comment_string = ""
+  if
+    not comment_string_start
+    or filetype == "markdown"
+    or filetype == "org"
+  then
+    comment_string_start = ""
   end
 
   local text = get_formated_text()
@@ -689,7 +710,7 @@ local function create_titled_line(choice)
     line,
     string.format(
       "%s%s%s%s%s%s%s%s%s%s%s%s",
-      comment_string,
+      comment_string_start,
       lead_space,
       symbols.line_start,
       string.rep(symbols.line, start_pad),
@@ -706,7 +727,10 @@ local function create_titled_line(choice)
   if type(text) == "table" and #text > 1 then
     for index, value in ipairs(text) do
       if index > 1 then
-        table.insert(line, string.format("%s%s%s", comment_string, " ", value))
+        table.insert(
+          line,
+          string.format("%s%s%s", comment_string_start, " ", value)
+        )
       end
     end
   end
@@ -717,9 +741,9 @@ local function create_titled_line(choice)
   return line
 end
 
----@param choice number?
----@param lstart number?
----@param lend number?
+---@param choice number
+---@param lstart number
+---@param lend number
 local function display_box(choice, lstart, lend)
   get_range(lstart, lend)
   vim.api.nvim_buf_set_lines(
@@ -733,16 +757,12 @@ local function display_box(choice, lstart, lend)
   vim.api.nvim_win_set_cursor(0, { set_cur_pos(line_end_pos), 1 })
 end
 
----@param choice number?
+---@param choice number
 local function display_line(choice)
   local line = vim.fn.line(".")
-  vim.api.nvim_buf_set_lines(
-    0,
-    line - 1,
-    tonumber(line),
-    false,
-    create_line(choice)
-  )
+  line = tonumber(line) or 1
+
+  vim.api.nvim_buf_set_lines(0, line - 1, line, false, create_line(choice))
 
   local cur = vim.api.nvim_win_get_cursor(0)
   if settings.line_blank_line_below then
@@ -754,9 +774,9 @@ local function display_line(choice)
   vim.api.nvim_win_set_cursor(0, cur)
 end
 
----@param choice number?
----@param lstart number?
----@param lend number?
+---@param choice number
+---@param lstart number
+---@param lend number
 local function display_titled_line(choice, lstart, lend)
   get_range(lstart, lend)
   vim.api.nvim_buf_set_lines(
@@ -782,13 +802,10 @@ end
 --         ╰──────────────────────────────────────────────────────────╯
 
 -- Print a left aligned box with text left aligned
----@param choice number?
----@param lstart number?
----@param lend number?
+---@param choice number
+---@param lstart number
+---@param lend number
 local function print_llbox(choice, lstart, lend)
-  choice = tonumber(choice)
-  lstart = tonumber(lstart)
-  lend = tonumber(lend)
   centered_text = false
   right_aligned_text = false
   centered_box = false
@@ -798,13 +815,10 @@ local function print_llbox(choice, lstart, lend)
 end
 
 -- Print a left aligned box with text centered
----@param choice number?
----@param lstart number?
----@param lend number?
+---@param choice number
+---@param lstart number
+---@param lend number
 local function print_lcbox(choice, lstart, lend)
-  choice = tonumber(choice)
-  lstart = tonumber(lstart)
-  lend = tonumber(lend)
   centered_text = true
   right_aligned_text = false
   centered_box = false
@@ -814,13 +828,10 @@ local function print_lcbox(choice, lstart, lend)
 end
 
 -- Print a left aligned box with text right aligned
----@param choice number?
----@param lstart number?
----@param lend number?
+---@param choice number
+---@param lstart number
+---@param lend number
 local function print_lrbox(choice, lstart, lend)
-  choice = tonumber(choice)
-  lstart = tonumber(lstart)
-  lend = tonumber(lend)
   centered_text = false
   right_aligned_text = true
   centered_box = false
@@ -830,13 +841,10 @@ local function print_lrbox(choice, lstart, lend)
 end
 
 -- Print a centered box with text left aligned
----@param choice number?
----@param lstart number?
----@param lend number?
+---@param choice number
+---@param lstart number
+---@param lend number
 local function print_clbox(choice, lstart, lend)
-  choice = tonumber(choice)
-  lstart = tonumber(lstart)
-  lend = tonumber(lend)
   centered_text = false
   right_aligned_text = false
   centered_box = true
@@ -846,13 +854,10 @@ local function print_clbox(choice, lstart, lend)
 end
 
 -- Print a centered box with text centered
----@param choice number?
----@param lstart number?
----@param lend number?
+---@param choice number
+---@param lstart number
+---@param lend number
 local function print_ccbox(choice, lstart, lend)
-  choice = tonumber(choice)
-  lstart = tonumber(lstart)
-  lend = tonumber(lend)
   centered_text = true
   right_aligned_text = false
   centered_box = true
@@ -862,13 +867,10 @@ local function print_ccbox(choice, lstart, lend)
 end
 
 -- Print a centered box with text right aligned
----@param choice number?
----@param lstart number?
----@param lend number?
+---@param choice number
+---@param lstart number
+---@param lend number
 local function print_crbox(choice, lstart, lend)
-  choice = tonumber(choice)
-  lstart = tonumber(lstart)
-  lend = tonumber(lend)
   centered_text = false
   right_aligned_text = true
   centered_box = true
@@ -878,13 +880,10 @@ local function print_crbox(choice, lstart, lend)
 end
 
 -- Print a right aligned box with text left aligned
----@param choice number?
----@param lstart number?
----@param lend number?
+---@param choice number
+---@param lstart number
+---@param lend number
 local function print_rlbox(choice, lstart, lend)
-  choice = tonumber(choice)
-  lstart = tonumber(lstart)
-  lend = tonumber(lend)
   centered_text = false
   right_aligned_text = false
   centered_box = false
@@ -894,13 +893,10 @@ local function print_rlbox(choice, lstart, lend)
 end
 
 -- Print a right aligned box with text centered
----@param choice number?
----@param lstart number?
----@param lend number?
+---@param choice number
+---@param lstart number
+---@param lend number
 local function print_rcbox(choice, lstart, lend)
-  choice = tonumber(choice)
-  lstart = tonumber(lstart)
-  lend = tonumber(lend)
   centered_text = true
   right_aligned_text = false
   centered_box = false
@@ -910,13 +906,10 @@ local function print_rcbox(choice, lstart, lend)
 end
 
 -- Print a right aligned box with text right aligned
----@param choice number?
----@param lstart number?
----@param lend number?
+---@param choice number
+---@param lstart number
+---@param lend number
 local function print_rrbox(choice, lstart, lend)
-  choice = tonumber(choice)
-  lstart = tonumber(lstart)
-  lend = tonumber(lend)
   centered_text = false
   right_aligned_text = true
   centered_box = false
@@ -926,13 +919,10 @@ local function print_rrbox(choice, lstart, lend)
 end
 
 -- Print a left aligned adapted box
----@param choice number?
----@param lstart number?
----@param lend number?
+---@param choice number
+---@param lstart number
+---@param lend number
 local function print_albox(choice, lstart, lend)
-  choice = tonumber(choice)
-  lstart = tonumber(lstart)
-  lend = tonumber(lend)
   centered_text = false
   right_aligned_text = false
   centered_box = false
@@ -942,13 +932,10 @@ local function print_albox(choice, lstart, lend)
 end
 
 -- Print a centered adapted box
----@param choice number?
----@param lstart number?
----@param lend number?
+---@param choice number
+---@param lstart number
+---@param lend number
 local function print_acbox(choice, lstart, lend)
-  choice = tonumber(choice)
-  lstart = tonumber(lstart)
-  lend = tonumber(lend)
   centered_text = true
   right_aligned_text = false
   centered_box = true
@@ -958,13 +945,10 @@ local function print_acbox(choice, lstart, lend)
 end
 
 -- Print a right aligned adapted box
----@param choice number?
----@param lstart number?
----@param lend number?
+---@param choice number
+---@param lstart number
+---@param lend number
 local function print_arbox(choice, lstart, lend)
-  choice = tonumber(choice)
-  lstart = tonumber(lstart)
-  lend = tonumber(lend)
   centered_text = false
   right_aligned_text = true
   centered_box = false
@@ -974,157 +958,139 @@ local function print_arbox(choice, lstart, lend)
 end
 
 -- Remove a box or a titled line
----@param lstart number?
----@param lend number?
+---@param lstart number
+---@param lend number
 local function del(lstart, lend)
-  lstart = tonumber(lstart)
-  lend = tonumber(lend)
   remove(lstart, lend)
 end
 
 -- Yank the content of a box or a titled line
----@param lstart number?
----@param lend number?
+---@param lstart number
+---@param lend number
 local function yank_in(lstart, lend)
-  lstart = tonumber(lstart)
-  lend = tonumber(lend)
   yank(lstart, lend)
 end
 
 -- Print a left aligned line
----@param choice number?
-local function print_line(choice, lstart, lend)
-  choice = tonumber(choice)
-  lstart = tonumber(lstart)
-  lend = tonumber(lend)
+---@param choice number
+local function print_line(choice)
   centered_line = false
   right_aligned_line = false
   display_line(choice)
 end
 
 -- Print a centered line
----@param choice number?
+---@param choice number
 local function print_cline(choice)
-  choice = tonumber(choice)
   centered_line = true
   right_aligned_line = false
   display_line(choice)
 end
 
 -- Print a right aligned line
----@param choice number?
+---@param choice number
 local function print_rline(choice)
-  choice = tonumber(choice)
   centered_line = false
   right_aligned_line = true
   display_line(choice)
 end
 
 -- Print a left aligned titled line with text left aligned
----@param choice number?
-local function print_llline(choice)
-  choice = tonumber(choice)
+---@param choice number
+local function print_llline(choice, lstart, lend)
   centered_text = false
   right_aligned_text = false
   centered_line = false
   right_aligned_line = false
-  display_titled_line(choice)
+  display_titled_line(choice, lstart, lend)
 end
 
 -- Print a left aligned titled line with text centered
----@param choice number?
-local function print_lcline(choice)
-  choice = tonumber(choice)
+---@param choice number
+local function print_lcline(choice, lstart, lend)
   centered_text = true
   right_aligned_text = false
   centered_line = false
   right_aligned_line = false
   adapted = false
-  display_titled_line(choice)
+  display_titled_line(choice, lstart, lend)
 end
 
 -- Print a left aligned titled line with text right aligned
----@param choice number?
-local function print_lrline(choice)
-  choice = tonumber(choice)
+---@param choice number
+local function print_lrline(choice, lstart, lend)
   centered_text = false
   right_aligned_text = true
   centered_line = false
   right_aligned_line = false
   adapted = false
-  display_titled_line(choice)
+  display_titled_line(choice, lstart, lend)
 end
 
 -- Print a centered titled line with text left aligned
----@param choice number?
-local function print_clline(choice)
-  choice = tonumber(choice)
+---@param choice number
+local function print_clline(choice, lstart, lend)
   centered_text = false
   right_aligned_text = false
   centered_line = true
   right_aligned_line = false
   adapted = false
-  display_titled_line(choice)
+  display_titled_line(choice, lstart, lend)
 end
 
 -- Print a centered titled line with text centered
----@param choice number?
-local function print_ccline(choice)
-  choice = tonumber(choice)
+---@param choice number
+local function print_ccline(choice, lstart, lend)
   centered_text = true
   right_aligned_text = false
   centered_line = true
   right_aligned_line = false
   adapted = false
-  display_titled_line(choice)
+  display_titled_line(choice, lstart, lend)
 end
 
 -- Print a centered titled line with text right aligned
----@param choice number?
-local function print_crline(choice)
-  choice = tonumber(choice)
+---@param choice number
+local function print_crline(choice, lstart, lend)
   centered_text = false
   right_aligned_text = true
   centered_line = true
   right_aligned_line = false
   adapted = false
-  display_titled_line(choice)
+  display_titled_line(choice, lstart, lend)
 end
 
 -- Print a right aligned titled line with text left aligned
----@param choice number?
-local function print_rlline(choice)
-  choice = tonumber(choice)
+---@param choice number
+local function print_rlline(choice, lstart, lend)
   centered_text = false
   right_aligned_text = false
   centered_line = false
   right_aligned_line = true
   adapted = false
-  display_titled_line(choice)
+  display_titled_line(choice, lstart, lend)
 end
 
 -- Print a right aligned titled line with text centered
----@param choice number?
-local function print_rcline(choice)
-  choice = tonumber(choice)
+---@param choice number
+local function print_rcline(choice, lstart, lend)
   centered_text = true
   right_aligned_text = false
   centered_line = false
   right_aligned_line = true
   adapted = false
-  display_titled_line(choice)
+  display_titled_line(choice, lstart, lend)
 end
 
 -- Print a right aligned titled line with text right aligned
----@param choice number?
-local function print_rrline(choice)
-  choice = tonumber(choice)
+---@param choice number
+local function print_rrline(choice, lstart, lend)
   centered_text = false
   right_aligned_text = true
   centered_line = false
   right_aligned_line = true
   adapted = false
-  display_titled_line(choice)
+  display_titled_line(choice, lstart, lend)
 end
 
 local function open_catalog()
