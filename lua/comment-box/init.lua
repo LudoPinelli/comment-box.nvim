@@ -646,6 +646,7 @@ local function create_titled_line(choice)
   local line = {}
   local lead_space = " "
   local offset = vim.fn.strdisplaywidth(comment_string)
+  is_box = false
 
   if settings.line_width > settings.doc_width + offset then
     settings.line_width = settings.doc_width + offset
