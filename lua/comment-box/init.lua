@@ -38,33 +38,34 @@ local cat = require("comment-box.catalog")
 local catalog = require("comment-box.catalog_view")
 
 ---@type string
-local comment_string, comment_string_bottom_row, comment_string_int_row, comment_string_end
+local comment_string, comment_string_bottom_row, comment_string_int_row, comment_string_end =
+  "", "", "", ""
 ---@type number, number
-local line_start_pos, line_end_pos
+local line_start_pos, line_end_pos = 0, 0
 
 ---@type boolean
-local centered_text
+local centered_text = false
 ---@type boolean
-local centered_box
+local centered_box = false
 ---@type boolean
-local centered_line
+local centered_line = false
 ---@type boolean
-local right_aligned_text
+local right_aligned_text = false
 ---@type boolean
-local right_aligned_box
+local right_aligned_box = false
 ---@type boolean
-local right_aligned_line
+local right_aligned_line = false
 ---@type boolean
-local adapted
+local adapted = false
 
 ---@type boolean
-local is_box
+local is_box = false
 
 ---@type number
-local final_width
+local final_width = 0
 
 ---@type string, string
-local lead_space_ab, lead_space_bb
+local lead_space_ab, lead_space_bb = "", ""
 
 --         ╭──────────────────────────────────────────────────────────╮
 --         │                          UTILS                           │
@@ -217,21 +218,21 @@ local function format_lines(text)
       offset = 1
     end
 
-    if adapted then
-      if str_width >= math.max(url_width, settings.doc_width - offset) then
-        final_width = math.max(url_width, settings.doc_width - offset) + 2
-      elseif
-        str_width > final_width
-        and final_width < math.max(url_width, settings.doc_width - offset)
-      then
-        final_width = str_width + 2
+    if is_box then
+      if adapted then
+        if str_width >= math.max(url_width, settings.doc_width - offset) then
+          final_width = math.max(url_width, settings.box_width - offset)
+        elseif
+          str_width > final_width
+          and final_width < math.max(url_width, settings.box_width - offset)
+        then
+          final_width = str_width + 2
+        end
+      else
+        final_width = math.max(url_width, settings.box_width - offset)
       end
     else
-      if is_box then
-        final_width = math.max(url_width, settings.box_width - offset)
-      else
-        final_width = math.max(url_width, settings.line_width - offset)
-      end
+      final_width = math.max(url_width, settings.line_width - offset)
     end
 
     if str_width > final_width then
@@ -931,7 +932,7 @@ local function print_albox(choice, lstart, lend)
   choice = tonumber(choice)
   lstart = tonumber(lstart)
   lend = tonumber(lend)
-  centered_text = true
+  centered_text = false
   right_aligned_text = false
   centered_box = false
   right_aligned_box = false
@@ -963,8 +964,8 @@ local function print_arbox(choice, lstart, lend)
   choice = tonumber(choice)
   lstart = tonumber(lstart)
   lend = tonumber(lend)
-  centered_text = true
-  right_aligned_text = false
+  centered_text = false
+  right_aligned_text = true
   centered_box = false
   right_aligned_box = true
   adapted = true
