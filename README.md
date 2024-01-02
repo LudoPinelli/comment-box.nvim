@@ -7,7 +7,7 @@
 ---
 <h1 align="center">comment-box.nvim</h1>
 
-![comment-box](./imgs/bc-title.jpg?raw=true)
+![comment-box](./imgs/cb-title.png?raw=true)
 
 You have this long config file and you want to clearly (and beautifully) separate each part. So you put lines of symbols as separators. Boxes would have been better but too tedious to make, not to mention if you want to center your text in it.
 
@@ -58,6 +58,8 @@ If the plugin has tons of commands, you'll most likely need 3 or 4 at most on a 
 
 You may want to try other styles of boxes and lines: open the catalog with `:CBcatalog`, and take note of the style of boxes and lines you want to use. You just have to add the number after the relevant commands (without spaces), like for the `:CBllbox14` above.
 
+![nomenclature](./imgs/cb-quickstart.png?raw=true)
+
 To remove a box or line, when an Undo is no more a possibility, select the box or line and use the `:CBd` command.
 
 You may need to yank the content of a box (without the box). The command is `:CBy`.
@@ -82,7 +84,7 @@ keymap({ "n", "v" }, "<Leader>cm", "<Cmd>CBllbox14<CR>", opts)
 -- keymap({ "n", "v" }, "<Leader>cd", "<Cmd>CBd<CR>", opts)
 ```
 
-Or if you use Which-key:
+Or if you use [which-key](https://github.com/folke/which-key.nvim):
 ```lua
 local wk = require("which-key")
 
@@ -102,7 +104,7 @@ wk.register({
 
 If you want more control, the nomenclature for the commands is fairly simple:
 
-<p align=center>`CB`xy`box|line`[num]
+![nomenclature](./imgs/cb-nomenclature.png?raw=true)
 
 where:
 - `CB` is for "Comment-Box"
@@ -309,7 +311,7 @@ keymap({ "n", "v" }, "<Leader>cd", "<Cmd>CBd<CR>", opts)
 
 ## The catalog
 
-![The catalog](./imgs/bc-catalog.jpg?raw=true)
+![The catalog](./imgs/cb-catalog.jpg?raw=true)
 
 The catalog is a collection of 22 predefined types of boxes and 13 types of lines.
 You can easily access the catalog in _Neovim_ (it will appear in a popup window so it won't mess with what you're doing) using:
@@ -402,7 +404,7 @@ The symbols used to draw the lines. Let your creativity go wild! Or just use the
 
 ### `outer_blank_lines_above` `outer_blank_lines_below` and `inner_blank_lines`
 
-![blank lines](./imgs/bc-blanklines.jpg?raw=true)
+![blank lines](./imgs/cb-blanklines.jpg?raw=true)
 
 ### `line_blank_line_above` and `line_blank_line_below`
 
