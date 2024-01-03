@@ -37,6 +37,7 @@ local settings = {
 --         ╰──────────────────────────────────────────────────────────╯
 local cat = require("comment-box.catalog")
 local catalog = require("comment-box.catalog_view")
+local fn = vim.fn
 
 ---@type number, number
 local line_start_pos, line_end_pos = 0, 0
@@ -74,13 +75,13 @@ local function get_pad(line)
   local start_pad = 0
   local end_pad = 0
   if centered_text then
-    start_pad = math.floor((final_width - vim.fn.strdisplaywidth(line)) / 2)
-    end_pad = final_width - (start_pad + vim.fn.strdisplaywidth(line))
+    start_pad = math.floor((final_width - fn.strdisplaywidth(line)) / 2)
+    end_pad = final_width - (start_pad + fn.strdisplaywidth(line))
   elseif right_aligned_text then
-    start_pad = final_width - vim.fn.strdisplaywidth(line) - 1
-    end_pad = final_width - (start_pad + vim.fn.strdisplaywidth(line))
+    start_pad = final_width - fn.strdisplaywidth(line) - 1
+    end_pad = final_width - (start_pad + fn.strdisplaywidth(line))
   else
-    end_pad = final_width - (start_pad + vim.fn.strdisplaywidth(line))
+    end_pad = final_width - (start_pad + fn.strdisplaywidth(line))
   end
   return start_pad, end_pad
 end
@@ -96,13 +97,13 @@ local function get_range(lstart, lend)
     line_end_pos = lend
   else
     if mode:match("[vV]") then
-      line_start_pos = vim.fn.line("v")
-      line_end_pos = vim.fn.line(".")
+      line_start_pos = fn.line("v")
+      line_end_pos = fn.line(".")
       if line_start_pos > line_end_pos then -- if backward selected
         line_start_pos, line_end_pos = line_end_pos, line_start_pos
       end
     else -- if not in visual mode, return the current line
-      line_start_pos = vim.fn.line(".")
+      line_start_pos = fn.line(".")
       line_end_pos = line_start_pos
     end
   end
@@ -145,7 +146,7 @@ end
 ---@return string
 local function skip_cs(line, comment_string_start)
   local trimmed_line = vim.trim(line)
-  local cs_len = vim.fn.strdisplaywidth(comment_string_start)
+  local cs_len = fn.strdisplaywidth(comment_string_start)
 
   if trimmed_line:sub(1, cs_len) == comment_string_start then
     line = line:gsub("^%s+", "") -- remove whitespace before comment string
@@ -208,13 +209,13 @@ local function format_lines(text)
     end
     str = vim.trim(str)
     table.insert(text, pos, str)
-    local str_width = vim.fn.strdisplaywidth(str)
+    local str_width = fn.strdisplaywidth(str)
     if str_width == nil then
       str_width = 0
     end
     local offset
     if comment_string_start ~= nil then
-      offset = vim.fn.strdisplaywidth(comment_string_start) + 1
+      offset = fn.strdisplaywidth(comment_string_start) + 1
     else
       offset = 1
     end
@@ -286,7 +287,7 @@ local function set_lead_space()
       " ",
       math.floor(
         (settings.doc_width - final_width) / 2
-          - vim.fn.strdisplaywidth(comment_string_start)
+          - fn.strdisplaywidth(comment_string_start)
           + 0.5
       )
     )
@@ -296,7 +297,7 @@ local function set_lead_space()
       " ",
       settings.doc_width
         - final_width
-        - vim.fn.strdisplaywidth(comment_string_start)
+        - fn.strdisplaywidth(comment_string_start)
         - 2
     )
   end
@@ -503,7 +504,7 @@ local function create_box(choice)
         offset = 0
       end
 
-      local pad = final_width - vim.fn.strdisplaywidth(line) - offset
+      local pad = final_width - fn.strdisplaywidth(line) - offset
 
       lead_space_ab, lead_space_bb = set_lead_space()
       trail = " "
@@ -587,7 +588,7 @@ local function yank(lstart, lend)
   local tab_text_to_str = table.concat(tab_text, "\n")
 
   ---@diagnostic disable-next-line: param-type-mismatch
-  vim.fn.setreg("+", tab_text_to_str .. "\n", "l")
+  fn.setreg("+", tab_text_to_str .. "\n", "l")
 end
 
 -- Build a line
@@ -600,7 +601,7 @@ local function create_line(choice)
   local comment_string_start, comment_string_end = get_comment_string()
   local line = {}
   local lead_space = " "
-  local offset = vim.fn.strdisplaywidth(comment_string_start)
+  local offset = fn.strdisplaywidth(comment_string_start)
 
   if settings.line_width > settings.doc_width + offset then
     settings.line_width = settings.doc_width + offset
@@ -641,8 +642,8 @@ local function create_line(choice)
       string.rep(
         symbols.line,
         settings.line_width
-          - vim.fn.strdisplaywidth(symbols.line_start)
-          - vim.fn.strdisplaywidth(symbols.line_end)
+          - fn.strdisplaywidth(symbols.line_start)
+          - fn.strdisplaywidth(symbols.line_end)
       ),
       symbols.line_end,
       comment_string_end
@@ -662,7 +663,7 @@ local function create_titled_line(choice)
   local comment_string_start, comment_string_end = get_comment_string()
   local line = {}
   local lead_space = " "
-  local offset = vim.fn.strdisplaywidth(comment_string_start)
+  local offset = fn.strdisplaywidth(comment_string_start)
   is_box = false
 
   if settings.line_width > settings.doc_width + offset then
@@ -759,7 +760,7 @@ end
 
 ---@param choice number
 local function display_line(choice)
-  local line = vim.fn.line(".")
+  local line = fn.line(".")
   line = tonumber(line) or 1
 
   vim.api.nvim_buf_set_lines(0, line - 1, line, false, create_line(choice))

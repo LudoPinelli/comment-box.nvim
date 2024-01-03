@@ -117,6 +117,13 @@ end, {
   desc = "Print a left aligned line",
 })
 
+vim.api.nvim_create_user_command("CBlline", function(opts)
+  require("comment-box").line(opts.args)
+end, {
+  nargs = "?",
+  desc = "Print a left aligned line",
+})
+
 vim.api.nvim_create_user_command("CBcline", function(opts)
   require("comment-box").cline(opts.args)
 end, {
@@ -132,65 +139,74 @@ end, {
 })
 
 vim.api.nvim_create_user_command("CBllline", function(opts)
-  require("comment-box").llline(opts.args)
+  require("comment-box").llline(opts.args, opts.line1, opts.line2)
 end, {
   nargs = "?",
+  range = 2,
   desc = "Print a left aligned titled line with title left aligned",
 })
 
 vim.api.nvim_create_user_command("CBlcline", function(opts)
-  require("comment-box").lcline(opts.args)
+  require("comment-box").lcline(opts.args, opts.line1, opts.line2)
 end, {
   nargs = "?",
+  range = 2,
   desc = "Print a left aligned titled line with title centered",
 })
 
 vim.api.nvim_create_user_command("CBlrline", function(opts)
-  require("comment-box").lrline(opts.args)
+  require("comment-box").lrline(opts.args, opts.line1, opts.line2)
 end, {
   nargs = "?",
+  range = 2,
   desc = "Print a left aligned titled line with title right aligned",
 })
 
 vim.api.nvim_create_user_command("CBclline", function(opts)
-  require("comment-box").clline(opts.args)
+  require("comment-box").clline(opts.args, opts.line1, opts.line2)
 end, {
   nargs = "?",
+  range = 2,
   desc = "Print a centered titled line with title right aligned",
 })
 
 vim.api.nvim_create_user_command("CBccline", function(opts)
-  require("comment-box").ccline(opts.args)
+  require("comment-box").ccline(opts.args, opts.line1, opts.line2)
 end, {
   nargs = "?",
+  range = 2,
   desc = "Print a centered titled line with title centered",
 })
 
 vim.api.nvim_create_user_command("CBcrline", function(opts)
-  require("comment-box").crline(opts.args)
+  require("comment-box").crline(opts.args, opts.line1, opts.line2)
 end, {
   nargs = "?",
+  range = 2,
   desc = "Print a centered titled line with title right aligned",
 })
 
 vim.api.nvim_create_user_command("CBrlline", function(opts)
-  require("comment-box").rlline(opts.args)
+  require("comment-box").rlline(opts.args, opts.line1, opts.line2)
 end, {
   nargs = "?",
+  range = 2,
   desc = "Print a right aligned titled line with title left aligned",
 })
 
 vim.api.nvim_create_user_command("CBrcline", function(opts)
-  require("comment-box").rcline(opts.args)
+  require("comment-box").rcline(opts.args, opts.line1, opts.line2)
 end, {
   nargs = "?",
+  range = 2,
   desc = "Print a right aligned titled line with title centered",
 })
 
 vim.api.nvim_create_user_command("CBrrline", function(opts)
-  require("comment-box").rrline(opts.args)
+  require("comment-box").rrline(opts.args, opts.line1, opts.line2)
 end, {
   nargs = "?",
+  range = 2,
   desc = "Print a right aligned titled line with title right aligned",
 })
 
