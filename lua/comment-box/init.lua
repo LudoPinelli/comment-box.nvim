@@ -37,10 +37,8 @@ local settings = {
 --         ╰──────────────────────────────────────────────────────────╯
 local cat = require("comment-box.catalog")
 local catalog = require("comment-box.catalog_view")
+local utils = require("comment-box.utils")
 local fn = vim.fn
-
----@type number, number
-local line_start_pos, line_end_pos = 0, 0
 
 ---@type boolean
 local centered_text = false
@@ -70,59 +68,6 @@ local lead_space_ab, lead_space_bb = "", ""
 --         │                          UTILS                           │
 --         ╰──────────────────────────────────────────────────────────╯
 
--- Compute padding
-local function get_pad(line)
-  local start_pad = 0
-  local end_pad = 0
-  if centered_text then
-    start_pad = math.floor((final_width - fn.strdisplaywidth(line)) / 2)
-    end_pad = final_width - (start_pad + fn.strdisplaywidth(line))
-  elseif right_aligned_text then
-    start_pad = final_width - fn.strdisplaywidth(line) - 1
-    end_pad = final_width - (start_pad + fn.strdisplaywidth(line))
-  else
-    end_pad = final_width - (start_pad + fn.strdisplaywidth(line))
-  end
-  return start_pad, end_pad
-end
-
--- Store the range of the selected text in 'line_start_pos'/'line_end_pos'
----@param lstart number
----@param lend number
-local function get_range(lstart, lend)
-  local mode = vim.api.nvim_get_mode().mode
-
-  if lstart and lend and lend ~= lstart then
-    line_start_pos = lstart
-    line_end_pos = lend
-  else
-    if mode:match("[vV]") then
-      line_start_pos = fn.line("v")
-      line_end_pos = fn.line(".")
-      if line_start_pos > line_end_pos then -- if backward selected
-        line_start_pos, line_end_pos = line_end_pos, line_start_pos
-      end
-    else -- if not in visual mode, return the current line
-      line_start_pos = fn.line(".")
-      line_end_pos = line_start_pos
-    end
-  end
-end
-
--- return comment strings
-local function get_comment_string()
-  local comment_string = vim.bo.commentstring
-  local comment_string_start, comment_string_end =
-    comment_string:match("^(.-)%%s(.-)$")
-  if comment_string_start ~= nil then
-    comment_string_start = vim.trim(comment_string_start)
-  end
-  if comment_string_end ~= nil then
-    comment_string_end = vim.trim(comment_string_end)
-  end
-  return comment_string_start, comment_string_end
-end
-
 -- Return the correct cursor position after a box has been created
 ---@param end_pos number
 ---@return number
@@ -141,71 +86,31 @@ local function set_cur_pos(end_pos)
   return cur_pos
 end
 
--- Skip comment string if there is one at the beginning of the line
----@param line string
----@return string
-local function skip_cs(line, comment_string_start)
-  local trimmed_line = vim.trim(line)
-  local cs_len = fn.strdisplaywidth(comment_string_start)
-
-  if trimmed_line:sub(1, cs_len) == comment_string_start then
-    line = line:gsub("^%s+", "") -- remove whitespace before comment string
-    line = line:gsub(vim.pesc(comment_string_start), "", 1) -- remove comment string
-    line = line:gsub("[ \t]+%f[\r\n%z]", "") -- remove trailing spaces
-  end
-  if centered_text or right_aligned_text then
-    return vim.trim(line) -- if centered need to trim both ends for correct padding
-  else
-    return line
-  end
-end
-
--- See if a piece of text contains a url
----@param text string
----@return number|nil, number|nil
-local function is_url(text)
-  return vim.regex("\\v(https?|ftp|file|ssh|git|mailto)://\\S+"):match_str(text)
-end
-
--- Wrap lines too long to fit in box
----@param text string
----@return string[]
-local function wrap(text)
-  local str_tab = {}
-  local str = text:sub(1, final_width - 2)
-  local rstr = str:reverse()
-  local f = rstr:find(" ")
-  local url_start, _ = is_url(text)
-
-  if f and (not url_start or f < url_start) then
-    f = final_width - 2 - f
-    table.insert(str_tab, string.sub(text, 1, f))
-    table.insert(str_tab, string.sub(text, f + 1))
-  else
-    table.insert(str_tab, text)
-  end
-  return str_tab
-end
-
 -- prepare each line and rewrote the table in case of wrapping lines
 ---@param text string[]
+---@return table
 local function format_lines(text)
   final_width = 0
   local url_width = 0
 
   for _, str in ipairs(text) do
-    local url_start, url_end = is_url(str)
+    local url_start, url_end = utils.is_url(str)
     if url_start then
       url_width = math.max(url_width, url_end - url_start + 1)
     end
   end
 
-  local comment_string_start, _ = get_comment_string()
+  local comment_string_start, _ = utils.get_comment_string()
 
   for pos, str in ipairs(text) do
     table.remove(text, pos)
     if comment_string_start ~= nil then
-      str = skip_cs(str, comment_string_start)
+      str = utils.skip_cs(
+        str,
+        comment_string_start,
+        centered_text,
+        right_aligned_text
+      )
     end
     str = vim.trim(str)
     table.insert(text, pos, str)
@@ -238,7 +143,7 @@ local function format_lines(text)
     end
 
     if str_width > final_width then
-      local to_insert = wrap(str)
+      local to_insert = utils.wrap(str, final_width)
       for ipos, st in ipairs(to_insert) do
         table.insert(text, pos + ipos, st)
       end
@@ -252,12 +157,12 @@ end
 ---@param choice number?
 ---@return table
 local function set_borders(choice)
-  choice = choice or 0
+  choice = tonumber(choice) or 0
   local borders
   if choice == 0 then
     borders = settings.borders
   else
-    borders = cat.boxes[choice] or settings.borders
+    borders = cat.boxes[choice]
   end
   return borders
 end
@@ -281,7 +186,7 @@ end
 local function set_lead_space()
   lead_space_ab = " "
   lead_space_bb = " "
-  local comment_string_start, _ = get_comment_string()
+  local comment_string_start, _ = utils.get_comment_string()
   if centered_box then
     lead_space_bb = string.rep(
       " ",
@@ -311,7 +216,8 @@ end
 
 -- Return the selected text formated
 ---@return string[]
-local function get_formated_text()
+local function get_formated_text(lstart, lend)
+  local line_start_pos, line_end_pos = utils.get_range(lstart, lend)
   local text =
     vim.api.nvim_buf_get_lines(0, line_start_pos - 1, line_end_pos, false)
   return format_lines(text)
@@ -322,7 +228,7 @@ end
 ---@param lend number
 ---@return string[]
 local function get_text(lstart, lend)
-  get_range(lstart, lend)
+  local line_start_pos, line_end_pos = utils.get_range(lstart, lend)
   local text =
     vim.api.nvim_buf_get_lines(0, line_start_pos - 1, line_end_pos, false)
   local result = {}
@@ -341,12 +247,12 @@ end
 
 -- Build the box
 ---@param choice number?
-local function create_box(choice)
+local function create_box(choice, lstart, lend)
   local borders = set_borders(choice)
   local filetype = vim.bo.filetype
   is_box = true
 
-  local comment_string_start, comment_string_end = get_comment_string()
+  local comment_string_start, comment_string_end = utils.get_comment_string()
 
   if
     not comment_string_start
@@ -367,7 +273,7 @@ local function create_box(choice)
     comment_string_int_row = comment_string_start
   end
 
-  local text = get_formated_text()
+  local text = get_formated_text(lstart, lend)
   local trail = " "
 
   -- ╓                                                       ╖
@@ -468,7 +374,8 @@ local function create_box(choice)
     -- ╙                                   ╜
 
     for _, line in pairs(text) do
-      local start_pad, end_pad = get_pad(line)
+      local start_pad, end_pad =
+        utils.get_pad(line, centered_text, right_aligned_text, final_width)
 
       lead_space_ab, lead_space_bb = set_lead_space()
       if borders.right == "" and line == "" then
@@ -556,7 +463,7 @@ end
 local function remove(lstart, lend)
   local filetype = vim.bo.filetype
 
-  local comment_string_start, _ = get_comment_string()
+  local comment_string_start, _ = utils.get_comment_string()
 
   if
     not comment_string_start
@@ -577,6 +484,7 @@ local function remove(lstart, lend)
     end
   end
 
+  local line_start_pos, line_end_pos = utils.get_range(lstart, lend)
   vim.api.nvim_buf_set_lines(0, line_start_pos - 1, line_end_pos, false, lines)
 end
 
@@ -598,7 +506,7 @@ local function create_line(choice)
   local symbols = set_line(choice)
   is_box = false
   local filetype = vim.bo.filetype
-  local comment_string_start, comment_string_end = get_comment_string()
+  local comment_string_start, comment_string_end = utils.get_comment_string()
   local line = {}
   local lead_space = " "
   local offset = fn.strdisplaywidth(comment_string_start)
@@ -660,7 +568,7 @@ end
 local function create_titled_line(choice)
   local symbols = set_line(choice)
   local filetype = vim.bo.filetype
-  local comment_string_start, comment_string_end = get_comment_string()
+  local comment_string_start, comment_string_end = utils.get_comment_string()
   local line = {}
   local lead_space = " "
   local offset = fn.strdisplaywidth(comment_string_start)
@@ -679,7 +587,8 @@ local function create_titled_line(choice)
   end
 
   local text = get_formated_text()
-  local start_pad, end_pad = get_pad(text[1])
+  local start_pad, end_pad =
+    utils.get_pad(text[1], centered_text, right_aligned_text, final_width)
   if start_pad > end_pad then
     start_pad = start_pad - offset - 1
   else
@@ -746,13 +655,13 @@ end
 ---@param lstart number
 ---@param lend number
 local function display_box(choice, lstart, lend)
-  get_range(lstart, lend)
+  local line_start_pos, line_end_pos = utils.get_range(lstart, lend)
   vim.api.nvim_buf_set_lines(
     0,
     line_start_pos - 1,
     line_end_pos,
     false,
-    create_box(choice)
+    create_box(choice, lstart, lend)
   )
   -- Move the cursor to match the result
   vim.api.nvim_win_set_cursor(0, { set_cur_pos(line_end_pos), 1 })
@@ -779,7 +688,7 @@ end
 ---@param lstart number
 ---@param lend number
 local function display_titled_line(choice, lstart, lend)
-  get_range(lstart, lend)
+  local line_start_pos, line_end_pos = utils.get_range(lstart, lend)
   vim.api.nvim_buf_set_lines(
     0,
     line_start_pos - 1,
@@ -1103,6 +1012,8 @@ end
 local function setup(config)
   settings = vim.tbl_deep_extend("force", settings, config or {})
 end
+
+-- ── Returns ───────────────────────────────────────────────────────────
 
 return {
   llbox = print_llbox,
