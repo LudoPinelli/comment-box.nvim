@@ -5,6 +5,7 @@
 
 ---@class CommentBoxConfig
 local settings = {
+  comment_style = "auto", -- "line"|"block"|"auto"
   doc_width = 80,
   box_width = 60,
   borders = {
@@ -100,29 +101,34 @@ local function format_lines(text)
     end
   end
 
-  local comment_string_start, _ = utils.get_comment_string()
+  local comment_string_l, comment_string_b_start, comment_string_b_end =
+    utils.get_comment_string(vim.bo.filetype)
+  local comment_string = ""
+  if comment_string_l ~= "" then
+    comment_string = comment_string_l
+  elseif comment_string_b_start ~= "" then
+    comment_string = comment_string_b_start
+  end
+  local offset
 
   for pos, str in ipairs(text) do
     table.remove(text, pos)
-    if comment_string_start ~= nil then
+    if comment_string ~= "" then
       str = utils.skip_cs(
         str,
-        comment_string_start,
-        centered_text,
-        right_aligned_text
+        comment_string_l,
+        comment_string_b_start,
+        comment_string_b_end
       )
+      offset = fn.strdisplaywidth(comment_string) + 1
+    else
+      offset = 1
     end
     str = vim.trim(str)
     table.insert(text, pos, str)
     local str_width = fn.strdisplaywidth(str)
     if str_width == nil then
       str_width = 0
-    end
-    local offset
-    if comment_string_start ~= nil then
-      offset = fn.strdisplaywidth(comment_string_start) + 1
-    else
-      offset = 1
     end
 
     if is_box then
@@ -186,13 +192,13 @@ end
 local function set_lead_space()
   lead_space_ab = " "
   lead_space_bb = " "
-  local comment_string_start, _ = utils.get_comment_string()
+  local comment_string_l, _, _ = utils.get_comment_string(vim.bo.filetype)
   if centered_box then
     lead_space_bb = string.rep(
       " ",
       math.floor(
         (settings.doc_width - final_width) / 2
-          - fn.strdisplaywidth(comment_string_start)
+          - fn.strdisplaywidth(comment_string_l)
           + 0.5
       )
     )
@@ -202,7 +208,7 @@ local function set_lead_space()
       " ",
       settings.doc_width
         - final_width
-        - fn.strdisplaywidth(comment_string_start)
+        - fn.strdisplaywidth(comment_string_l)
         - 2
     )
   end
@@ -233,13 +239,17 @@ local function get_text(lstart, lend)
     vim.api.nvim_buf_get_lines(0, line_start_pos - 1, line_end_pos, false)
   local result = {}
 
-  for _, str in ipairs(text) do
-    -- Remove every spaces, non alphanumeric and | characters at the begining of the string
+  for i, str in ipairs(text) do
+    -- Remove every spaces, non alphanumeric and | characters at the beginning of the string
     str = str:gsub("^[^%w|]+", "")
     -- Remove every spaces, non alphanumeric and | characters at the end of the string
     str = str:gsub("[^%w|]+$", "")
-    if str ~= nil then
+    if str ~= "" then
       table.insert(result, str)
+    else
+      if i > 1 and i < #text then
+        table.insert(result, " ")
+      end
     end
   end
   return result
@@ -248,37 +258,19 @@ end
 -- Build the box
 ---@param choice number?
 local function create_box(choice, lstart, lend)
-  local borders = set_borders(choice)
-  local filetype = vim.bo.filetype
   is_box = true
-
-  local comment_string_start, comment_string_end = utils.get_comment_string()
-
-  if
-    not comment_string_start
-    or filetype == "markdown"
-    or filetype == "org"
-  then
-    comment_string_start = ""
-  end
-
-  local comment_string_bottom_row, comment_string_int_row = "", ""
-  -- TODO: Implement below as a style option for multi style commenting.
-  if comment_string_end ~= "" then
-    comment_string_bottom_row =
-      string.rep(" ", string.len(comment_string_start))
-    comment_string_int_row = comment_string_bottom_row
-  else
-    comment_string_bottom_row = comment_string_start
-    comment_string_int_row = comment_string_start
-  end
-
   local text = get_formated_text(lstart, lend)
-  local trail = " "
+
+  local filetype = vim.bo.filetype
+  local comment_string_l, comment_string_b_start, comment_string_b_end =
+    utils.get_comment_string(filetype)
 
   -- ╓                                                       ╖
   -- ║ Deal with the two ways to declare transparent borders ║
   -- ╙                                                       ╜
+
+  local borders = set_borders(choice)
+  local trail = " "
 
   if borders.top_left == "" then
     borders.top_left = " "
@@ -328,9 +320,29 @@ local function create_box(choice, lstart, lend)
     end
   end
 
+  local comment_string_int_row
+  local comment_style = settings.comment_style
+  -- If the language has no single line comment:
+  if comment_string_l == "" and comment_string_b_start ~= "" then
+    comment_style = "block"
+  end
+
+  if comment_style == "line" and comment_string_l ~= "" then
+    comment_string_int_row = comment_string_l
+  else
+    local cs_len = fn.strdisplaywidth(comment_string_b_start)
+    if cs_len > 1 then
+      comment_string_int_row = " " .. comment_string_b_start:sub(2, 2)
+      if cs_len > 2 then
+        comment_string_int_row = comment_string_int_row
+          .. string.rep(" ", cs_len - 2)
+      end
+    end
+  end
+
   local ext_top_row = string.format(
     "%s%s%s%s%s",
-    comment_string_start,
+    comment_string_int_row,
     lead_space_bb,
     borders.top_left,
     string.rep(borders.top, final_width),
@@ -339,7 +351,7 @@ local function create_box(choice, lstart, lend)
 
   local ext_bottom_row = string.format(
     "%s%s%s%s%s",
-    comment_string_bottom_row,
+    comment_string_int_row,
     lead_space_bb,
     borders.bottom_left,
     string.rep(borders.bottom, final_width),
@@ -360,6 +372,10 @@ local function create_box(choice, lstart, lend)
 
   if settings.outer_blank_lines_above then
     table.insert(lines, "")
+  end
+
+  if comment_style == "block" or (comment_style == "auto") then
+    table.insert(lines, comment_string_b_start)
   end
 
   table.insert(lines, ext_top_row)
@@ -446,8 +462,8 @@ local function create_box(choice, lstart, lend)
 
   table.insert(lines, ext_bottom_row)
 
-  if comment_string_end ~= "" then
-    table.insert(lines, comment_string_end)
+  if comment_style == "block" or (comment_style == "auto") then
+    table.insert(lines, comment_string_b_end)
   end
 
   if settings.outer_blank_lines_below then
@@ -462,26 +478,46 @@ end
 ---@param lend number
 local function remove(lstart, lend)
   local filetype = vim.bo.filetype
+  local comment_string_l, comment_string_b_start, comment_string_b_end =
+    utils.get_comment_string(filetype)
 
-  local comment_string_start, _ = utils.get_comment_string()
-
-  if
-    not comment_string_start
-    or filetype == "markdown"
-    or filetype == "org"
-  then
-    comment_string_start = ""
+  local is_block
+  if math.abs(lstart - lend) > 0 then
+    is_block = true
+  else
+    is_block = false
+  end
+  local result = get_text(lstart, lend)
+  local comment_style = settings.comment_style
+  local comment_string_int_row
+  if comment_style == "line" or (comment_style == "auto" and not is_block) then
+    comment_string_int_row = comment_string_l
+  else
+    local cs_len = fn.strdisplaywidth(comment_string_b_start)
+    if cs_len > 1 then
+      comment_string_int_row = " " .. comment_string_b_start:sub(2, 2)
+      if cs_len > 2 then
+        comment_string_int_row = comment_string_int_row
+          .. string.rep(" ", cs_len - 2)
+      end
+    end
   end
 
-  local result = get_text(lstart, lend)
-  local row = ""
   local lines = {}
+  if comment_style == "block" or (comment_style == "auto" and is_block) then
+    table.insert(lines, comment_string_b_start)
+  end
 
+  local row = ""
   for _, line in pairs(result) do
     if line ~= "" then
-      row = string.format("%s%s%s", comment_string_start, " ", line)
+      row = string.format("%s%s%s", comment_string_int_row, " ", line)
       table.insert(lines, row)
     end
+  end
+
+  if comment_style == "block" or (comment_style == "auto" and is_block) then
+    table.insert(lines, comment_string_b_end)
   end
 
   local line_start_pos, line_end_pos = utils.get_range(lstart, lend)
@@ -503,18 +539,35 @@ end
 ---@param choice number?
 ---@return string[]
 local function create_line(choice)
-  local symbols = set_line(choice)
   is_box = false
+
   local filetype = vim.bo.filetype
-  local comment_string_start, comment_string_end = utils.get_comment_string()
-  local line = {}
-  local lead_space = " "
-  local offset = fn.strdisplaywidth(comment_string_start)
+  local comment_string_l, comment_string_b_start, comment_string_b_end =
+    utils.get_comment_string(filetype)
+
+  local offset = 0
+  local comment_string_int_row
+  local comment_style = settings.comment_style
+  if comment_style == "line" or comment_style == "auto" then
+    comment_string_int_row = comment_string_l
+    offset = fn.strdisplaywidth(comment_string_l)
+  else
+    local cs_len = fn.strdisplaywidth(comment_string_b_start)
+    if cs_len > 1 then
+      comment_string_int_row = " " .. comment_string_b_start:sub(2, 2)
+      if cs_len > 2 then
+        comment_string_int_row = comment_string_int_row
+          .. string.rep(" ", cs_len - 2)
+      end
+    end
+    offset = fn.strdisplaywidth(comment_string_b_start)
+  end
 
   if settings.line_width > settings.doc_width + offset then
     settings.line_width = settings.doc_width + offset
   end
 
+  local lead_space = " "
   if centered_line then
     lead_space = string.rep(
       " ",
@@ -529,22 +582,21 @@ local function create_line(choice)
     lead_space = " "
   end
 
-  if
-    not comment_string_start
-    or filetype == "markdown"
-    or filetype == "org"
-  then
-    comment_string_start = ""
-  end
-
+  local line = {}
   if settings.line_blank_line_above then
     table.insert(line, "")
   end
+
+  if comment_style == "block" then
+    table.insert(line, comment_string_b_start)
+  end
+
+  local symbols = set_line(choice)
   table.insert(
     line,
     string.format(
-      "%s%s%s%s%s%s",
-      comment_string_start,
+      "%s%s%s%s%s",
+      comment_string_int_row,
       lead_space,
       symbols.line_start,
       string.rep(
@@ -553,10 +605,14 @@ local function create_line(choice)
           - fn.strdisplaywidth(symbols.line_start)
           - fn.strdisplaywidth(symbols.line_end)
       ),
-      symbols.line_end,
-      comment_string_end
+      symbols.line_end
     )
   )
+
+  if comment_style == "block" then
+    table.insert(line, comment_string_b_end)
+  end
+
   if settings.line_blank_line_below then
     table.insert(line, "")
   end
@@ -565,28 +621,18 @@ end
 
 ---@param choice number?
 ---@return string[]
-local function create_titled_line(choice)
-  local symbols = set_line(choice)
-  local filetype = vim.bo.filetype
-  local comment_string_start, comment_string_end = utils.get_comment_string()
-  local line = {}
-  local lead_space = " "
-  local offset = fn.strdisplaywidth(comment_string_start)
+local function create_titled_line(choice, lstart, lend)
   is_box = false
+  local filetype = vim.bo.filetype
+  local comment_string_l, comment_string_b_start, comment_string_b_end =
+    utils.get_comment_string(filetype)
+  local offset = fn.strdisplaywidth(comment_string_l)
 
   if settings.line_width > settings.doc_width + offset then
     settings.line_width = settings.doc_width + offset
   end
 
-  if
-    not comment_string_start
-    or filetype == "markdown"
-    or filetype == "org"
-  then
-    comment_string_start = ""
-  end
-
-  local text = get_formated_text()
+  local text = get_formated_text(lstart, lend)
   local start_pad, end_pad =
     utils.get_pad(text[1], centered_text, right_aligned_text, final_width)
   if start_pad > end_pad then
@@ -597,6 +643,7 @@ local function create_titled_line(choice)
     end
   end
 
+  local lead_space = " "
   if centered_line then
     lead_space = string.rep(
       " ",
@@ -613,14 +660,47 @@ local function create_titled_line(choice)
     lead_space = " "
   end
 
+  local is_block
+  if math.abs(lend - lstart) > 0 then
+    is_block = true
+  else
+    is_block = false
+  end
+
+  local comment_string_int_row
+  local comment_style = settings.comment_style
+  -- If the language has no single line comment:
+  if comment_string_l == "" and comment_string_b_start ~= "" then
+    comment_style = "block"
+  end
+
+  if comment_style == "line" or (comment_style == "auto" and not is_block) then
+    comment_string_int_row = comment_string_l
+  else
+    local cs_len = fn.strdisplaywidth(comment_string_b_start)
+    if cs_len > 1 then
+      comment_string_int_row = " " .. comment_string_b_start:sub(2, 2)
+      if cs_len > 2 then
+        comment_string_int_row = comment_string_int_row
+          .. string.rep(" ", cs_len - 2)
+      end
+    end
+  end
+
+  local line = {}
   if settings.line_blank_line_above then
     table.insert(line, "")
   end
+  if comment_style == "block" or (comment_style == "auto" and is_block) then
+    table.insert(line, comment_string_b_start)
+  end
+
+  local symbols = set_line(choice)
   table.insert(
     line,
     string.format(
-      "%s%s%s%s%s%s%s%s%s%s%s%s",
-      comment_string_start,
+      "%s%s%s%s%s%s%s%s%s%s%s",
+      comment_string_int_row,
       lead_space,
       symbols.line_start,
       string.rep(symbols.line, start_pad),
@@ -630,19 +710,22 @@ local function create_titled_line(choice)
       " ",
       symbols.title_right,
       string.rep(symbols.line, end_pad),
-      symbols.line_end,
-      comment_string_end
+      symbols.line_end
     )
   )
-  if type(text) == "table" and #text > 1 then
-    for index, value in ipairs(text) do
-      if index > 1 then
+  if #text > 1 then
+    for i, value in ipairs(text) do
+      if i > 1 then
         table.insert(
           line,
-          string.format("%s%s%s", comment_string_start, " ", value)
+          string.format("%s%s%s", comment_string_int_row, " ", value)
         )
       end
     end
+  end
+
+  if comment_style == "block" or (comment_style == "auto" and is_block) then
+    table.insert(line, comment_string_b_end)
   end
 
   if settings.line_blank_line_below then
@@ -694,7 +777,7 @@ local function display_titled_line(choice, lstart, lend)
     line_start_pos - 1,
     line_end_pos,
     false,
-    create_titled_line(choice)
+    create_titled_line(choice, lstart, lend)
   )
 
   local cur = vim.api.nvim_win_get_cursor(0)

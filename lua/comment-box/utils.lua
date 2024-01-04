@@ -2,21 +2,27 @@
 --          │                          UTILS                          │
 --          ╰─────────────────────────────────────────────────────────╯
 
+local cs = require("comment-box.commentstrings")
 local fn = vim.fn
 
 -- return comment strings
----@return string, string
-local function get_comment_string()
-  local comment_string = vim.bo.commentstring
-  local comment_string_start, comment_string_end =
-    comment_string:match("^(.-)%%s(.-)$")
-  if comment_string_start ~= nil then
-    comment_string_start = vim.trim(comment_string_start)
+---@return string, string, string
+local function get_comment_string(filetype)
+  local comment_string = cs.get_comment_strings(filetype)
+
+  local comment_string_l, comment_string_b_start, comment_string_b_end =
+    "", "", ""
+
+  if comment_string and comment_string[1] and comment_string[1] ~= "" then
+    comment_string_l = comment_string[1]:match("^(.-)%%s")
   end
-  if comment_string_end ~= nil then
-    comment_string_end = vim.trim(comment_string_end)
+
+  if comment_string and comment_string[2] and comment_string[2] ~= "" then
+    comment_string_b_start = comment_string[2]:match("^(.-)%%s")
+    comment_string_b_end = comment_string[2]:match("%%s(.*)$")
   end
-  return comment_string_start, comment_string_end
+
+  return comment_string_l, comment_string_b_start, comment_string_b_end
 end
 
 -- Store the range of the selected text in 'line_start_pos'/'line_end_pos'
@@ -74,28 +80,40 @@ local function get_pad(line, centered_text, right_aligned_text, final_width)
   return start_pad, end_pad
 end
 
+local function remove_cs(comment_string, line, start)
+  if comment_string ~= "" then
+    local comment_string_length = fn.strdisplaywidth(comment_string)
+    if start then
+      if line:sub(1, comment_string_length) == comment_string then
+        line = line:gsub(vim.pesc(comment_string), "", 1) -- remove comment string
+      end
+    else
+      local line_length = fn.strdisplaywidth(line)
+      if
+        line:sub(line_length - comment_string_length + 1) == comment_string
+      then
+        line = line:gsub(vim.pesc(comment_string) .. "%s*$", "")
+      end
+    end
+  end
+  return line
+end
+
 -- Skip comment string if there is one at the beginning of the line
 ---@param line string
 ---@return string
 local function skip_cs(
   line,
-  comment_string_start,
-  centered_text,
-  right_aligned_text
+  comment_string_l,
+  comment_string_b_start,
+  comment_string_b_end
 )
-  local trimmed_line = vim.trim(line)
-  local cs_len = fn.strdisplaywidth(comment_string_start)
+  line = vim.trim(line)
+  line = remove_cs(comment_string_l, line, true)
+  line = remove_cs(comment_string_b_start, line, true)
+  line = remove_cs(comment_string_b_end, line, false)
 
-  if trimmed_line:sub(1, cs_len) == comment_string_start then
-    line = line:gsub("^%s+", "") -- remove whitespace before comment string
-    line = line:gsub(vim.pesc(comment_string_start), "", 1) -- remove comment string
-    line = line:gsub("[ \t]+%f[\r\n%z]", "") -- remove trailing spaces
-  end
-  if centered_text or right_aligned_text then
-    return vim.trim(line) -- if centered need to trim both ends for correct padding
-  else
-    return line
-  end
+  return vim.trim(line)
 end
 
 -- Wrap lines too long to fit in box
