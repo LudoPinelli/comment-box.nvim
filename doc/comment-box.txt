@@ -221,12 +221,12 @@ BOXES                                                          *comment-box-boxe
 |              | size box with right     |                                     |
 |              | aligned text            |                                     |
 +--------------+-------------------------+-------------------------------------+
-|CBalbox[num]  | Left aligned adapted    | require("comment-box").albox([num]) |
+|CBlabox[num]  | Left aligned adapted    | require("comment-box").albox([num]) |
 |              | box                     |                                     |
 +--------------+-------------------------+-------------------------------------+
-|CBacbox[num]  | Centered adapted box    | require("comment-box").acbox([num]) |
+|CBcabox[num]  | Centered adapted box    | require("comment-box").acbox([num]) |
 +------------------------------------------------------------------------------+
-|CBarbox[num]  | Right aligned adapted   | require("comment-box").arbox([num]) |
+|CBrabox[num]  | Right aligned adapted   | require("comment-box").arbox([num]) |
 |              | box                     |                                     |
 +--------------+-------------------------+-------------------------------------+
 
@@ -330,6 +330,8 @@ use one of the command/function above.
 Note: if the text is too long to fit in the line, comment-box will automatically
 wrap it for you. The first line of text will be in the line, the others will be
 commented above it.
+
+TIP: If you have the option 'comment_style' set to '"block"' or '"auto"', if selecting multiple lines will only put the first in the titled line, all will be in a common block comment, which can enhance the effect!
 
 Examples
 >

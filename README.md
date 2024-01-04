@@ -143,9 +143,9 @@ See the rest of this doc for more details.
 |`CBrlbox[num]` | _Right aligned box of fixed size_ with _Left aligned text_ | `require("comment-box").rlbox([num])` |
 |`CBrcbox[num]` | _Right aligned box of fixed size_ with _Centered text_ | `require("comment-box").rcbox([num])` |
 |`CBrrbox[num]` | _Right aligned box of fixed size_ with _Right aligned text_ | `require("comment-box").rrbox([num])` |
-|`CBalbox[num]` | _Left aligned adapted box_ | `require("comment-box").albox([num])` |
-|`CBacbox[num]` | _Centered adapted box_ | `require("comment-box").acbox([num])` |
-|`CBarbox[num]` | _Right aligned adapted box_ | `require("comment-box").arbox([num])` |
+|`CBlabox[num]` | _Left aligned adapted box_ | `require("comment-box").albox([num])` |
+|`CBbaox[num]` | _Centered adapted box_ | `require("comment-box").acbox([num])` |
+|`CBrabox[num]` | _Right aligned adapted box_ | `require("comment-box").arbox([num])` |
 
 The `[num]` parameter is optional. It's the number of a predefined style from the catalog (see [Catalog](#the-catalog)). By leaving it empty, the box or line will be drawn with the style you defined or if you didn't define one, with the default style.
 
@@ -203,6 +203,8 @@ A 'centered' titled line is centered relatively to the width of your document (s
 To draw a titled line, place your cursor on the line of text you want in, then use one of the command/function above.
 
 **Note**: if the text is too long to fit in the line, _comment-box_ will automatically wrap it for you. The first line of text will be in the line, the others will be commented above it.
+
+***TIP***: If you have the option `comment_style` set to `"block"` or `"auto"`, if selecting multiple lines will only put the first in the titled line, all will be in a common block comment, which can enhance the effect!
 
 Examples:
 ```lua
