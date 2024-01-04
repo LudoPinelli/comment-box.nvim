@@ -5,7 +5,7 @@
 
 ---@class CommentBoxConfig
 local settings = {
-  comment_style = "auto", -- "line"|"block"|"auto"
+  comment_style = "line", -- "line"|"block"|"auto"
   doc_width = 80,
   box_width = 60,
   borders = {
@@ -168,7 +168,7 @@ local function set_borders(choice)
   if choice == 0 then
     borders = settings.borders
   else
-    borders = cat.boxes[choice]
+    borders = cat.boxes[choice] or settings.borders
   end
   return borders
 end
@@ -177,7 +177,7 @@ end
 ---@param choice number?
 ---@return table
 local function set_line(choice)
-  choice = choice or 0
+  choice = tonumber(choice) or 0
   local symbols
   if choice == 0 then
     symbols = settings.lines

@@ -33,15 +33,16 @@ CONTENTS                                                    *comment-box-content
             5.3.2. Lua...........................................|comment-box-lua|
     6. The catalog...........................................|comment-box-catalog|
     7. Configuration and creating your own type of box.|comment-box-configuration|
-        7.1. 'doc_width'...................................|comment-box-doc_width|
-        7.2. 'box_width'...................................|comment-box-box_width|
-        7.3. 'borders'.......................................|comment-box-borders|
-        7.4. 'line_width'.................................|comment-box-line_width|
-        7.5. 'line'.............................................|comment-box-line|
-        7.6. 'outer_blank_lines'...................|comment-box-outer_blank_lines|
-        7.7. 'inner_blank_lines'...................|comment-box-inner_blank_lines|
-        7.8. 'line_blank_line_above'...........|comment-box-line_blank_line_above|
-        7.9  'line_blank_line_below'...........|comment-box-line_blank_line_below|
+        7.1. 'comment_style'...........................|comment-box-comment_style|
+        7.2. 'doc_width'...................................|comment-box-doc_width|
+        7.3. 'box_width'...................................|comment-box-box_width|
+        7.4. 'borders'.......................................|comment-box-borders|
+        7.5. 'line_width'.................................|comment-box-line_width|
+        7.6. 'line'.............................................|comment-box-line|
+        7.7. 'outer_blank_lines'...................|comment-box-outer_blank_lines|
+        7.8 'inner_blank_lines'...................|comment-box-inner_blank_lines|
+        7.9. 'line_blank_line_above'...........|comment-box-line_blank_line_above|
+        7.10 'line_blank_line_below'...........|comment-box-line_blank_line_below|
     8. Acknowledgement...............................|comment-box-acknowledgement|
     9. About...................................................|comment-box-about|
    10. License...............................................|comment-box-license|
@@ -71,12 +72,7 @@ comment-box allows you to:
     it by simply pass its number to the function call.
 
 Mainly designed for code comments, comment-box can also be used to brighten up
-the dull .txt files! You can also use it in markdown and orgmode files, however,
-if it makes sense if you use those formats "as is" (for note taking for
-example), it's not a good idea if you plan to convert them to other formats.
-
-Note: multi-line commenting as used in C is quite tricky and not fully supported
-yet.
+any kind of plain text files (.txt, .md, ...)!
 
 --------------------------------------------------------------------------------
 PREREQUISITE                                            *comment-box-prerequisite*
@@ -506,9 +502,16 @@ comment-box does its things. This is also where you can create your own type of
 box. Here is the list of the options with their default value:
 >
     require('comment-box').setup({
-	    doc_width = 80, -- width of the document
-    	box_width = 60, -- width of the boxex
-    	borders = { -- symbols used to draw a box
+        -- type of comments:
+        --   - "line":  comment-box will always use line style comments
+        --   - "block": comment-box will always use block style comments
+        --   - "auto":  comment-box will use block line style comments if
+        --              multiple lines are selected, line style comments
+        --              otherwise
+        comment_style = "line",
+	doc_width = 80, -- width of the document
+        box_width = 60, -- width of the boxex
+        borders = { -- symbols used to draw a box
     		top = "─",
     		bottom = "─",
     		left = "│",
@@ -518,21 +521,29 @@ box. Here is the list of the options with their default value:
     		bottom_left = "╰",
     		bottom_right = "╯",
     	},
-      line_width = 70, -- width of the lines
-      line = { -- symbols used to draw a line
+        line_width = 70, -- width of the lines
+        line = { -- symbols used to draw a line
     		line = "─",
     		line_start = "─",
     		line_end = "─",
                 titled_left = "─",
                 titled_right = "─",
         }
-      outer_blank_lines_above = false, -- insert a blank line above the box
-      outer_blank_lines_below = false, -- insert a blank line below the box
-      inner_blank_lines = false, -- insert a blank line above and below the text
-      line_blank_line_above = false, -- insert a blank line above the line
-      line_blank_line_below = false, -- insert a blank line below the line
+        outer_blank_lines_above = false, -- insert a blank line above the box
+        outer_blank_lines_below = false, -- insert a blank line below the box
+        inner_blank_lines = false, -- insert a blank line above and below the text
+        line_blank_line_above = false, -- insert a blank line above the line
+        line_blank_line_below = false, -- insert a blank line below the line
     })
 <
+
+`comment_style`                                        *comment-box-comment_style*
+
+Determine which style of comments comment-box will use:
+-`"line"`: only use line style comments
+- `"block"`: only use block style comments
+- `"auto"`: use block style comments if multiple lines are selected, line style comments otherwise
+If a language doesn't allow on type of style, comment-box will automatically choose the other one.
 
 `doc_width`                                                *comment-box-doc_width*
 

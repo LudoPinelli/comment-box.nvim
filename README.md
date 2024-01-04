@@ -1,4 +1,13 @@
-#### - LATEST CHANGES (December 31 2023) -
+#### - LATEST CHANGES (January  4 2024) -
+- :fire: **FEAT** complete rework of the way the plugin deal with the comment strings which allow a complete support of multi-line comments! :fire:
+A new option has been added (`comment_style`) that can take three state:
+  - `"line"`:  no matter the type of comment applied to the selected comments, boxes, title lines and simple line will always be commenting with line style.
+  - `"block"`: no matter the type of comment applied to the selected comments, boxes, title lines and simple line will always be commenting with block style.
+  - `"auto"`: if you select one line, boxes, titled lines and simple line, will be commented with line style, if you select multiple lines, they will be commented with block style.
+- **CHANGE**: To keep a consistency in the nomenclature of the commands, `CBalbox`, `CBacbox`, `CBarbox` are now deprecated (please use `CBlabox`, `CBcabox`, `CBrabox` instead) and `CBlline` has been added (same as `CBline`).
+
+The plugin will bypass this option if the language of the file allow only block comments or only line comment.
+##### December 31 2023
 - **ADD** [Quick Start](#quick-start) section for people with no time to waste!
 - **FEAT**: New category -> titled lines (see [titled lines](#titled-lines))
 - **BREAKING-CHANGE**: `CBdbox` renamed in `CBd`
@@ -24,9 +33,7 @@ _comment-box_ allows you to:
 - create your own type of line by choosing its width and the characters used to draw its start, end and body.
 - choose from a catalog of 22 predefined boxes and 13 predefined lines and use it by simply pass its number to the function call.
 
-Mainly designed for code comments, _comment-box_ can also be used to brighten up the dull _.txt_ files! You can also use it in _markdown_ and _orgmode_ files, however, if it makes sense if you use those formats "as is" (for note taking for example), it's not a good idea if you plan to convert them to other formats.
-
-**Note**: multi-line commenting as used in C is quite tricky and not fully supported yet.
+Mainly designed for code comments, _comment-box_ can also be used to brighten up any kind of plain text files (_.txt_, _.md_, ...)!
 
 ## Prerequisite
 
@@ -348,6 +355,13 @@ You can call the `setup()` function in your _init.lua(.vim)_ to configure the wa
 
 ```lua
 require('comment-box').setup({
+  -- type of comments:
+  --   - "line":  comment-box will always use line style comments
+  --   - "block": comment-box will always use block style comments
+  --   - "auto":  comment-box will use block line style comments if
+  --              multiple lines are selected, line style comments
+  --              otherwise
+  comment_style = "line",
   doc_width = 80, -- width of the document
   box_width = 60, -- width of the boxes
   borders = { -- symbols used to draw a box
@@ -376,9 +390,17 @@ require('comment-box').setup({
 })
 ```
 
+### `comment_style`
+
+Determine which style of comments comment-box will use:
+-`"line"`: only use line style comments
+- `"block"`: only use block style comments
+- `"auto"`: use block style comments if multiple lines are selected, line style comments otherwise
+If a language doesn't allow on type of style, comment-box will automatically choose the other one.
+
 ### `doc_width`
 
-Width of the document. It is used to center the boxes and lines and determine the max width of the adapted boxes.
+Width of the document. It is used to center the boxes and lines.
 
 ### `box_width`
 
@@ -412,11 +434,10 @@ Self explanatory!
 
 ## TODO
 
-- [x] Convert commands creation from vimscript to lua
 - [x] "Titled lines" (issue #10)
 - [x] Right alignement
 - [ ] Option for displaying comments/docstring as virtual text (issue #5)
-- [ ] Full support of multi-line style comments
+- [x] Full support of multi-line style comments
 
 ## Acknowledgement
 
@@ -425,4 +446,4 @@ I learned and borrow from those plugins' code:
 - [better-escape](https://github.com/max397574/better-escape.nvim)
 - [nvim-comment](https://github.com/terrortylor/nvim-comment/blob/main/lua/nvim_comment.lua)
 
-Thanks to [@HiPhish](https://github.com/HiPhish) for his excellent advice to make the code a bit better (I'm still working on it...) and all the contributors.
+Thanks to [@HiPhish](https://github.com/HiPhish) for his excellent advice to make the code a bit better (I'm still working on it...), all the contributors and people who submit issues and suggestions.
