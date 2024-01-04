@@ -109,8 +109,9 @@ local function skip_cs(
   comment_string_b_end
 )
   line = vim.trim(line)
-  line = remove_cs(comment_string_l, line, true)
+  -- Order is important: block comment strings are always longer
   line = remove_cs(comment_string_b_start, line, true)
+  line = remove_cs(comment_string_l, line, true)
   line = remove_cs(comment_string_b_end, line, false)
 
   return vim.trim(line)

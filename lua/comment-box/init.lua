@@ -187,18 +187,27 @@ local function set_line(choice)
   return symbols
 end
 
+---@param comment_style string
 ---@return string
 ---@return string
-local function set_lead_space()
+local function set_lead_space(comment_style)
   lead_space_ab = " "
   lead_space_bb = " "
-  local comment_string_l, _, _ = utils.get_comment_string(vim.bo.filetype)
+  local comment_string_l, comment_string_b_start, _ =
+    utils.get_comment_string(vim.bo.filetype)
+
+  local comment_string
+  if comment_style == "block" then
+    comment_string = comment_string_b_start
+  else
+    comment_string = comment_string_l
+  end
   if centered_box then
     lead_space_bb = string.rep(
       " ",
       math.floor(
         (settings.doc_width - final_width) / 2
-          - fn.strdisplaywidth(comment_string_l)
+          - fn.strdisplaywidth(comment_string)
           + 0.5
       )
     )
@@ -206,10 +215,7 @@ local function set_lead_space()
   if right_aligned_box then
     lead_space_bb = string.rep(
       " ",
-      settings.doc_width
-        - final_width
-        - fn.strdisplaywidth(comment_string_l)
-        - 2
+      settings.doc_width - final_width - fn.strdisplaywidth(comment_string) - 2
     )
   end
 
@@ -265,6 +271,26 @@ local function create_box(choice, lstart, lend)
   local comment_string_l, comment_string_b_start, comment_string_b_end =
     utils.get_comment_string(filetype)
 
+  local comment_string_int_row
+  local comment_style = settings.comment_style
+  -- If the language has no single line comment:
+  if comment_string_l == "" and comment_string_b_start ~= "" then
+    comment_style = "block"
+  end
+
+  if comment_style == "line" and comment_string_l ~= "" then
+    comment_string_int_row = comment_string_l
+  else
+    local cs_len = fn.strdisplaywidth(comment_string_b_start)
+    if cs_len > 1 then
+      comment_string_int_row = " " .. comment_string_b_start:sub(2, 2)
+      if cs_len > 2 then
+        comment_string_int_row = comment_string_int_row
+          .. string.rep(" ", cs_len - 2)
+      end
+    end
+  end
+
   -- ╓                                                       ╖
   -- ║ Deal with the two ways to declare transparent borders ║
   -- ╙                                                       ╜
@@ -304,7 +330,7 @@ local function create_box(choice, lstart, lend)
     borders.bottom = ""
   end
 
-  lead_space_ab, lead_space_bb = set_lead_space()
+  lead_space_ab, lead_space_bb = set_lead_space(comment_style)
   if borders.top_right == "" and borders.top == "" then
     lead_space_ab = ""
     if borders.top_left == " " then
@@ -317,26 +343,6 @@ local function create_box(choice, lstart, lend)
     if borders.bottom_left == " " then
       borders.bottom_left = ""
       lead_space_bb = ""
-    end
-  end
-
-  local comment_string_int_row
-  local comment_style = settings.comment_style
-  -- If the language has no single line comment:
-  if comment_string_l == "" and comment_string_b_start ~= "" then
-    comment_style = "block"
-  end
-
-  if comment_style == "line" and comment_string_l ~= "" then
-    comment_string_int_row = comment_string_l
-  else
-    local cs_len = fn.strdisplaywidth(comment_string_b_start)
-    if cs_len > 1 then
-      comment_string_int_row = " " .. comment_string_b_start:sub(2, 2)
-      if cs_len > 2 then
-        comment_string_int_row = comment_string_int_row
-          .. string.rep(" ", cs_len - 2)
-      end
     end
   end
 
@@ -393,7 +399,7 @@ local function create_box(choice, lstart, lend)
       local start_pad, end_pad =
         utils.get_pad(line, centered_text, right_aligned_text, final_width)
 
-      lead_space_ab, lead_space_bb = set_lead_space()
+      lead_space_ab, lead_space_bb = set_lead_space(comment_style)
       if borders.right == "" and line == "" then
         lead_space_ab = ""
         if borders.left == " " or borders.left == "" then
@@ -429,7 +435,7 @@ local function create_box(choice, lstart, lend)
 
       local pad = final_width - fn.strdisplaywidth(line) - offset
 
-      lead_space_ab, lead_space_bb = set_lead_space()
+      lead_space_ab, lead_space_bb = set_lead_space(comment_style)
       trail = " "
       if borders.right == "" and line == "" then
         lead_space_ab = ""
@@ -481,16 +487,15 @@ local function remove(lstart, lend)
   local comment_string_l, comment_string_b_start, comment_string_b_end =
     utils.get_comment_string(filetype)
 
-  local is_block
-  if math.abs(lstart - lend) > 0 then
-    is_block = true
-  else
-    is_block = false
-  end
   local result = get_text(lstart, lend)
-  local comment_style = settings.comment_style
+  local comment_style = "line"
+  -- If the language has no single line comment:
+  if comment_string_l == "" and comment_string_b_start ~= "" then
+    comment_style = "block"
+  end
+
   local comment_string_int_row
-  if comment_style == "line" or (comment_style == "auto" and not is_block) then
+  if comment_style == "line" then
     comment_string_int_row = comment_string_l
   else
     local cs_len = fn.strdisplaywidth(comment_string_b_start)
@@ -504,7 +509,7 @@ local function remove(lstart, lend)
   end
 
   local lines = {}
-  if comment_style == "block" or (comment_style == "auto" and is_block) then
+  if comment_style == "block" then
     table.insert(lines, comment_string_b_start)
   end
 
@@ -516,7 +521,7 @@ local function remove(lstart, lend)
     end
   end
 
-  if comment_style == "block" or (comment_style == "auto" and is_block) then
+  if comment_style == "block" then
     table.insert(lines, comment_string_b_end)
   end
 
