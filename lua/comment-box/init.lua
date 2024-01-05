@@ -290,6 +290,9 @@ local function create_box(choice, lstart, lend)
       end
     end
   end
+  if not comment_string_int_row then
+    comment_string_int_row = ""
+  end
 
   -- ╓                                                       ╖
   -- ║ Deal with the two ways to declare transparent borders ║
