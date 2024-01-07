@@ -61,7 +61,7 @@ If the plugin has tons of commands, you'll most likely need 3 or 4 at most on a 
 - You'll probably want a box for titles. I personally choose a centered fixed box with text centered : `:CBccbox`
 - A titled line is nice to divide and name each part. I use a left aligned titled line with the text left aligned: `:CBllline`
 - For a simple separation, a simple line will do: `:CBline`
-- Finally, it can be useful to make some important comments pop. To achieve this, choose an appropriate style, I like the 14: `:CBllbox14`
+- Finally, it can be useful to make some important comments pop. To achieve this, choose an appropriate style, I like the 14: `:CBllbox14`, `:CBalbox14` or `:CBrrbox14`
 
 You may want to try other styles of boxes and lines: open the catalog with `:CBcatalog`, and take note of the style of boxes and lines you want to use. You just have to add the number after the relevant commands (without spaces), like for the `:CBllbox14` above.
 
@@ -75,7 +75,6 @@ It's of course easier to use shortcuts (here using `<Leader>c` as prefix):
 ```lua
 local keymap = vim.keymap.set
 local opts = { noremap = true, silent = true }
-local cb = require("comment-box")
 
 -- Titles
 keymap({ "n", "v" }, "<Leader>cb", "<Cmd>CBccbox<CR>", opts)
@@ -117,7 +116,6 @@ where:
 - `CB` is for "Comment-Box"
 - `x` is for the position of the box or line (`l`: left, `c`: center, `r`: right)
 - `y` is for the text justification (`l`: left, `c`: center, `r`: right). For the box, it can be `a` ("adapted"): the size of the box will be adapted to the size of the text (up to `box_width`)
-
 - `box|line` to choose if it applies to a box or a line
 - `[num]` is optional an apply a style from the catalog
 

@@ -111,7 +111,7 @@ regular basis.
   line with the text left aligned: :CBllline
 - For a simple separation, a simple line will do :CBline
 - Finally, it can be useful to make some important comments pop. To achieve this,
-  choose an appropriate style, I like the 14 :CBllbox14
+  choose an appropriate style, I like the 14 :CBllbox14, :CBalbox14 or :CBrrbox14
 
 You may want to try other styles of boxes and lines: open the catalog with
 :CBcatalog, and take note of the style of boxes and lines you want to use. You
