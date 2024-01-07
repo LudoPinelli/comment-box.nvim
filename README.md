@@ -121,7 +121,7 @@ where:
 - `[num]` is optional an apply a style from the catalog
 
 Exceptions:
-- Adapted boxes: `x` is a (for adapted) `y` is the position of the box.
+- Adapted boxes: `x` is the position of a box and `y` is `a` for 'adapted' (the box will take the size of the text, up to `box_size`).
 - Simple Lines: no `x`. `y` is the position of the line if not left.
 
 See the rest of this doc for more details.
