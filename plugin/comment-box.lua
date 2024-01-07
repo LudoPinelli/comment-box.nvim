@@ -95,7 +95,7 @@ end, {
 })
 
 -- ── Deprecated ────────────────────────────────────────────────────────
-vim.api.nvim_create_user_command("CBacbox", function(opts)
+vim.api.nvim_create_user_command("CBcabox", function(opts)
   require("comment-box").acbox(opts.args, opts.line1, opts.line2)
 end, {
   nargs = "?",
@@ -104,7 +104,7 @@ end, {
 })
 -- ──────────────────────────────────────────────────────────────────────
 
-vim.api.nvim_create_user_command("CBcabox", function(opts)
+vim.api.nvim_create_user_command("CBacbox", function(opts)
   require("comment-box").acbox(opts.args, opts.line1, opts.line2)
 end, {
   nargs = "?",
@@ -113,7 +113,7 @@ end, {
 })
 
 -- ── Deprecated ────────────────────────────────────────────────────────
-vim.api.nvim_create_user_command("CBarbox", function(opts)
+vim.api.nvim_create_user_command("CBrabox", function(opts)
   require("comment-box").arbox(opts.args, opts.line1, opts.line2)
 end, {
   nargs = "?",

@@ -221,12 +221,12 @@ BOXES                                                          *comment-box-boxe
 |              | size box with right     |                                     |
 |              | aligned text            |                                     |
 +--------------+-------------------------+-------------------------------------+
-|CBlabox[num]  | Left aligned adapted    | require("comment-box").albox([num]) |
+|CBlabox[num]  | Left aligned adapted    | require("comment-box").labox([num]) |
 |              | box                     |                                     |
 +--------------+-------------------------+-------------------------------------+
-|CBcabox[num]  | Centered adapted box    | require("comment-box").acbox([num]) |
+|CBcabox[num]  | Centered adapted box    | require("comment-box").cabox([num]) |
 +------------------------------------------------------------------------------+
-|CBrabox[num]  | Right aligned adapted   | require("comment-box").arbox([num]) |
+|CBrabox[num]  | Right aligned adapted   | require("comment-box").rabox([num]) |
 |              | box                     |                                     |
 +--------------+-------------------------+-------------------------------------+
 

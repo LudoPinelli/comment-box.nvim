@@ -3,13 +3,24 @@
 --          ╰─────────────────────────────────────────────────────────╯
 
 ---@type number, number
-local buf, win
+local bufnr, winnr
 local api = vim.api
 
 local function open_win()
-  buf = api.nvim_create_buf(false, true)
+  bufnr = api.nvim_create_buf(false, true)
 
-  api.nvim_set_option_value("bufhidden", "wipe", { buf = buf })
+  local options = {
+    bufhidden = "wipe",
+    modifiable = false,
+    filetype = "comment-box",
+    swapfile = false,
+    buflisted = false,
+    buftype = "nofile",
+  }
+
+  for option, value in pairs(options) do
+    api.nvim_set_option_value(option, value, { buf = bufnr })
+  end
 
   local width = api.nvim_get_option_value("columns", {})
   local height = api.nvim_get_option_value("lines", {})
@@ -31,12 +42,12 @@ local function open_win()
     border = "rounded",
   }
 
-  win = api.nvim_open_win(buf, true, opts)
-  api.nvim_set_option_value("cursorline", true, { win = win })
+  winnr = api.nvim_open_win(bufnr, true, opts)
+  api.nvim_set_option_value("cursorline", true, { win = winnr })
 end
 
 local function view()
-  api.nvim_set_option_value("modifiable", true, { buf = buf })
+  api.nvim_set_option_value("modifiable", true, { buf = bufnr })
   local cat_path = api.nvim_get_runtime_file("catalog/catalog.txt", false)[1]
   api.nvim_command("$read " .. cat_path)
   api.nvim_set_option_value("modifiable", false, { buf = 0 })
@@ -44,7 +55,7 @@ end
 
 local function keymap()
   api.nvim_buf_set_keymap(
-    buf,
+    bufnr,
     "n",
     "q",
     "<Cmd>lua require('comment-box.catalog_view').close()<CR>",
@@ -59,6 +70,6 @@ return {
     view()
   end,
   close = function()
-    api.nvim_win_close(win, true)
+    api.nvim_win_close(winnr, true)
   end,
 }

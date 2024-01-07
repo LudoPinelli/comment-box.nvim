@@ -923,7 +923,7 @@ end
 ---@param choice number
 ---@param lstart number
 ---@param lend number
-local function print_albox(choice, lstart, lend)
+local function print_labox(choice, lstart, lend)
   centered_text = false
   right_aligned_text = false
   centered_box = false
@@ -936,7 +936,7 @@ end
 ---@param choice number
 ---@param lstart number
 ---@param lend number
-local function print_acbox(choice, lstart, lend)
+local function print_cabox(choice, lstart, lend)
   centered_text = true
   right_aligned_text = false
   centered_box = true
@@ -949,7 +949,7 @@ end
 ---@param choice number
 ---@param lstart number
 ---@param lend number
-local function print_arbox(choice, lstart, lend)
+local function print_rabox(choice, lstart, lend)
   centered_text = false
   right_aligned_text = true
   centered_box = false
@@ -1116,9 +1116,9 @@ return {
   rlbox = print_rlbox,
   rcbox = print_rcbox,
   rrbox = print_rrbox,
-  albox = print_albox,
-  acbox = print_acbox,
-  arbox = print_arbox,
+  albox = print_labox,
+  acbox = print_cabox,
+  arbox = print_rabox,
   dbox = del,
   yank = yank_in,
   line = print_line,
