@@ -169,14 +169,16 @@ If you want more control, the nomenclature for the commands is fairly simple:
 where:
 - CB is for "Comment-Box"
 - x is for the position of the box or line (l: left, c: center, r: right)
-- y is for the text justification (l: left, c: center, r: right)
+- y is for the text justification (l: left, c: center, r: right). For the box,
+  it can be 'a' (adapted): the size of the box will be adapted to the size of
+  the text (up to 'box_width')
+
 - box|line to choose if it applies to a box or a line
 - num is optional an apply a style from the catalog
 
-Exceptions:
-- Adapted boxes: x is for the position of the box and y is 'a' for adapted (the
-  box will take the size of the text up to 'box_width').
-- Simple Lines: no x. y is the position of the line if not left.
+Exception:
+- Simple Lines: no y. x is the position of the line (l: left, c: center,
+  r: right).
 
 See the rest of this doc for more details.
 
