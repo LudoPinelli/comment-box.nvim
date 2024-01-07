@@ -128,7 +128,6 @@ It's of course easier to use shortcuts (here using `<Leader>c` as prefix):
 >
     local keymap = vim.keymap.set
     local opts = { noremap = true, silent = true }
-    local cb = require("comment-box")
 
     -- Titles
     keymap({ "n", "v" }, "<Leader>cb", "<Cmd>CBccbox<CR>", opts)

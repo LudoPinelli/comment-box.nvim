@@ -1,9 +1,9 @@
 #### - LATEST CHANGES (January  4 2024) -
 - :fire: **FEAT** complete rework of the way the plugin deal with the comment strings which allow a complete support of multi-line comments! :fire:
 A new option has been added (`comment_style`) that can take three state:
-  - `"line"`:  no matter the type of comment applied to the selected comments, boxes, title lines and simple line will always be commenting with line style.
-  - `"block"`: no matter the type of comment applied to the selected comments, boxes, title lines and simple line will always be commenting with block style.
-  - `"auto"`: if you select one line, boxes, titled lines and simple line, will be commented with line style, if you select multiple lines, they will be commented with block style.
+  - `"line"`:  no matter the type of comment applied to the selected comments, boxes, title lines and simple lines will always be commented with line style.
+  - `"block"`: no matter the type of comment applied to the selected comments, boxes, title lines and simple lines will always be commented with block style.
+  - `"auto"`: if you select one line, boxes, titled lines and simple lines will be commented with line style, if you select multiple lines, they will be commented with block style.
 - **CHANGE**: To keep a consistency in the nomenclature of the commands, `CBalbox`, `CBacbox`, `CBarbox` are now deprecated (please use `CBlabox`, `CBcabox`, `CBrabox` instead) and `CBlline` has been added (same as `CBline`).
 
 The plugin will bypass this option if the language of the file allow only block comments or only line comment.
@@ -393,9 +393,11 @@ require('comment-box').setup({
 ### `comment_style`
 
 Determine which style of comments comment-box will use:
+
 -`"line"`: only use line style comments
 - `"block"`: only use block style comments
 - `"auto"`: use block style comments if multiple lines are selected, line style comments otherwise
+
 If a language doesn't allow on type of style, comment-box will automatically choose the other one.
 
 ### `doc_width`
