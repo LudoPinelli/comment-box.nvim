@@ -170,62 +170,82 @@
    ─── title ──────────────────────────────
   
 
-   2 - Simple - Squared title
+   2 - Simple - Rounded corner down
+  
+   ╭── title ─────────────────────────────╮
+  
+
+   3 - Simple - Rounded corner up
+  
+   ╰── title ─────────────────────────────╯
+  
+
+   4 - Simple - Squared corner down
+  
+   ┌── title ─────────────────────────────┐
+  
+
+   5 - Simple - Squared corner up
+  
+   └── title ─────────────────────────────┘
+  
+
+   6 - Simple - Squared title
   
    ──[ title ]─────────────────────────────
   
 
-   3 - Simple - Rounded title
+   7 - Simple - Rounded title
   
    ──( title )─────────────────────────────
   
 
-   4 - Simple - Spiked title
+   8 - Simple - Spiked title
   
    ──< title >─────────────────────────────
   
   
-   5 - Simple Heavy
+   9 - Simple Heavy
   
    ━━━ title ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   
   
-   6 - Confined
+   10 - Confined
   
    ├──┤ title ├───────────────────────────┤
   
    
-   7 - Confined Heavy
+   11 - Confined Heavy
   
    ┣━━┫ title ┣━━━━━━━━━━━━━━━━━━━━━━━━━━━┫
   
   
-   8 - Simple Weighted
+   12 - Simple Weighted
   
    ╾──╼ title ╾───────────────────────────╼
   
   
-   9 - Double
+   13 - Double
   
    ════ title ═════════════════════════════
   
   
-   10 - Double Confined
+   14 - Double Confined
   
    ╞══╡ title ╞═══════════════════════════╡
   
   
-   11 - ASCII A
+   15 - ASCII A
   
    ---- title -----------------------------
   
   
-   12 - ASCII B
+   16 - ASCII B
   
    ____ title _____________________________
   
   
-   13 - ASCII C
+   17 - ASCII C
   
    +--+ title +---------------------------+
   

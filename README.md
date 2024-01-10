@@ -1,4 +1,7 @@
-#### - LATEST CHANGES (January  4 2024) -
+#### - LATEST CHANGES (January 10 2024) -
+- **ADD** four new predefined styles of line in the catalog
+
+##### January 4 2024
 - :fire: **FEAT** complete rework of the way the plugin deal with the comment strings which allow a complete support of multi-line comments! :fire:
 A new option has been added (`comment_style`) that can take three state:
   - `"line"`:  no matter the type of comment applied to the selected comments, boxes, title lines and simple lines will always be commented with line style.
