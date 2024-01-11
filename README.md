@@ -1,9 +1,6 @@
 <h1 align="center">comment-box.nvim</h1>
 
-<!-- ![comment-box](./imgs/cb-title.png?raw=true) -->
-<p align="center">
-  <img width="700" height="1000" src="https://github.com/LudoPinelli/comment-box/imgs/cb-title.png">
-</p>
+![comment-box](./imgs/cb-title.png?raw=true)
 
 You have this long config file and you want to clearly (and beautifully) separate each part. So you put lines of symbols as separators. Boxes would have been better but too tedious to make, not to mention if you want to center your text in it.
 
