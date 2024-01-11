@@ -465,7 +465,7 @@ THE CATALOG                                                  *comment-box-catalo
 
 
 
-The catalog is a collection of 22 predefined types of boxes and 13 types of
+The catalog is a collection of 22 predefined types of boxes and 17 types of
 lines. You can easily access the catalog in Neovim (it will appear in a popup
 window so it won't mess with what you're doing) using:
 >

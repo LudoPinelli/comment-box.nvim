@@ -1,22 +1,3 @@
-#### - LATEST CHANGES (January 10 2024) -
-- **ADD** four new predefined styles of line in the catalog
-
-##### January 4 2024
-- :fire: **FEAT** complete rework of the way the plugin deal with the comment strings which allow a complete support of multi-line comments! :fire:
-A new option has been added (`comment_style`) that can take three state:
-  - `"line"`:  no matter the type of comment applied to the selected comments, boxes, title lines and simple lines will always be commented with line style.
-  - `"block"`: no matter the type of comment applied to the selected comments, boxes, title lines and simple lines will always be commented with block style.
-  - `"auto"`: if you select one line, boxes, titled lines and simple lines will be commented with line style, if you select multiple lines, they will be commented with block style.
-- **CHANGE**: To keep a consistency in the nomenclature of the commands, `CBalbox`, `CBacbox`, `CBarbox` are now deprecated (please use `CBlabox`, `CBcabox`, `CBrabox` instead) and `CBlline` has been added (same as `CBline`).
-
-The plugin will bypass this option if the language of the file allow only block comments or only line comment.
-##### December 31 2023
-- **ADD** [Quick Start](#quick-start) section for people with no time to waste!
-- **FEAT**: New category -> titled lines (see [titled lines](#titled-lines))
-- **BREAKING-CHANGE**: `CBdbox` renamed in `CBd`
-- **FEAT**: `CBy` and `CBd` can by used on titled lines also
-
----
 <h1 align="center">comment-box.nvim</h1>
 
 ![comment-box](./imgs/cb-title.png?raw=true)
@@ -34,7 +15,7 @@ _comment-box_ allows you to:
 - integrate your text in a drew line. The line can be left aligned, right aligned or centered. The text can be left aligned right aligned or centered. Too long text will be wrapped, the first line will be integrated in the line, the others will appear commented below the line.
 - draw a line with a simple keyboard shortcut. The line can be left aligned, right aligned or centered.
 - create your own type of line by choosing its width and the characters used to draw its start, end and body.
-- choose from a catalog of 22 predefined boxes and 13 predefined lines and use it by simply pass its number to the function call.
+- choose from a catalog of 22 predefined boxes and 17 predefined lines and use it by simply pass its number to the function call.
 
 Mainly designed for code comments, _comment-box_ can also be used to brighten up any kind of plain text files (_.txt_, _.md_, ...)!
 
@@ -323,7 +304,7 @@ keymap({ "n", "v" }, "<Leader>cd", "<Cmd>CBd<CR>", opts)
 
 ![The catalog](./imgs/cb-catalog.jpg?raw=true)
 
-The catalog is a collection of 22 predefined types of boxes and 13 types of lines.
+The catalog is a collection of 22 predefined types of boxes and 17 types of lines.
 You can easily access the catalog in _Neovim_ (it will appear in a popup window so it won't mess with what you're doing) using:
 
 ```lua
