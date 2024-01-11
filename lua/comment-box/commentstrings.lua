@@ -133,6 +133,7 @@ local languages = {
   zig = { "//%s", "" },
 }
 
+---@param filetype string
 ---@return table
 local function get_comment_strings(filetype)
   local cs

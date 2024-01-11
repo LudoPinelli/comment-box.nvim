@@ -6,6 +6,7 @@ local cs = require("comment-box.commentstrings")
 local fn = vim.fn
 
 -- return comment strings
+---@param filetype string
 ---@return string, string, string
 local function get_comment_string(filetype)
   local comment_string = cs.get_comment_strings(filetype)
@@ -80,6 +81,10 @@ local function get_pad(line, centered_text, right_aligned_text, final_width)
   return start_pad, end_pad
 end
 
+---@param comment_string string
+---@param line string
+---@param start boolean
+---@return string
 local function remove_cs(comment_string, line, start)
   if comment_string ~= "" then
     local comment_string_length = fn.strdisplaywidth(comment_string)
@@ -101,6 +106,9 @@ end
 
 -- Skip comment string if there is one at the beginning of the line
 ---@param line string
+---@param comment_string_l string
+---@param comment_string_b_start string
+---@param comment_string_b_end string
 ---@return string
 local function skip_cs(
   line,

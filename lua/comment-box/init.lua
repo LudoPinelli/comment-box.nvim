@@ -188,8 +188,7 @@ local function set_line(choice)
 end
 
 ---@param comment_style string
----@return string
----@return string
+---@return string, string
 local function set_lead_space(comment_style)
   lead_space_ab = " "
   lead_space_bb = " "
@@ -227,6 +226,8 @@ end
 --         ╰──────────────────────────────────────────────────────────╯
 
 -- Return the selected text formated
+---@param lstart number
+---@param lend number
 ---@return string[]
 local function get_formated_text(lstart, lend)
   local line_start_pos, line_end_pos = utils.get_range(lstart, lend)
@@ -263,6 +264,9 @@ end
 
 -- Build the box
 ---@param choice number?
+---@param lstart number
+---@param lend number
+---@return table
 local function create_box(choice, lstart, lend)
   is_box = true
   local text = get_formated_text(lstart, lend)
@@ -628,6 +632,8 @@ local function create_line(choice)
 end
 
 ---@param choice number?
+---@param lstart number
+---@param lend number
 ---@return string[]
 local function create_titled_line(choice, lstart, lend)
   is_box = false
@@ -998,6 +1004,8 @@ end
 
 -- Print a left aligned titled line with text left aligned
 ---@param choice number
+---@param lstart number
+---@param lend number
 local function print_llline(choice, lstart, lend)
   centered_text = false
   right_aligned_text = false
@@ -1008,6 +1016,8 @@ end
 
 -- Print a left aligned titled line with text centered
 ---@param choice number
+---@param lstart number
+---@param lend number
 local function print_lcline(choice, lstart, lend)
   centered_text = true
   right_aligned_text = false
@@ -1019,6 +1029,8 @@ end
 
 -- Print a left aligned titled line with text right aligned
 ---@param choice number
+---@param lstart number
+---@param lend number
 local function print_lrline(choice, lstart, lend)
   centered_text = false
   right_aligned_text = true
@@ -1030,6 +1042,8 @@ end
 
 -- Print a centered titled line with text left aligned
 ---@param choice number
+---@param lstart number
+---@param lend number
 local function print_clline(choice, lstart, lend)
   centered_text = false
   right_aligned_text = false
@@ -1041,6 +1055,8 @@ end
 
 -- Print a centered titled line with text centered
 ---@param choice number
+---@param lstart number
+---@param lend number
 local function print_ccline(choice, lstart, lend)
   centered_text = true
   right_aligned_text = false
@@ -1052,6 +1068,8 @@ end
 
 -- Print a centered titled line with text right aligned
 ---@param choice number
+---@param lstart number
+---@param lend number
 local function print_crline(choice, lstart, lend)
   centered_text = false
   right_aligned_text = true
@@ -1063,6 +1081,8 @@ end
 
 -- Print a right aligned titled line with text left aligned
 ---@param choice number
+---@param lstart number
+---@param lend number
 local function print_rlline(choice, lstart, lend)
   centered_text = false
   right_aligned_text = false
@@ -1074,6 +1094,8 @@ end
 
 -- Print a right aligned titled line with text centered
 ---@param choice number
+---@param lstart number
+---@param lend number
 local function print_rcline(choice, lstart, lend)
   centered_text = true
   right_aligned_text = false
@@ -1085,6 +1107,8 @@ end
 
 -- Print a right aligned titled line with text right aligned
 ---@param choice number
+---@param lstart number
+---@param lend number
 local function print_rrline(choice, lstart, lend)
   centered_text = false
   right_aligned_text = true
