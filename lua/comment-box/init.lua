@@ -225,7 +225,7 @@ end
 --         │                           CORE                           │
 --         ╰──────────────────────────────────────────────────────────╯
 
--- Return the selected text formated
+-- Return the selected text formatted
 ---@param lstart number
 ---@param lend number
 ---@return string[]
@@ -1140,9 +1140,12 @@ return {
   rlbox = print_rlbox,
   rcbox = print_rcbox,
   rrbox = print_rrbox,
-  albox = print_labox,
-  acbox = print_cabox,
-  arbox = print_rabox,
+  albox = print_labox, -- deprecated
+  labox = print_labox,
+  acbox = print_cabox, -- deprecated
+  cabox = print_cabox,
+  arbox = print_rabox, -- deprecated
+  rabox = print_rabox,
   dbox = del,
   yank = yank_in,
   line = print_line,

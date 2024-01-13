@@ -84,10 +84,18 @@ end, {
   range = 2,
   desc = "Print a left aligned adapted box",
 })
--- ──────────────────────────────────────────────────────────────────────
 
+-- ── Deprecated ────────────────────────────────────────────────────────
 vim.api.nvim_create_user_command("CBlabox", function(opts)
   require("comment-box").albox(opts.args, opts.line1, opts.line2)
+end, {
+  nargs = "?",
+  range = 2,
+  desc = "Print a left aligned adapted box",
+})
+
+vim.api.nvim_create_user_command("CBlabox", function(opts)
+  require("comment-box").labox(opts.args, opts.line1, opts.line2)
 end, {
   nargs = "?",
   range = 2,
@@ -102,10 +110,18 @@ end, {
   range = 2,
   desc = "Print a centered adapted box",
 })
--- ──────────────────────────────────────────────────────────────────────
 
+-- ── Deprecated ────────────────────────────────────────────────────────
 vim.api.nvim_create_user_command("CBacbox", function(opts)
   require("comment-box").acbox(opts.args, opts.line1, opts.line2)
+end, {
+  nargs = "?",
+  range = 2,
+  desc = "Print a centered adapted box",
+})
+
+vim.api.nvim_create_user_command("CBacbox", function(opts)
+  require("comment-box").cabox(opts.args, opts.line1, opts.line2)
 end, {
   nargs = "?",
   range = 2,
@@ -120,10 +136,18 @@ end, {
   range = 2,
   desc = "Print a right aligned adapted box",
 })
--- ──────────────────────────────────────────────────────────────────────
 
+-- ── Deprecated ────────────────────────────────────────────────────────
 vim.api.nvim_create_user_command("CBrabox", function(opts)
   require("comment-box").arbox(opts.args, opts.line1, opts.line2)
+end, {
+  nargs = "?",
+  range = 2,
+  desc = "Print a right aligned adapted box",
+})
+
+vim.api.nvim_create_user_command("CBrabox", function(opts)
+  require("comment-box").rabox(opts.args, opts.line1, opts.line2)
 end, {
   nargs = "?",
   range = 2,

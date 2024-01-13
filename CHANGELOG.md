@@ -1,5 +1,11 @@
 # Changelog
 
+## January 13 2024
+
+### Fixed
+
+- For the adapted boxes, the new nomenclature was not working when using the function directly (for example: `require("comment-box").cabox()`).
+
 ## January 10 2024
 
 ### Added
