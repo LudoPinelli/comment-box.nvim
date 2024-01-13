@@ -4,6 +4,7 @@
 
 ### Fixed
 
+- Using the functions directly for the titled lines lead to an error if no lines were selected.
 - For the adapted boxes, the new nomenclature was not working when using the function directly (for example: `require("comment-box").cabox()`).
 
 ## January 10 2024
