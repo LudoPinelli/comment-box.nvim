@@ -1,19 +1,19 @@
 # Changelog
 
-## January 13 2024
+## [1.0.2] - January 13 2024
 
 ### Fixed
 
 - Using the functions directly for the titled lines lead to an error if no lines were selected.
 - For the adapted boxes, the new nomenclature was not working when using the function directly (for example: `require("comment-box").cabox()`).
 
-## January 10 2024
+## [1.0.1] - January 10 2024
 
 ### Added
 
 - Four new predefined styles of line.
 
-## January 4 2024
+## [1.0.0] - January 4 2024
 
 ### Added
 
@@ -39,7 +39,7 @@ To keep a consistency in the nomenclature of the commands (older commands still 
 - `CBacbox`.
 - `CBarbox`.
 
-## December 31 2023
+## [0.9.0] - December 31 2023
 
 ### Added
 
