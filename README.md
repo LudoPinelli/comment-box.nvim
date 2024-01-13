@@ -376,13 +376,13 @@ require('comment-box').setup({
 
 ### `comment_style`
 
-Determine which style of comments comment-box will use:
+Determine which style of comments _comment-box_ will use:
 
--`"line"`: only use line style comments
+- `"line"`: only use line style comments
 - `"block"`: only use block style comments
 - `"auto"`: use block style comments if multiple lines are selected, line style comments otherwise
 
-If a language doesn't allow on type of style, comment-box will automatically choose the other one.
+If a language doesn't allow on type of style, _comment-box_ will automatically choose the other one.
 
 ### `doc_width`
 
@@ -420,6 +420,7 @@ Self explanatory!
 
 ## TODO
 
+- [ ] Picker (issue #25)
 - [x] "Titled lines" (issue #10)
 - [x] Right alignement
 - [ ] Option for displaying comments/docstring as virtual text (issue #5)
