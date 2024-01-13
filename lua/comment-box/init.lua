@@ -674,11 +674,13 @@ local function create_titled_line(choice, lstart, lend)
     lead_space = " "
   end
 
-  local is_block
-  if math.abs(lend - lstart) > 0 then
-    is_block = true
-  else
-    is_block = false
+  local is_block = false
+  if lend ~= nil and lstart ~= nil then
+    if math.abs(lend - lstart) > 0 then
+      is_block = true
+    else
+      is_block = false
+    end
   end
 
   local comment_string_int_row
