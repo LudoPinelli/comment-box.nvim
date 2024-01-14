@@ -19,6 +19,8 @@ _comment-box_ allows you to:
 
 Mainly designed for code comments, _comment-box_ can also be used to brighten up any kind of plain text files (_.txt_, _.md_, ...)!
 
+**NOT SUPPORTED**: Inline comments (at the end or middle of a line) are not supported at the moment.
+
 ## Prerequisite
 
 _Neovim_ 0.8+
@@ -420,6 +422,7 @@ Self explanatory!
 
 ## TODO
 
+- [ ] Support for inline comments (issue #34)
 - [ ] Picker (issue #25)
 - [x] "Titled lines" (issue #10)
 - [x] Right alignement

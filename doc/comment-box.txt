@@ -74,6 +74,9 @@ comment-box allows you to:
 Mainly designed for code comments, comment-box can also be used to brighten up
 any kind of plain text files (.txt, .md, ...)!
 
+NOT SUPPORTED: Inline comments (at the end or middle of a line) are not
+supported at the moment.
+
 --------------------------------------------------------------------------------
 PREREQUISITE                                            *comment-box-prerequisite*
 
