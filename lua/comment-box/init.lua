@@ -248,9 +248,9 @@ local function get_text(lstart, lend)
 
   for i, str in ipairs(text) do
     -- Remove every spaces, non alphanumeric and | characters at the beginning of the string
-    str = str:gsub("^[^%w|(){}!,.;?]+", "")
+    str = str:gsub("^[^%w|(){}!,.;:?]+", "")
     -- Remove every spaces, non alphanumeric and | characters at the end of the string
-    str = str:gsub("[^%w|(){}!,.;?]+$", "")
+    str = str:gsub("[^%w|(){}!,.;:?]+$", "")
     if str ~= "" then
       table.insert(result, str)
     else
