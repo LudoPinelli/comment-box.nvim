@@ -215,7 +215,9 @@ Examples:
 |--- | --- | --- |
 |`CBd` | _Remove a box or titled line, keeping its content_ | `require("comment-box").dbox()` |
 
-To remove a box or a titled line, select it, then use the command `CBd` (or create a keybind for it, see [Keybindings examples](#keybindings-examples))
+To remove a box, you must select it entirely in visual mode (or easier in visual line mode (`<C-v>`)), before using the command `CBd` (or create a keybind for it, see [Keybindings examples](#keybindings-examples)). To remove a titled line, just placing the cursor on the line will do.
+
+**Limitation**: `CBd` suppose that you used non alphanumeric characters to create the box (which is the case for all the styles in the catalog), nor parentheses or punctuations. It works by removing every non alphanumeric characters, except the characters `(){},.;!?`, from the beginning of the line and from its end. If you use one of those to create your own type of box, the command won't work properly. Also, if your comment start or end by a non alphanumeric character (ex: `-- |comment|`), it will be removed.
 
 #### Yank the content of a box or a titled line
 
