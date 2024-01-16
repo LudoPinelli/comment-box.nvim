@@ -420,15 +420,6 @@ The symbols used to draw the lines. Let your creativity go wild! Or just use the
 
 Self explanatory!
 
-## TODO
-
-- [ ] Support for inline comments (issue #34)
-- [ ] Picker (issue #25)
-- [x] "Titled lines" (issue #10)
-- [x] Right alignement
-- [ ] Option for displaying comments/docstring as virtual text (issue #5)
-- [x] Full support of multi-line style comments
-
 ## Acknowledgement
 
 I learned and borrow from those plugins' code:
