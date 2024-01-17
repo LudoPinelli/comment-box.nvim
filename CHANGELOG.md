@@ -1,5 +1,11 @@
 # Changelog
 
+## pre-[1.0.3] - January 16 2024
+
+### Changed
+
+- regexes improved for the `:CBline` command (see README or doc).
+
 ## [1.0.2] - January 13 2024
 
 ### Fixed
