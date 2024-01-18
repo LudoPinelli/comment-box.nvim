@@ -67,7 +67,7 @@ local opts = { noremap = true, silent = true }
 -- Titles
 keymap({ "n", "v" }, "<Leader>cb", "<Cmd>CBccbox<CR>", opts)
 -- Named parts
-keymap({ "n", "v" }, "<Leader>ct", "<Cmd>llline<CR>", opts)
+keymap({ "n", "v" }, "<Leader>ct", "<Cmd>CBllline<CR>", opts)
 -- Simple line
 keymap("n", "<Leader>cl", "<Cmd>CBline<CR>", opts)
 -- keymap("i", "<M-l>", "<Cmd>CBline<CR>", opts) -- To use in Insert Mode
