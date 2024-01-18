@@ -163,7 +163,11 @@ end
 ---@param choice number?
 ---@return table
 local function set_borders(choice)
-  choice = tonumber(choice) or 0
+  if choice then
+    choice = tonumber(choice[1])
+  else
+    choice = 0
+  end
   local borders
   if choice == 0 then
     borders = settings.borders

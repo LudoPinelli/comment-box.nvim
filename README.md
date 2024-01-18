@@ -1,5 +1,7 @@
 <h1 align="center">comment-box.nvim</h1>
 
+***Announcement***: This plugin has reached a stable state, but I'd like to add more features from your suggestions and from I had in mind. However, I started writing this plugin two years ago without any knowledge of _lua_ and the _Neovim_ api, not to mention a relatively short programming experience, which resulted in a rather messy code, hard to extend and maintain without making more mess. So I decided to rewrite it from the ground up, therefore I won't add any new feature until it's done (but will gladly fix any bug you may find of course).
+
 ![comment-box](./imgs/cb-title.png?raw=true)
 
 You have this long config file and you want to clearly (and beautifully) separate each part. So you put lines of symbols as separators. Boxes would have been better but too tedious to make, not to mention if you want to center your text in it.
@@ -217,7 +219,7 @@ Examples:
 
 To remove a box, you must select it entirely in visual mode (or easier in visual line mode (`<C-v>`)), before using the command `CBd` (or create a keybind for it, see [Keybindings examples](#keybindings-examples)). To remove a titled line, just placing the cursor on the line will do.
 
-**Limitation**: `CBd` suppose that you used non alphanumeric characters to create the box (which is the case for all the styles in the catalog), nor parentheses or punctuations. It works by removing every non alphanumeric characters, except the characters `(){},.;!?`, from the beginning of the line and from its end. If you use one of those to create your own type of box, the command won't work properly. Also, if your comment start or end by a non alphanumeric character (ex: `-- |comment|`), it will be removed.
+**Limitations**: `CBd` suppose that you used non alphanumeric characters to create the box (which is the case for all the styles in the catalog), nor parentheses or punctuations. It works by removing every non alphanumeric characters, except the characters `(){},.;!?`, from the beginning of the line and from its end. If you use one of those to create your own type of box, the command won't work properly. Also, if your comment start or end by a non alphanumeric character (ex: `-- |comment|`), it will be removed.
 
 #### Yank the content of a box or a titled line
 
@@ -227,7 +229,7 @@ To remove a box, you must select it entirely in visual mode (or easier in visual
 
 Select the box (or at least the part including the text) or the titled line, then use the command `CBy`.
 
-**Note** the text is available in the `+` register, it assumes that you have the `clipboard` option set to `unnamedplus`. If not you may have to specify the register for pasting using `"+p`.
+**Note** the text is available in the `+` register, it assumes that you have the `clipboard` option set to `unnamedplus`. If not you may have to specify the register for pasting using `"+p`. `Cby` use the same extraction function than `CBd` and is therefore subject to the same limitations.
 
 #### Lines
 

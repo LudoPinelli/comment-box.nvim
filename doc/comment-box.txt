@@ -371,7 +371,7 @@ line mode (<C-v>)) before using the command CBd (or create a keybind for it, see
 |keybindings-examples). To remove a titled line, just placing the cursor on the
 line will do.
 
-Limitation: `CBd` suppose that you used non alphanumeric characters to create
+Limitations: `CBd` suppose that you used non alphanumeric characters to create
 the box (which is the case for all the styles in the catalog), nor parentheses or
 punctuations. It works by removing every non alphanumeric characters, except the
 characters `(){},.;!?`, from the beginning of the line and from its end. If you
@@ -393,7 +393,9 @@ then use the command CBy.
 
 Note: the text is available in the `+` register, it assumes that you have the
 `clipboard` option set to `unnamedplus`. If not you may have to specify
-the register for pasting using "+p).
+the register for pasting using "+p). `Cby` use the same extraction function
+than `CBd` and is therefore subject to the same limitations.
+
 
 LINES                                                          *comment-box-lines*
 
