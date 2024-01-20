@@ -164,7 +164,6 @@ end
 ---@return table
 local function set_borders(choice)
   choice = tonumber(choice) or 0
-  print(choice)
   local borders
   if choice == 0 then
     borders = settings.borders
@@ -179,7 +178,6 @@ end
 ---@return table
 local function set_line(choice)
   choice = tonumber(choice) or 0
-  print(choice)
   local symbols
   if choice == 0 then
     symbols = settings.lines
@@ -649,6 +647,10 @@ local function create_titled_line(choice, lstart, lend)
   end
 
   local text = get_formated_text(lstart, lend)
+  if text == "" then
+    local line = create_line(choice)
+    return line
+  end
   local start_pad, end_pad =
     utils.get_pad(text[1], centered_text, right_aligned_text, final_width)
   if start_pad > end_pad then
