@@ -9,6 +9,7 @@
 ### Changed
 
 - regexes improved for the `:CBline` command (see README or doc).
+- A titled line in an empty line is automatically converted to a simple line.
 
 ## [1.0.2] - January 13 2024
 

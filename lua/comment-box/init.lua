@@ -647,7 +647,7 @@ local function create_titled_line(choice, lstart, lend)
   end
 
   local text = get_formated_text(lstart, lend)
-  if text == "" then
+  if text[1] == "" then
     local line = create_line(choice)
     return line
   end
