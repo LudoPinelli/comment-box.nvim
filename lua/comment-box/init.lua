@@ -163,11 +163,8 @@ end
 ---@param choice number?
 ---@return table
 local function set_borders(choice)
-  if choice then
-    choice = tonumber(choice[1])
-  else
-    choice = 0
-  end
+  choice = tonumber(choice) or 0
+  print(choice)
   local borders
   if choice == 0 then
     borders = settings.borders
@@ -182,6 +179,7 @@ end
 ---@return table
 local function set_line(choice)
   choice = tonumber(choice) or 0
+  print(choice)
   local symbols
   if choice == 0 then
     symbols = settings.lines

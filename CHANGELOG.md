@@ -2,6 +2,10 @@
 
 ## pre-[1.0.3] - January 16 2024
 
+### Fixed
+
+- In certain condition, changing the box style was not taken into account.
+
 ### Changed
 
 - regexes improved for the `:CBline` command (see README or doc).
