@@ -365,7 +365,7 @@ require('comment-box').setup({
     bottom_right = "╯",
   },
   line_width = 70, -- width of the lines
-  line = { -- symbols used to draw a line
+  lines = { -- symbols used to draw a line
     line = "─",
     line_start = "─",
     line_end = "─",
@@ -412,7 +412,7 @@ You can even create very ugly ones, no judgement!
 
 Width of the lines.
 
-### `line`
+### `lines`
 
 The symbols used to draw the lines. Let your creativity go wild! Or just use the default or choose from the predefined ones (see [Catalog](#the-catalog)).
 

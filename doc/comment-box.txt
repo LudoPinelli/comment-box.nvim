@@ -25,7 +25,7 @@ CONTENTS                                                    *comment-box-content
         5.1. Commands.......................................|comment-box-commands|
             5.1.1 Boxes........................................|comment-box-boxes|
             5.1.2 Titled Lines..........................|comment-box-titled-lines|
-            5.1.3 Lines........................................|comment-box-lines|
+            5.1.3 Lines.........................................|comment-box-line|
             5.1.4 Removing a box or a titled line.............|comment-box-remove|
             5.1.5 Yank the content of a box or titled line......|comment-box-yank|
         5.2. Keybindings examples...............|comment-box-keybindings_examples|
@@ -38,9 +38,9 @@ CONTENTS                                                    *comment-box-content
         7.3. 'box_width'...................................|comment-box-box_width|
         7.4. 'borders'.......................................|comment-box-borders|
         7.5. 'line_width'.................................|comment-box-line_width|
-        7.6. 'line'.............................................|comment-box-line|
+        7.6. 'lines'...........................................|comment-box-lines|
         7.7. 'outer_blank_lines'...................|comment-box-outer_blank_lines|
-        7.8 'inner_blank_lines'...................|comment-box-inner_blank_lines|
+        7.8 'inner_blank_lines'....................|comment-box-inner_blank_lines|
         7.9. 'line_blank_line_above'...........|comment-box-line_blank_line_above|
         7.10 'line_blank_line_below'...........|comment-box-line_blank_line_below|
     8. Acknowledgement...............................|comment-box-acknowledgement|
@@ -281,7 +281,7 @@ Examples
     :lua require("comment-box").llbox(17)
 <
 
-TITLED LINES                                              *comment-box-titled-lines*
+TITLED LINES                                               *comment-box-titled-line*
 
 +------------------------------------------------------------------------------+
 |   Command    |      Description       |               function               |
@@ -541,7 +541,7 @@ box. Here is the list of the options with their default value:
     		bottom_right = "╯",
     	},
         line_width = 70, -- width of the lines
-        line = { -- symbols used to draw a line
+        lines = { -- symbols used to draw a line
     		line = "─",
     		line_start = "─",
     		line_end = "─",
@@ -584,7 +584,7 @@ or `""`(empty string).
 
 Width of the lines.
 
-'line'                                                          *comment-box-line*
+'lines'                                                         *comment-box-lines*
 
 The symbols used to draw the lines. Let your creativity go wild! Or just use the
 default or choose from the predefined ones (see |comment-box-catalog|).
