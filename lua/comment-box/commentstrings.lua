@@ -132,6 +132,7 @@ local languages = {
   yaml = { "#%s", "" },
   yuck = { ";;%s", "" },
   zig = { "//%s", "" },
+  zsh = { "#%s", "" },
 }
 
 ---@param filetype string
