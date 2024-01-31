@@ -397,7 +397,7 @@ the register for pasting using "+p). `Cby` use the same extraction function
 than `CBd` and is therefore subject to the same limitations.
 
 
-LINES                                                          *comment-box-lines*
+LINES                                                           *comment-box-line*
 
 +------------------------------------------------------------------------+
 |   Command   |    Description     |             function                |
