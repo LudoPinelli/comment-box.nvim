@@ -1,6 +1,6 @@
 # Changelog
 
-## pre-[1.0.3] - January 16 2024
+## pre-[1.0.3] - January 31 2024
 
 ### Fixed
 
@@ -10,6 +10,10 @@
 
 - regexes improved for the `:CBline` command (see README or doc).
 - A titled line in an empty line is automatically converted to a simple line.
+
+### Added
+
+- `zsh` and `kdl` file types support.
 
 ## [1.0.2] - January 13 2024
 
