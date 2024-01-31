@@ -60,6 +60,7 @@ local languages = {
   jsonc = { "//%s", "" },
   jsonnet = { "//%s", "/*%s*/" },
   julia = { "#%s", "#=%s=#" },
+  kdl = { "//%s", "/*%s*/" },
   kotlin = { "//%s", "/*%s*/" },
   lean = { "--%s", "/-%s-/" },
   lean3 = { "--%s", "/-%s-/" },
