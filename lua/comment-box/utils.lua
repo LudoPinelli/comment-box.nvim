@@ -104,7 +104,7 @@ local function remove_cs(comment_string, line, start)
   return line
 end
 
--- Skip comment string if there is one at the beginning of the line
+-- Skip comment string if there is one at the beginning or end of the line
 ---@param line string
 ---@param comment_string_l string
 ---@param comment_string_b_start string

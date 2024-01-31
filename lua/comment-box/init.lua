@@ -640,10 +640,10 @@ local function create_titled_line(choice, lstart, lend)
   local filetype = vim.bo.filetype
   local comment_string_l, comment_string_b_start, comment_string_b_end =
     utils.get_comment_string(filetype)
-  local offset = fn.strdisplaywidth(comment_string_l)
+  local offset = fn.strdisplaywidth(comment_string_l) + 1
 
-  if settings.line_width > settings.doc_width + offset then
-    settings.line_width = settings.doc_width + offset
+  if settings.line_width > settings.doc_width - offset then
+    settings.line_width = settings.doc_width - offset
   end
 
   local text = get_formated_text(lstart, lend)
@@ -723,13 +723,13 @@ local function create_titled_line(choice, lstart, lend)
       comment_string_int_row,
       lead_space,
       symbols.line_start,
-      string.rep(symbols.line, start_pad),
+      string.rep(symbols.line, start_pad - 1),
       symbols.title_left,
       " ",
       text[1],
       " ",
       symbols.title_right,
-      string.rep(symbols.line, end_pad),
+      string.rep(symbols.line, end_pad - 1),
       symbols.line_end
     )
   )
