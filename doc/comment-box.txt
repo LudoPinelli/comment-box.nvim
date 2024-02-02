@@ -40,7 +40,7 @@ CONTENTS                                                    *comment-box-content
         7.5. 'line_width'.................................|comment-box-line_width|
         7.6. 'lines'...........................................|comment-box-lines|
         7.7. 'outer_blank_lines'...................|comment-box-outer_blank_lines|
-        7.8 'inner_blank_lines'....................|comment-box-inner_blank_lines|
+        7.8. 'inner_blank_lines'...................|comment-box-inner_blank_lines|
         7.9. 'line_blank_line_above'...........|comment-box-line_blank_line_above|
         7.10 'line_blank_line_below'...........|comment-box-line_blank_line_below|
     8. Acknowledgement...............................|comment-box-acknowledgement|
@@ -106,7 +106,7 @@ QUICK START                                                          *quick-star
 
 
 
-If the plugin has tons of commands, you'll most likely need 3 or 4 at most on a 
+If the plugin has tons of commands, you'll most likely need 3 or 4 at most on a
 regular basis.
 - You'll probably want a box for titles. I personally choose a centered fixed box
   with text centered :CBccbox
@@ -509,7 +509,7 @@ Note: in addition to the usual way of closing windows, you can simply use `q` to
 close the catalog.
 
 The type n°1 for the box and line is the default one, so, if you didn't change
-the default settings via the `setup()` function (see 
+the default settings via the `setup()` function (see
 |comment-box-configuration|), passing nothing or 1 (or even 0) will lead to the
 same result.
 
