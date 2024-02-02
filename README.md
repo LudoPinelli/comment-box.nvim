@@ -424,6 +424,22 @@ The symbols used to draw the lines. Let your creativity go wild! Or just use the
 
 Self explanatory!
 
+## Tips
+
+### Suggested mappings
+
+You can create a mapping for jumping to the next comment box like this:
+
+```lua
+-- map ]b [b to go to next block comment
+vim.keymap.set('n', ']b', '/\\S\\zs\\s*╭<CR>zt')
+vim.keymap.set('n', '[b', '?\\S\\zs\\s*╭<CR>zt')
+```
+
+This matches the first non-whitespace character in a line that precedes a comment box corner piece, ignoring any whitespace in between, and redraws the screen with the comment box at the top.
+
+Note: this example only works for the default rounded box shape. To match a different type of box, replace `╭` with the top-left corner piece of your preferred box type, e.g. `┌` for the classic box shape.
+
 ## Acknowledgement
 
 I learned and borrow from those plugins' code:
