@@ -4,6 +4,4 @@ doc/tags
 # test files
 test.lua
 test.py
-
-# vim sessions
-Session.vim
+test.zsh

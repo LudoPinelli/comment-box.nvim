@@ -281,6 +281,10 @@ local function create_box(choice, lstart, lend)
   if comment_string_l == "" and comment_string_b_start ~= "" then
     comment_style = "block"
   end
+  -- If the language has no block comment:
+  if comment_string_b_start == "" and comment_string_l ~= "" then
+    comment_style = "line"
+  end
 
   if comment_style == "line" and comment_string_l ~= "" then
     comment_string_int_row = comment_string_l

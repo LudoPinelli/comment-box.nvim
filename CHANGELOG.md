@@ -1,10 +1,11 @@
 # Changelog
 
-## pre-[1.0.3] - January 31 2024
+## pre-[1.0.3] - February 3 2024
 
 ### Fixed
 
 - In certain condition, changing the box style was not taken into account.
+- Comment strings wasn't displayed for languages that doesn't have block comments when the `comment_style` option is set to `"auto"` or `"block"` (issue #41).
 
 ### Changed
 
