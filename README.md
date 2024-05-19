@@ -130,7 +130,7 @@ See the rest of this doc for more details.
 |`CBrcbox[num]` | _Right aligned box of fixed size_ with _Centered text_ | `require("comment-box").rcbox([num])` |
 |`CBrrbox[num]` | _Right aligned box of fixed size_ with _Right aligned text_ | `require("comment-box").rrbox([num])` |
 |`CBlabox[num]` | _Left aligned adapted box_ | `require("comment-box").labox([num])` |
-|`CBbcaox[num]` | _Centered adapted box_ | `require("comment-box").cabox([num])` |
+|`CBcabox[num]` | _Centered adapted box_ | `require("comment-box").cabox([num])` |
 |`CBrabox[num]` | _Right aligned adapted box_ | `require("comment-box").rabox([num])` |
 
 The `[num]` parameter is optional. It's the number of a predefined style from the catalog (see [Catalog](#the-catalog)). By leaving it empty, the box or line will be drawn with the style you defined or if you didn't define one, with the default style.
