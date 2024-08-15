@@ -1,6 +1,6 @@
 <h1 align="center">comment-box.nvim</h1>
 
-***Announcement***: This plugin has reached a stable state, but I'd like to add more features from your suggestions and from I had in mind. However, I started writing this plugin two years ago without any knowledge of _lua_ and the _Neovim_ api, not to mention a relatively short programming experience, which resulted in a rather messy code, hard to extend and maintain without making more mess. So I decided to rewrite it from the ground up, therefore I won't add any new feature until it's done (but will gladly fix any bug you may find of course).
+**_Announcement_**: This plugin has reached a stable state, but I'd like to add more features from your suggestions and from I had in mind. However, I started writing this plugin two years ago without any knowledge of _lua_ and the _Neovim_ api, not to mention a relatively short programming experience, which resulted in a rather messy code, hard to extend and maintain without making more mess. So I decided to rewrite it from the ground up, therefore I won't add any new feature until it's done (but will gladly fix any bug you may find of course).
 
 ![comment-box](./imgs/cb-title.png?raw=true)
 
@@ -32,9 +32,11 @@ _Neovim_ 0.8+
 Install like any other plugin with your favorite package manager. Some examples:
 
 With lazy:
+
 ```lua
 { "LudoPinelli/comment-box.nvim", }
 ```
+
 With packer:
 
 ```lua
@@ -46,6 +48,7 @@ If you're fine with the default settings (see [Configuration](#configuration-and
 ## Quick Start
 
 If the plugin has tons of commands, you'll most likely need 3 or 4 at most on a regular basis.
+
 - You'll probably want a box for titles. I personally choose a centered fixed box with text centered : `:CBccbox`
 - A titled line is nice to divide and name each part. I use a left aligned titled line with the text left aligned: `:CBllline`
 - For a simple separation, a simple line will do: `:CBline`
@@ -60,6 +63,7 @@ To remove a box or line, when an Undo is no more a possibility, select the box o
 You may need to yank the content of a box (without the box). The command is `:CBy`.
 
 It's of course easier to use shortcuts (here using `<Leader>c` as prefix):
+
 ```lua
 local keymap = vim.keymap.set
 local opts = { noremap = true, silent = true }
@@ -79,6 +83,7 @@ keymap({ "n", "v" }, "<Leader>cm", "<Cmd>CBllbox14<CR>", opts)
 ```
 
 Or if you use [which-key](https://github.com/folke/which-key.nvim):
+
 ```lua
 local wk = require("which-key")
 
@@ -101,6 +106,7 @@ If you want more control, the nomenclature for the commands is fairly simple:
 ![nomenclature](./imgs/cb-nomenclature.png?raw=true)
 
 where:
+
 - `CB` is for "Comment-Box"
 - `x` is for the position of the box or line (`l`: left, `c`: center, `r`: right)
 - `y` is for the text justification (`l`: left, `c`: center, `r`: right). For the box, it can be `a` ("adapted"): the size of the box will be adapted to the size of the text (up to `box_width`)
@@ -108,6 +114,7 @@ where:
 - `[num]` is optional an apply a style from the catalog
 
 Exception:
+
 - Simple Lines: no `y`. `x` is the position of the line (`l`: left, `c`: center, `r`: right).
 
 See the rest of this doc for more details.
@@ -118,26 +125,26 @@ See the rest of this doc for more details.
 
 #### Boxes
 
-| Command | Description | function |
-|--- | --- | --- |
-|`CBllbox[num]` | _Left aligned box of fixed size_ with _Left aligned text_ | `require("comment-box").llbox([num])` |
-|`CBlcbox[num]` | _Left aligned box of fixed size_ with _Centered text_ | `require("comment-box").lcbox([num])` |
-|`CBlrbox[num]` | _Left aligned box of fixed size_ with _Right aligned text_ | `require("comment-box").lrbox([num])` |
-|`CBclbox[num]` | _Centered box of fixed size_ with _Left aligned text_ | `require("comment-box").clbox([num])` |
-|`CBccbox[num]` | _Centered box of fixed size_ with _Centered text_ | `require("comment-box").ccbox([num])` |
-|`CBcrbox[num]` | _Centered box of fixed size_ with _Right aligned text_ | `require("comment-box").crbox([num])` |
-|`CBrlbox[num]` | _Right aligned box of fixed size_ with _Left aligned text_ | `require("comment-box").rlbox([num])` |
-|`CBrcbox[num]` | _Right aligned box of fixed size_ with _Centered text_ | `require("comment-box").rcbox([num])` |
-|`CBrrbox[num]` | _Right aligned box of fixed size_ with _Right aligned text_ | `require("comment-box").rrbox([num])` |
-|`CBlabox[num]` | _Left aligned adapted box_ | `require("comment-box").labox([num])` |
-|`CBbcaox[num]` | _Centered adapted box_ | `require("comment-box").cabox([num])` |
-|`CBrabox[num]` | _Right aligned adapted box_ | `require("comment-box").rabox([num])` |
+| Command        | Description                                                 | function                              |
+| -------------- | ----------------------------------------------------------- | ------------------------------------- |
+| `CBllbox[num]` | _Left aligned box of fixed size_ with _Left aligned text_   | `require("comment-box").llbox([num])` |
+| `CBlcbox[num]` | _Left aligned box of fixed size_ with _Centered text_       | `require("comment-box").lcbox([num])` |
+| `CBlrbox[num]` | _Left aligned box of fixed size_ with _Right aligned text_  | `require("comment-box").lrbox([num])` |
+| `CBclbox[num]` | _Centered box of fixed size_ with _Left aligned text_       | `require("comment-box").clbox([num])` |
+| `CBccbox[num]` | _Centered box of fixed size_ with _Centered text_           | `require("comment-box").ccbox([num])` |
+| `CBcrbox[num]` | _Centered box of fixed size_ with _Right aligned text_      | `require("comment-box").crbox([num])` |
+| `CBrlbox[num]` | _Right aligned box of fixed size_ with _Left aligned text_  | `require("comment-box").rlbox([num])` |
+| `CBrcbox[num]` | _Right aligned box of fixed size_ with _Centered text_      | `require("comment-box").rcbox([num])` |
+| `CBrrbox[num]` | _Right aligned box of fixed size_ with _Right aligned text_ | `require("comment-box").rrbox([num])` |
+| `CBlabox[num]` | _Left aligned adapted box_                                  | `require("comment-box").labox([num])` |
+| `CBcabox[num]` | _Centered adapted box_                                      | `require("comment-box").cabox([num])` |
+| `CBrabox[num]` | _Right aligned adapted box_                                 | `require("comment-box").rabox([num])` |
 
 The `[num]` parameter is optional. It's the number of a predefined style from the catalog (see [Catalog](#the-catalog)). By leaving it empty, the box or line will be drawn with the style you defined or if you didn't define one, with the default style.
 
 A 'centered' box is centered relatively to the width of your document (set to the standard 80 by default, you can change it with the `setup()` function - see [Configuration](#configuration-and-creating-your-own-type-of-box)). Same for 'right aligned' boxes.
 
-An 'adapted' box means than the box width will be adapted to the width of the text. However, if the width of the text exceed the width of the document, the box will have the width of the document.
+An 'adapted' box means that the box width will be adapted to the width of the text. However, if the width of the text exceeds the width of the document, the box will have the width of the document.
 In case of multiple lines with various size, the text is aligned according to the position of the box (left aligned if the box is left aligned, centered if the box is centered, right aligned if the box is right aligned).
 
 To draw a box, place your cursor on the line of text you want in a box, or select multiple lines in _visual mode_, then use one of the command/function above.
@@ -145,6 +152,7 @@ To draw a box, place your cursor on the line of text you want in a box, or selec
 **Note**: if the text is too long to fit in the box, _comment-box_ will automatically wrap it for you.
 
 Examples:
+
 ```lua
 -- A left aligned fixed size box with the text left justified:
 :CBllbox
@@ -157,9 +165,9 @@ Examples:
 :lua require("comment-box").ccbox()
 
 -- A centered adapted box:
-:CBacbox
+:CBcabox
 -- or
-:lua require("comment-box").acbox()
+:lua require("comment-box").cabox()
 
 -- A left aligned fixed size box with the text left justified,
 -- using the syle 17 from the catalog:
@@ -170,17 +178,17 @@ Examples:
 
 #### Titled lines
 
-| Command | Description | function |
-|--- | --- | --- |
-|`CBllline[num]` | _Left aligned titled line_ with _Left aligned text_ | `require("comment-box").llline([num])` |
-|`CBlcline[num]` | _Left aligned titled line_ with _Centered text_ | `require("comment-box").lcline([num])` |
-|`CBlrline[num]` | _Left aligned titled line_ with _Right aligned text_ | `require("comment-box").lrbox([num])` |
-|`CBclline[num]` | _Centered title line_ with _Left aligned text_ | `require("comment-box").clline([num])` |
-|`CBccline[num]` | _Centered titled line_ with _Centered text_ | `require("comment-box").ccline([num])` |
-|`CBcrline[num]` | _Centered titled line_ with _Right aligned text_ | `require("comment-box").crline([num])` |
-|`CBrlline[num]` | _Right aligned titled line_ with _Left aligned text_ | `require("comment-box").rlline([num])` |
-|`CBrcline[num]` | _Right aligned titled line_ with _Centered text_ | `require("comment-box").rcline([num])` |
-|`CBrrline[num]` | _Right aligned titled line_ with _Right aligned text_ | `require("comment-box").rrline([num])` |
+| Command         | Description                                           | function                               |
+| --------------- | ----------------------------------------------------- | -------------------------------------- |
+| `CBllline[num]` | _Left aligned titled line_ with _Left aligned text_   | `require("comment-box").llline([num])` |
+| `CBlcline[num]` | _Left aligned titled line_ with _Centered text_       | `require("comment-box").lcline([num])` |
+| `CBlrline[num]` | _Left aligned titled line_ with _Right aligned text_  | `require("comment-box").lrbox([num])`  |
+| `CBclline[num]` | _Centered title line_ with _Left aligned text_        | `require("comment-box").clline([num])` |
+| `CBccline[num]` | _Centered titled line_ with _Centered text_           | `require("comment-box").ccline([num])` |
+| `CBcrline[num]` | _Centered titled line_ with _Right aligned text_      | `require("comment-box").crline([num])` |
+| `CBrlline[num]` | _Right aligned titled line_ with _Left aligned text_  | `require("comment-box").rlline([num])` |
+| `CBrcline[num]` | _Right aligned titled line_ with _Centered text_      | `require("comment-box").rcline([num])` |
+| `CBrrline[num]` | _Right aligned titled line_ with _Right aligned text_ | `require("comment-box").rrline([num])` |
 
 The `[num]` parameter is optional. It's the number of a predefined style from the catalog (see [Catalog](#the-catalog)). By leaving it empty, the box will be drawn with the style you defined or if you didn't define one, with the default style.
 
@@ -190,9 +198,10 @@ To draw a titled line, place your cursor on the line of text you want in, then u
 
 **Note**: if the text is too long to fit in the line, _comment-box_ will automatically wrap it for you. The first line of text will be in the line, the others will be commented above it.
 
-***TIP***: If you have the option `comment_style` set to `"block"` or `"auto"`, if selecting multiple lines will only put the first in the titled line, all will be in a common block comment, which can enhance the effect!
+**_TIP_**: If you have the option `comment_style` set to `"block"` or `"auto"`, if selecting multiple lines will only put the first in the titled line, all will be in a common block comment, which can enhance the effect!
 
 Examples:
+
 ```lua
 -- A left aligned titled line with the text left justified:
 :CBllline
@@ -213,19 +222,19 @@ Examples:
 
 #### Removing a box or a titled line while keeping the text
 
-| Command | Description | function |
-|--- | --- | --- |
-|`CBd` | _Remove a box or titled line, keeping its content_ | `require("comment-box").dbox()` |
+| Command | Description                                        | function                        |
+| ------- | -------------------------------------------------- | ------------------------------- |
+| `CBd`   | _Remove a box or titled line, keeping its content_ | `require("comment-box").dbox()` |
 
-To remove a box, you must select it entirely in visual mode (or easier in visual line mode (`<C-v>`)), before using the command `CBd` (or create a keybind for it, see [Keybindings examples](#keybindings-examples)). To remove a titled line, just placing the cursor on the line will do.
+To remove a box, you must select it entirely in visual mode (or easier in visual line mode (`V`)), before using the command `CBd` (or create a keybind for it, see [Keybindings examples](#keybindings-examples)). To remove a titled line, just placing the cursor on the line will do.
 
 **Limitations**: `CBd` suppose that you used non alphanumeric characters to create the box (which is the case for all the styles in the catalog), nor parentheses or punctuations. It works by removing every non alphanumeric characters, except the characters `(){},.;!?`, from the beginning of the line and from its end. If you use one of those to create your own type of box, the command won't work properly. Also, if your comment start or end by a non alphanumeric character (ex: `-- |comment|`), it will be removed.
 
 #### Yank the content of a box or a titled line
 
-| Command | Description | function |
-|--- | --- | --- |
-|`CBy` | _Yank the content of a box or titled line_ | `require("comment-box").yank()` |
+| Command | Description                                | function                        |
+| ------- | ------------------------------------------ | ------------------------------- |
+| `CBy`   | _Yank the content of a box or titled line_ | `require("comment-box").yank()` |
 
 Select the box (or at least the part including the text) or the titled line, then use the command `CBy`.
 
@@ -233,17 +242,18 @@ Select the box (or at least the part including the text) or the titled line, the
 
 #### Lines
 
-| Command | Description | function |
-|--- | --- | --- |
-|`CBline[num]` | _Left aligned line_ | `require("comment-box").line([num])` |
-|`CBcline[num]` | _Centered line_ | `require("comment-box").cline([num])` |
-|`CBrline[num]` | _Right aligned line_ | `require("comment-box").rline([num])` |
+| Command        | Description          | function                              |
+| -------------- | -------------------- | ------------------------------------- |
+| `CBline[num]`  | _Left aligned line_  | `require("comment-box").line([num])`  |
+| `CBcline[num]` | _Centered line_      | `require("comment-box").cline([num])` |
+| `CBrline[num]` | _Right aligned line_ | `require("comment-box").rline([num])` |
 
 To draw a line, place your cursor where you want it and in _normal_ or _insert_ mode, use one of the command/function above.
 
 **Note**: a line is centered or right aligned according to the width of your document (set to the standard 80 by default, you can change it with the `setup()` function - see [Configuration](#configuration-and-creating-your-own-type-of-box))
 
 Examples:
+
 ```lua
 -- A left aligned line:
 :CBline
@@ -341,7 +351,9 @@ The type n°1 for the box and line is the default one, so, if you didn't change 
 
 ## Configuration and creating your own type of box
 
-You can call the `setup()` function in your _init.lua(.vim)_ to configure the way _comment-box_ does its things. This is also where you can create your own type of box. Here is the list of the options with their default value:
+You can call the `setup()` function in your `init.lua` (or `init.vim`) to configure the way `comment-box` does its things. \
+This is also where you can create your own type of box. \
+Here is the list of the options with their default value:
 
 ```lua
 require('comment-box').setup({
@@ -377,7 +389,7 @@ require('comment-box').setup({
   inner_blank_lines = false, -- insert a blank line above and below the text
   line_blank_line_above = false, -- insert a blank line above the line
   line_blank_line_below = false, -- insert a blank line below the line
-})
+} --[[@as CommentBoxConfig]])
 ```
 
 ### `comment_style`
@@ -388,7 +400,7 @@ Determine which style of comments _comment-box_ will use:
 - `"block"`: only use block style comments
 - `"auto"`: use block style comments if multiple lines are selected, line style comments otherwise
 
-If a language doesn't allow on type of style, _comment-box_ will automatically choose the other one.
+If a language doesn't allow one type of style, _comment-box_ will automatically choose the other one.
 
 ### `doc_width`
 
@@ -400,7 +412,8 @@ Width of the fixed size boxes (must be <= `doc_width`).
 
 ### `borders`
 
-The symbols used to draw the boxes. Let your creativity go wild! Or just use the default or choose from the predefined ones (see [Catalog](#the-catalog)).
+The symbols used to draw the boxes. Let your creativity go wild! \
+Or just use the default or choose from the predefined ones (see [Catalog](#the-catalog)).
 
 If you want an element of the box to be invisible, you can use either `" "`(space) or `""`(empty string).
 
@@ -414,7 +427,8 @@ Width of the lines.
 
 ### `lines`
 
-The symbols used to draw the lines. Let your creativity go wild! Or just use the default or choose from the predefined ones (see [Catalog](#the-catalog)).
+The symbols used to draw the lines. Let your creativity go wild! \
+Or just use the default or choose from the predefined ones (see [Catalog](#the-catalog)).
 
 ### `outer_blank_lines_above` `outer_blank_lines_below` and `inner_blank_lines`
 
@@ -442,7 +456,7 @@ Note: this example only works for the default rounded box shape. To match a diff
 
 ## Acknowledgement
 
-I learned and borrow from those plugins' code:
+I learned and borrowed from these plugins' code:
 
 - [better-escape](https://github.com/max397574/better-escape.nvim)
 - [nvim-comment](https://github.com/terrortylor/nvim-comment/blob/main/lua/nvim_comment.lua)
