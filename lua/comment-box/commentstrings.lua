@@ -133,6 +133,7 @@ local languages = {
   yuck = { ";;%s", "" },
   zig = { "//%s", "" },
   zsh = { "#%s", "" },
+  prolog = { "% %s", "" },
 }
 
 ---@param filetype string
