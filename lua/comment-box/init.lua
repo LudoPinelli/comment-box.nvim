@@ -191,7 +191,7 @@ end
 ---@return string, string
 local function set_lead_space(comment_style)
   lead_space_ab = " "
-  lead_space_bb = " "
+  lead_space_bb = ""
   local comment_string_l, comment_string_b_start, _ =
     utils.get_comment_string(vim.bo.filetype)
 

@@ -138,14 +138,11 @@ local languages = {
 ---@param filetype string
 ---@return table
 local function get_comment_strings(filetype)
-  local cs
-  if filetype then
-    cs = rawget(languages, filetype)
-  end
-  if not cs then
-    return { "", "" }
+  local cs = vim.opt.commentstring
+  if cs._value then
+    return { cs._value, "" }
   else
-    return cs
+    return rawget(languages, filetype)
   end
 end
 
